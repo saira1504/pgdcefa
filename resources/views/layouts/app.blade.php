@@ -18,11 +18,64 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        .sidebar-collapsed {
+            margin-left: -250px;
+            transition: margin 0.3s;
+        }
+        .sidebar-expanded {
+            margin-left: 0;
+            transition: margin 0.3s;
+        }
+        .sidebar {
+            min-width: 250px;
+            max-width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 56px;
+            left: 0;
+            z-index: 1030;
+        }
+        .main-content {
+            margin-left: 250px;
+            transition: margin 0.3s;
+        }
+        .main-content.full {
+            margin-left: 0;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                top: 56px;
+                height: calc(100vh - 56px);
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            if(toggleBtn && sidebar && mainContent) {
+                toggleBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('sidebar-collapsed');
+                    sidebar.classList.toggle('sidebar-expanded');
+                    mainContent.classList.toggle('full');
+                });
+            }
+        });
+    </script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
+            <div class="container-fluid">
+                @if(Auth::check())
+                    <button class="btn btn-outline-secondary me-2" id="sidebarToggle" type="button">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                @endif
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
@@ -75,9 +128,28 @@
             </div>
         </nav>
 
-        <main class="py-4">
-            @yield('content')
-        </main>
+        @if(Auth::check())
+            <div>
+                <div id="sidebar" class="sidebar sidebar-expanded bg-success text-white">
+                    @if(Auth::user()->role === 'superadmin')
+                        @include('partials.sidebar_superadmin')
+                    @elseif(Auth::user()->role === 'admin')
+                        @include('partials.sidebar_admin')
+                    @elseif(Auth::user()->role === 'aprendiz')
+                        @include('partials.sidebar_aprendiz')
+                    @endif
+                </div>
+                <div id="mainContent" class="main-content">
+                    <main class="py-4 flex-fill">
+                        @yield('content')
+                    </main>
+                </div>
+            </div>
+        @else
+            <main class="py-4">
+                @yield('content')
+            </main>
+        @endif
     </div>
 </body>
 </html>

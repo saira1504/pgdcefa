@@ -23,8 +23,8 @@ class RedirectIfAuthenticateWithRole
             switch ($role) {
                 case 'admin':
                     return redirect()->route('admin.dashboard');
-                case 'editores':
-                    return redirect()->route('editores.dashboard');
+                case 'superadmin':
+                    return redirect()->route('superadmin.dashboard');
                 case 'aprendiz':
                     return redirect()->route('aprendiz.dashboard');
             }

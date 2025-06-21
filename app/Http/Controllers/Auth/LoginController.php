@@ -39,18 +39,21 @@ class LoginController extends Controller
     }
 
     protected function redirectTo()
-{
-    $role = auth()->user()->role; // Obtén el rol del usuario autenticado
+    {
+        $role = auth()->user()->role; // Obtén el rol del usuario autenticado
 
-    switch ($role) {
-        case 'admin':
-            return route('admin.dashboard'); // Redirige al panel de admin
-        case 'editores':
-            return route('editores.dashboard'); // Redirige al panel de trabajador
-        case 'aprendiz':
-            return route('aprendiz.dashboard'); // Redirige al panel de mayordomo
-        default:
-            return route('home'); // Redirige al home si no tiene un rol específico
+        switch ($role) {
+            case 'admin':
+                return route('admin.dashboard'); // Redirige al panel de admin
+            case 'superadmin':
+                return route('superadmin.dashboard'); // Redirige al panel de superadmin
+            case 'aprendiz':
+                return route('aprendiz.dashboard'); // Redirige al panel de aprendiz
+            default:
+                auth()->logout();
+                session()->invalidate();
+                session()->regenerateToken();
+                return route('login').'?error=rol'; // Redirige al login si no tiene un rol válido
+        }
     }
-}
 }

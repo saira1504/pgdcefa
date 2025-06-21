@@ -27,10 +27,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     })->name('admin.dashboard');
 });
 
-Route::middleware(['auth', 'role:editores'])->group(function () {
-    Route::get('/editores', function () {
-        return view('editores.dashboard');
-    })->name('editores.dashboard');
+Route::middleware(['auth', 'role:superadmin'])->group(function () {
+    Route::get('/superadmin', function () {
+        return view('superadmin.dashboard');
+    })->name('superadmin.dashboard');
 });
 
 Route::middleware(['auth', 'role:aprendiz'])->group(function () {
@@ -38,3 +38,5 @@ Route::middleware(['auth', 'role:aprendiz'])->group(function () {
         return view('aprendiz.dashboard');
     })->name('aprendiz.dashboard');
 });
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
