@@ -1,16 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AprendizController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
 
 Route::get('/', function () {
@@ -33,16 +29,21 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
     })->name('superadmin.dashboard');
 });
 
+// ===== RUTAS DEL APRENDIZ - NUEVAS =====
 Route::middleware(['auth', 'role:aprendiz'])->group(function () {
-    Route::get('/aprendiz', function () {
-        return view('aprendiz.dashboard');
-    })->name('aprendiz.dashboard');
+    // Ruta principal del aprendiz
+    Route::get('/aprendiz', [AprendizController::class, 'dashboard'])->name('aprendiz.dashboard');
+    
+    // Rutas adicionales del aprendiz
+    Route::get('/aprendiz/mi-unidad', [AprendizController::class, 'miUnidad'])->name('aprendiz.mi-unidad');
+    Route::get('/aprendiz/documentos', [AprendizController::class, 'documentos'])->name('aprendiz.documentos');
+    Route::post('/aprendiz/documentos/subir', [AprendizController::class, 'subirDocumento'])->name('aprendiz.documentos.subir');
+    Route::get('/aprendiz/progreso', [AprendizController::class, 'progreso'])->name('aprendiz.progreso');
 });
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-
-// Rutas del Superadmin
+// Rutas del Superadmin (mantener las existentes)
 Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->name('superadmin.')->group(function () {
     Route::get('/', function () {
         return view('superadmin.dashboard');
