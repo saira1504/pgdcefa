@@ -795,7 +795,7 @@
                         <i class="fas fa-file-alt"></i>
                     </div>
                     <div class="logo-text">
-                        <h1>SENA</h1>
+                        <h1>SENA EMPRESA</h1>
                         <p>Gestión Documental</p>
                     </div>
                 </div>
@@ -809,6 +809,13 @@
                             <i class="fas fa-user-circle"></i>
                             <span>Panel de Control</span>
                         </a>
+                        <a href="{{ route('logout') }}"
+                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Cerrar sesión
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
                     @else
                         <a href="{{ route('login') }}" class="user-menu">
                             <i class="fas fa-sign-in-alt"></i>
@@ -840,7 +847,7 @@
         <div class="hero-container">
             <div class="hero-content">
                 <div class="hero-badge">
-                    <i class="fas fa-award"></i> SENA - Proyecto Formativo de Excelencia
+                    <i class="fas fa-award"></i> SENA - Proyecto Formativo 
                 </div>
                 <h1>
                     Bienvenidos a la Estrategia

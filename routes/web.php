@@ -40,3 +40,34 @@ Route::middleware(['auth', 'role:aprendiz'])->group(function () {
 });
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+// Rutas del Superadmin
+Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->name('superadmin.')->group(function () {
+    Route::get('/', function () {
+        return view('superadmin.dashboard');
+    })->name('dashboard');
+    
+    Route::get('/unidades-productivas', function () {
+        return view('superadmin.unidades-productivas.index');
+    })->name('unidades-productivas');
+    
+    Route::post('/unidades-productivas', 'UnidadProductivaController@store')->name('unidades-productivas.store');
+    Route::post('/documentos', 'DocumentoController@store')->name('documentos.store');
+    
+    Route::get('/lista', function () {
+        return view('superadmin.lista');
+    })->name('lista');
+    
+    Route::get('/documentos', function () {
+        return view('superadmin.documentos');
+    })->name('documentos');
+    
+    Route::get('/resultados', function () {
+        return view('superadmin.resultados');
+    })->name('resultados');
+    
+    Route::get('/reportes', function () {
+        return view('superadmin.reportes');
+    })->name('reportes');
+});
