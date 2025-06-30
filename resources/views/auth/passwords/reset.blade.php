@@ -32,7 +32,7 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
+                                <div id="custom-password-error" class="text-danger" style="display:none;"></div>
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -62,4 +62,25 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('password');
+    const customError = document.getElementById('custom-password-error');
+    if (passwordInput && customError) {
+        passwordInput.addEventListener('input', function() {
+            const value = this.value;
+            if (!/^[a-zA-Z0-9]*$/.test(value)) {
+                customError.textContent = 'La contraseña solo puede contener letras y números (sin caracteres especiales).';
+                customError.style.display = 'block';
+            } else if (value.length > 15) {
+                customError.textContent = 'La contraseña no puede tener más de 15 caracteres.';
+                customError.style.display = 'block';
+            } else {
+                customError.textContent = '';
+                customError.style.display = 'none';
+            }
+        });
+    }
+});
+</script>
 @endsection

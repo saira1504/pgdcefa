@@ -762,6 +762,29 @@
             if (firstInput) {
                 firstInput.focus();
             }
+
+            // Validación visual de contraseña
+            const passwordInput = document.getElementById('password');
+            if (passwordInput) {
+                let customError = document.createElement('div');
+                customError.className = 'error-message';
+                customError.style.display = 'none';
+                passwordInput.parentNode.appendChild(customError);
+
+                passwordInput.addEventListener('input', function() {
+                    const value = this.value;
+                    if (!/^[a-zA-Z0-9]*$/.test(value)) {
+                        customError.textContent = 'La contraseña solo puede contener letras y números (sin caracteres especiales).';
+                        customError.style.display = 'block';
+                    } else if (value.length > 15) {
+                        customError.textContent = 'La contraseña no puede tener más de 15 caracteres.';
+                        customError.style.display = 'block';
+                    } else {
+                        customError.textContent = '';
+                        customError.style.display = 'none';
+                    }
+                });
+            }
         });
     </script>
 </body>

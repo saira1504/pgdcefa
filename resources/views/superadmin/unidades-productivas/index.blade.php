@@ -68,29 +68,29 @@
 
 <!-- Tarjetas de Unidades Productivas -->
 <div class="row mb-5">
-    @forelse($unidadesProductivas ?? [] as $unidad)
+    @forelse($unidadesProductivas as $unidad)
     <div class="col-lg-6 col-xl-4 mb-4">
         <div class="card unit-card card-hover h-100">
             <div class="card-header">
-                <h4 class="card-title mb-2 fw-bold">{{ $unidad->nombre ?? 'Unidad 1 - Avícola' }}</h4>
-                <p class="mb-0 opacity-90">{{ $unidad->proyecto ?? 'Proyecto de producción y comercialización' }}</p>
+                <h4 class="card-title mb-2 fw-bold">{{ $unidad->nombre }}</h4>
+                <p class="mb-0 opacity-90">{{ $unidad->proyecto }}</p>
             </div>
             <div class="card-body">
                 <div class="info-grid">
                     <div class="info-item">
-                        <div class="info-value">{{ $unidad->gestor ?? 'María González' }}</div>
+                        <div class="info-value">{{ $unidad->adminPrincipal->name ?? 'N/A' }}</div>
                         <div class="info-label">Gestor</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-value">{{ $unidad->aprendices ?? 21 }}</div>
+                        <div class="info-value">{{ $unidad->aprendices_count }}</div>
                         <div class="info-label">Aprendices</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-value">{{ $unidad->documentos ?? 11 }}</div>
+                        <div class="info-value">{{ $unidad->documentos_count }}</div>
                         <div class="info-label">Documentos</div>
                     </div>
                     <div class="info-item">
-                        <span class="badge bg-success fs-6 px-3 py-2">{{ $unidad->estado ?? 'En proceso' }}</span>
+                        <span class="badge bg-success fs-6 px-3 py-2">{{ $unidad->estado }}</span>
                         <div class="info-label mt-2">Estado</div>
                     </div>
                 </div>
@@ -99,124 +99,36 @@
                 <div class="progress-section">
                     <div class="d-flex justify-content-between mb-3">
                         <span class="fw-semibold">Progreso del Proyecto:</span>
-                        <span class="fw-bold text-success fs-5">{{ $unidad->progreso ?? 75 }}%</span>
+                        <span class="fw-bold text-success fs-5">{{ $unidad->progreso }}%</span>
                     </div>
                     <div class="progress" style="height: 12px;">
                         <div class="progress-bar progress-bar-custom" 
-                             style="width: {{ $unidad->progreso ?? 75 }}%"></div>
+                             style="width: {{ $unidad->progreso }}%"></div>
                     </div>
                 </div>
             </div>
             <div class="card-footer">
                 <div class="d-grid gap-2 d-md-flex">
-                    <button class="btn btn-outline-success btn-custom flex-fill">
+                    <a href="{{ route('superadmin.unidades-productivas.show', $unidad->id) }}" class="btn btn-outline-success btn-custom flex-fill">
                         <i class="fas fa-eye me-2"></i>Ver detalles
-                    </button>
-                    <button class="btn btn-success btn-custom flex-fill">
+                    </a>
+                    <a href="{{ route('superadmin.unidades-productivas.edit', $unidad->id) }}" class="btn btn-success btn-custom flex-fill">
                         <i class="fas fa-cog me-2"></i>Gestionar
-                    </button>
+                    </a>
+                    <form action="{{ route('superadmin.unidades-productivas.destroy', $unidad->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta unidad productiva? Esta acción es irreversible.');" class="flex-fill">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-custom w-100">
+                            <i class="fas fa-trash-alt me-2"></i>Eliminar
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
     @empty
-    <!-- Datos de ejemplo -->
-    <div class="col-lg-6 col-xl-4 mb-4">
-        <div class="card unit-card card-hover h-100">
-            <div class="card-header">
-                <h4 class="card-title mb-2 fw-bold">Unidad 1 - Avícola</h4>
-                <p class="mb-0 opacity-90">Proyecto de producción y comercialización</p>
-            </div>
-            <div class="card-body">
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-value">María González</div>
-                        <div class="info-label">Gestor</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-value">21</div>
-                        <div class="info-label">Aprendices</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-value">11</div>
-                        <div class="info-label">Documentos</div>
-                    </div>
-                    <div class="info-item">
-                        <span class="badge bg-success fs-6 px-3 py-2">En proceso</span>
-                        <div class="info-label mt-2">Estado</div>
-                    </div>
-                </div>
-                
-                <div class="progress-section">
-                    <div class="d-flex justify-content-between mb-3">
-                        <span class="fw-semibold">Progreso del Proyecto:</span>
-                        <span class="fw-bold text-success fs-5">75%</span>
-                    </div>
-                    <div class="progress" style="height: 12px;">
-                        <div class="progress-bar progress-bar-custom" style="width: 75%"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <div class="d-grid gap-2 d-md-flex">
-                    <button class="btn btn-outline-success btn-custom flex-fill">
-                        <i class="fas fa-eye me-2"></i>Ver detalles
-                    </button>
-                    <button class="btn btn-success btn-custom flex-fill">
-                        <i class="fas fa-cog me-2"></i>Gestionar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-lg-6 col-xl-4 mb-4">
-        <div class="card unit-card card-hover h-100">
-            <div class="card-header">
-                <h4 class="card-title mb-2 fw-bold">Unidad 2 - Ganadería</h4>
-                <p class="mb-0 opacity-90">Proyecto de producción de productos</p>
-            </div>
-            <div class="card-body">
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-value">Carlos Rodríguez</div>
-                        <div class="info-label">Gestor</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-value">18</div>
-                        <div class="info-label">Aprendices</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-value">8</div>
-                        <div class="info-label">Documentos</div>
-                    </div>
-                    <div class="info-item">
-                        <span class="badge bg-success fs-6 px-3 py-2">En proceso</span>
-                        <div class="info-label mt-2">Estado</div>
-                    </div>
-                </div>
-                
-                <div class="progress-section">
-                    <div class="d-flex justify-content-between mb-3">
-                        <span class="fw-semibold">Progreso del Proyecto:</span>
-                        <span class="fw-bold text-success fs-5">60%</span>
-                    </div>
-                    <div class="progress" style="height: 12px;">
-                        <div class="progress-bar progress-bar-custom" style="width: 60%"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <div class="d-grid gap-2 d-md-flex">
-                    <button class="btn btn-outline-success btn-custom flex-fill">
-                        <i class="fas fa-eye me-2"></i>Ver detalles
-                    </button>
-                    <button class="btn btn-success btn-custom flex-fill">
-                        <i class="fas fa-cog me-2"></i>Gestionar
-                    </button>
-                </div>
-            </div>
-        </div>
+    <div class="col-12">
+        <p class="text-muted text-center fs-5 py-5">No hay unidades productivas registradas. ¡Crea una nueva para empezar!</p>
     </div>
     @endforelse
 </div>

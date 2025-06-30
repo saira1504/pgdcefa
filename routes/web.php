@@ -49,11 +49,13 @@ Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->name('supe
         return view('superadmin.dashboard');
     })->name('dashboard');
     
-    Route::get('/unidades-productivas', function () {
-        return view('superadmin.unidades-productivas.index');
-    })->name('unidades-productivas');
+    Route::get('/unidades-productivas', [App\Http\Controllers\UnidadProductivaController::class, 'index'])->name('unidades-productivas.index');
+    Route::post('/unidades-productivas', [App\Http\Controllers\UnidadProductivaController::class, 'store'])->name('unidades-productivas.store');
+    Route::get('/unidades-productivas/{unidad}', [App\Http\Controllers\UnidadProductivaController::class, 'show'])->name('unidades-productivas.show');
+    Route::get('/unidades-productivas/{unidad}/edit', [App\Http\Controllers\UnidadProductivaController::class, 'edit'])->name('unidades-productivas.edit');
+    Route::put('/unidades-productivas/{unidad}', [App\Http\Controllers\UnidadProductivaController::class, 'update'])->name('unidades-productivas.update');
+    Route::delete('/unidades-productivas/{unidad}', [App\Http\Controllers\UnidadProductivaController::class, 'destroy'])->name('unidades-productivas.destroy');
     
-    Route::post('/unidades-productivas', 'UnidadProductivaController@store')->name('unidades-productivas.store');
     Route::post('/documentos', 'DocumentoController@store')->name('documentos.store');
     
     Route::get('/lista', function () {

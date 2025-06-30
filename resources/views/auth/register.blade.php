@@ -810,7 +810,7 @@
             }
         }
 
-        // Password strength checker
+        // Password strength checker y validación personalizada
         document.addEventListener('DOMContentLoaded', function() {
             createParticles();
             
@@ -820,9 +820,34 @@
             const strengthText = document.getElementById('strength-text');
             const passwordMatch = document.getElementById('password-match');
 
+            // Mensaje de error personalizado
+            let customError = document.createElement('div');
+            customError.className = 'error-message';
+            customError.style.display = 'none';
+            passwordInput.parentNode.appendChild(customError);
+
+            function validatePasswordVisual(value) {
+                // Solo letras y números, máximo 15 caracteres
+                const regex = /^[a-zA-Z0-9]{1,15}$/;
+                if (!/^[a-zA-Z0-9]*$/.test(value)) {
+                    customError.textContent = 'La contraseña solo puede contener letras y números (sin caracteres especiales).';
+                    customError.style.display = 'block';
+                    return false;
+                } else if (value.length > 15) {
+                    customError.textContent = 'La contraseña no puede tener más de 15 caracteres.';
+                    customError.style.display = 'block';
+                    return false;
+                } else {
+                    customError.textContent = '';
+                    customError.style.display = 'none';
+                    return true;
+                }
+            }
+
             if (passwordInput) {
                 passwordInput.addEventListener('input', function() {
                     const password = this.value;
+                    validatePasswordVisual(password);
                     const strength = calculatePasswordStrength(password);
                     updatePasswordStrength(strength, strengthFill, strengthText);
                 });
@@ -842,12 +867,9 @@
         });
 
         function calculatePasswordStrength(password) {
+            // Solo letras y números, máximo 15 caracteres
             let strength = 0;
-            if (password.length >= 8) strength += 25;
-            if (password.match(/[a-z]/)) strength += 25;
-            if (password.match(/[A-Z]/)) strength += 25;
-            if (password.match(/[0-9]/)) strength += 25;
-            if (password.match(/[^a-zA-Z0-9]/)) strength += 25;
+            if (password.length >= 8 && password.length <= 15 && /^[a-zA-Z0-9]+$/.test(password)) strength += 100;
             return Math.min(strength, 100);
         }
 

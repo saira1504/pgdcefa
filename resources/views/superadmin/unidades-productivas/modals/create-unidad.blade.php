@@ -48,10 +48,6 @@
                                         @foreach($gestores as $gestor)
                                             <option value="{{ $gestor->id }}">{{ $gestor->name }}</option>
                                         @endforeach
-                                    @else
-                                        <option value="1">María González</option>
-                                        <option value="2">Carlos Rodríguez</option>
-                                        <option value="3">Ana Martínez</option>
                                     @endif
                                 </select>
                             </div>

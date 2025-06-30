@@ -23,8 +23,8 @@
             </a>
         </li>
         <li class="mb-2">
-            <a href="{{ route('superadmin.unidades-productivas') }}" 
-               class="nav-link text-white py-3 px-4 rounded-3 {{ request()->routeIs('superadmin.unidades-productivas*') ? 'active bg-dark' : '' }}">
+            <a href="{{ route('superadmin.unidades-productivas.index') }}" 
+               class="nav-link text-white py-3 px-4 rounded-3 {{ request()->routeIs('superadmin.unidades-productivas.index') ? 'active bg-dark' : '' }}">
                 <i class="fas fa-industry me-3 fa-lg"></i>
                 <span class="fs-6">Unidades Productivas</span>
             </a>
