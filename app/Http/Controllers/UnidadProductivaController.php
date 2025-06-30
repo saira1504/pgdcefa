@@ -17,9 +17,21 @@ class UnidadProductivaController extends Controller
                                                 ->get();
         $gestores = User::where('role', 'admin')->get(); // Obtener solo usuarios con rol 'admin'
         
+        // Definir categorías de documentos
+        $categoriasDocumento = [
+            'Documento',
+            'Informe',
+            'Cronograma',
+            'Manual',
+            'Reglamento',
+            'Contrato',
+            'Anexo',
+            'Otro',
+        ];
+
         // Calcular estadísticas rápidas
         $totalUnidades = $unidadesProductivas->count();
-        $totalAprendices = $unidadesProductivas->sum('aprendices_count');
+        $totalAprendices = User::where('role', 'aprendiz')->count(); // Contar todos los usuarios con rol 'aprendiz'
         $totalDocumentos = $unidadesProductivas->sum('documentos_count');
         $progresoPromedio = $unidadesProductivas->avg('progreso');
 
@@ -29,7 +41,8 @@ class UnidadProductivaController extends Controller
             'totalUnidades',
             'totalAprendices',
             'totalDocumentos',
-            'progresoPromedio'
+            'progresoPromedio',
+            'categoriasDocumento'
         ));
     }
 

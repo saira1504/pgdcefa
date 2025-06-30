@@ -19,10 +19,11 @@
                         <label for="categoria" class="form-label">Categoría</label>
                         <select class="form-select" id="categoria" name="categoria" required>
                             <option value="">Seleccionar categoría</option>
-                            <option value="documento">Documento</option>
-                            <option value="informe">Informe</option>
-                            <option value="cronograma">Cronograma</option>
-                            <option value="manual">Manual</option>
+                            @if(isset($categoriasDocumento))
+                                @foreach($categoriasDocumento as $categoria)
+                                    <option value="{{ $categoria }}">{{ $categoria }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
 
@@ -40,19 +41,14 @@
 
                     <div class="mb-3">
                         <label for="destino" class="form-label">Destino</label>
-                        <select class="form-select" id="destino" name="destino[]" multiple required>
-                            <option value="todas">Todas las unidades</option>
+                        <select class="form-select" id="destino" name="destino" required>
+                            <option value="">Seleccionar unidad</option>
                             @if(isset($unidadesProductivas))
                                 @foreach($unidadesProductivas as $unidad)
                                     <option value="{{ $unidad->id }}">{{ $unidad->nombre }}</option>
                                 @endforeach
-                            @else
-                                <option value="1">Unidad 1 - Avícola</option>
-                                <option value="2">Unidad 2 - Ganadería</option>
-                                <option value="3">Unidad 3 - Agricultura</option>
                             @endif
                         </select>
-                        <small class="text-muted">Mantén Ctrl presionado para seleccionar múltiples unidades</small>
                     </div>
 
                     <div class="mb-3">
