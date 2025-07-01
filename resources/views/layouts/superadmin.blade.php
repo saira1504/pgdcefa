@@ -40,6 +40,11 @@
             line-height: 1.6;
         }
         
+        html, body {
+            height: 100%;
+            overflow-y: auto !important;
+        }
+
         .sidebar {
             position: fixed;
             top: 0;
@@ -50,6 +55,13 @@
             z-index: 1000;
             box-shadow: var(--shadow-medium);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto !important;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* IE y Edge */
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none; /* Chrome, Safari y Opera */
         }
 
         .sidebar::before {
@@ -66,6 +78,9 @@
         .main-content {
             margin-left: 280px;
             min-height: 100vh;
+            overflow-y: auto !important;
+            position: relative;
+            z-index: 1;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
@@ -366,6 +381,11 @@
         @keyframes move {
             0% { background-position: 0 0; }
             100% { background-position: 50px 50px; }
+        }
+
+        /* Asegura que ningún overlay tape el sidebar */
+        .modal-backdrop, .overlay, .backdrop {
+            pointer-events: none !important;
         }
     </style>
     

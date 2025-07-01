@@ -53,13 +53,13 @@
                     <!-- Descripción del proyecto -->
                     <div class="mb-4">
                         <label for="proyecto" class="form-label form-label-modern">
-                            <i class="fas fa-file-alt me-2"></i>Descripción del Proyecto
+                            <i class="fas fa-file-alt me-2"></i>Descripción de la Unidad Productiva
                         </label>
                         <textarea class="form-control form-control-modern" 
                                   id="proyecto" 
                                   name="proyecto" 
                                   rows="3" 
-                                  placeholder="Describe detalladamente el proyecto de la unidad productiva..."
+                                  placeholder="Describe detalladamente la unidad productiva..."
                                   required></textarea>
                     </div>
 
