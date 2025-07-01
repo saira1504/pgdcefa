@@ -90,13 +90,49 @@ class AdminController extends Controller
         $misDocumentos = $unidadesAsignadas->sum('documentos_count');
         $miProgreso = $unidadesAsignadas->avg('progreso');
 
+        // Obtener aprendices que no están asignados a ninguna unidad
+        $aprendicesSinAsignar = User::where('role', 'aprendiz')
+            ->doesntHave('unidadAsignada') // Asegura que no tenga ninguna asignación activa
+            ->get();
+
         return view('admin.unidades-productivas.index', compact(
             'unidadesAsignadas',
             'misUnidades',
             'misAprendices',
             'misDocumentos',
-            'miProgreso'
+            'miProgreso',
+            'aprendicesSinAsignar' // Pasar la variable a la vista
         ));
+    }
+
+    public function asignarAprendiz(Request $request)
+    {
+        $request->validate([
+            'unidad_id' => ['required', 'exists:unidades_productivas,id'],
+            'aprendiz_id' => [
+                'required',
+                'exists:users,id',
+                function ($attribute, $value, $fail) {
+                    // Verificar que el aprendiz no esté ya asignado a una unidad
+                    $aprendiz = User::find($value);
+                    if ($aprendiz && $aprendiz->unidadAsignada()->exists()) {
+                        $fail('El aprendiz ya está asignado a una unidad.');
+                    }
+                },
+            ],
+        ]);
+
+        $admin = Auth::user();
+        $unidad = UnidadProductiva::findOrFail($request->unidad_id);
+
+        // Asegurarse de que el admin actual es gestor de esta unidad
+        if (!$admin->esAdminDe($unidad->id) && $unidad->admin_principal_id !== $admin->id) {
+            abort(403, 'No tienes permiso para asignar aprendices a esta unidad.');
+        }
+
+        $unidad->asignarAprendiz($request->aprendiz_id);
+
+        return redirect()->back()->with('success', 'Aprendiz asignado correctamente a la unidad.');
     }
 
     public function lista()

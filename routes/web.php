@@ -21,6 +21,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
+    
+    Route::get('/admin/unidades-productivas', [App\Http\Controllers\AdminController::class, 'unidadesProductivas'])->name('admin.unidades-productivas');
+    Route::post('/admin/asignar-aprendiz', [App\Http\Controllers\AdminController::class, 'asignarAprendiz'])->name('admin.asignar-aprendiz');
 });
 
 Route::middleware(['auth', 'role:superadmin'])->group(function () {

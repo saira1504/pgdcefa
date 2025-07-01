@@ -63,7 +63,16 @@ class UnidadProductivaController extends Controller
     public function update(Request $request, UnidadProductiva $unidad)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => [
+                'required',
+                'string',
+                'max:20',
+                function ($attribute, $value, $fail) {
+                    if (!preg_match('/^[a-zA-Z\s]*$/u', $value)) {
+                        $fail('El campo ' . $attribute . ' solo puede contener letras y espacios. No se permiten números ni caracteres especiales.');
+                    }
+                },
+            ],
             'tipo' => 'required|string|max:50',
             'proyecto' => 'required|string',
             'gestor_id' => 'required|exists:users,id',
@@ -112,7 +121,16 @@ class UnidadProductivaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => [
+                'required',
+                'string',
+                'max:20',
+                function ($attribute, $value, $fail) {
+                    if (!preg_match('/^[a-zA-Z\s]*$/u', $value)) {
+                        $fail('El campo ' . $attribute . ' solo puede contener letras y espacios. No se permiten números ni caracteres especiales.');
+                    }
+                },
+            ],
             'tipo' => 'required|string|max:50',
             'proyecto' => 'required|string',
             'gestor_id' => 'required|exists:users,id',

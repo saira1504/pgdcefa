@@ -304,11 +304,12 @@
                         <label class="form-label">Seleccionar Aprendiz</label>
                         <select name="aprendiz_id" class="form-select" required>
                             <option value="">Seleccionar aprendiz</option>
-                            @foreach($aprendicesSinAsignar as $aprendiz)
-                                <option value="{{ $aprendiz->id }}">
-                                    {{ $aprendiz->name }} - {{ $aprendiz->programa }}
-                                </option>
-                            @endforeach
+                            @if(isset($aprendicesSinAsignar))
+                                @foreach($aprendicesSinAsignar as $aprendiz)
+                                    <option value="{{ $aprendiz->id }}">
+                                        {{ $aprendiz->name }} - {{ $aprendiz->email }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <div class="form-text">
                             Solo se muestran aprendices que no están asignados a ninguna unidad

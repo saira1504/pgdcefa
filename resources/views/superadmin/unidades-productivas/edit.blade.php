@@ -29,7 +29,11 @@
                             <div class="mb-3">
                                 <label for="nombre" class="form-label">Nombre de la Unidad</label>
                                 <input type="text" class="form-control" id="nombre" name="nombre" 
-                                       value="{{ old('nombre', $unidad->nombre) }}" required>
+                                       value="{{ old('nombre', $unidad->nombre) }}" required maxlength="20">
+                                <div class="invalid-feedback" id="nombre-feedback"></div>
+                                @error('nombre')
+                                    <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -113,4 +117,47 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const nombreInput = document.getElementById('nombre');
+        const nombreFeedback = document.getElementById('nombre-feedback');
+        const editUnidadForm = document.querySelector('form'); // Assuming this is the only form or select by ID if available
+
+        function validateNombre() {
+            const nombre = nombreInput.value;
+            const regex = /^[a-zA-Z\s]*$/;
+            let isValid = true;
+            let message = '';
+
+            if (nombre.length > 20) {
+                isValid = false;
+                message = 'El nombre no debe tener más de 20 caracteres.';
+            } else if (!regex.test(nombre)) {
+                isValid = false;
+                message = 'El nombre solo puede contener letras y espacios. No se permiten números ni caracteres especiales.';
+            }
+
+            if (isValid) {
+                nombreInput.classList.remove('is-invalid');
+                nombreFeedback.textContent = '';
+            } else {
+                nombreInput.classList.add('is-invalid');
+                nombreFeedback.textContent = message;
+            }
+            return isValid;
+        }
+
+        nombreInput.addEventListener('input', validateNombre);
+
+        editUnidadForm.addEventListener('submit', function(event) {
+            if (!validateNombre()) {
+                event.preventDefault(); // Prevent form submission if validation fails
+                event.stopPropagation();
+            }
+        });
+    });
+</script>
+@endpush 
