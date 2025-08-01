@@ -33,6 +33,11 @@
                                        required 
                                        maxlength="20">
                                 <div class="invalid-feedback" id="nombre-feedback"></div>
+                                @error('nombre')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                             <div class="col-md-6">
                                 <label for="tipo" class="form-label form-label-modern">
@@ -96,8 +101,11 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="row g-3 mb-4">
+        <style>
+            .modal-backdrop.show {
+              background-color: transparent !important;
+            }
+        </style>                    <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <label for="fecha_fin" class="form-label form-label-modern">
                                 <i class="fas fa-flag-checkered me-2"></i>Fecha de Finalización
@@ -164,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Validación en tiempo real del nombre
     function validateNombre() {
         const nombre = nombreInput.value.trim();
-        const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/;
+        const regex = /^[a-zA-Z\u00C0-\u017F\s]*$/; // Incluye A-Z, a-z, y un rango extendido de caracteres acentuados y la ñ/Ñ
         let isValid = true;
         let message = '';
 

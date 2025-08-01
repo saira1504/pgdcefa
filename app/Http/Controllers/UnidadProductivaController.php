@@ -68,7 +68,7 @@ class UnidadProductivaController extends Controller
                 'string',
                 'max:20',
                 function ($attribute, $value, $fail) {
-                    if (!preg_match('/^[a-zA-Z\s]*$/u', $value)) {
+                    if (!preg_match('/^[a-zA-Z\p{L}\s]*$/u', $value)) {
                         $fail('El campo ' . $attribute . ' solo puede contener letras y espacios. No se permiten números ni caracteres especiales.');
                     }
                 },
@@ -125,8 +125,9 @@ class UnidadProductivaController extends Controller
                 'required',
                 'string',
                 'max:20',
+                'unique:unidades_productivas,nombre',
                 function ($attribute, $value, $fail) {
-                    if (!preg_match('/^[a-zA-Z\s]*$/u', $value)) {
+                    if (!preg_match('/^[a-zA-Z\p{L}\s]*$/u', $value)) {
                         $fail('El campo ' . $attribute . ' solo puede contener letras y espacios. No se permiten números ni caracteres especiales.');
                     }
                 },
@@ -138,6 +139,8 @@ class UnidadProductivaController extends Controller
             'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
             'estado' => 'required|string',
             'objetivos' => 'nullable|string',
+        ], [
+            'nombre.unique' => 'Ya existe una unidad con este nombre. Por favor, elige un nombre diferente.',
         ]);
 
         DB::transaction(function () use ($request) {
