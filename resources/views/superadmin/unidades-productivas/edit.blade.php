@@ -38,14 +38,17 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="tipo" class="form-label">Tipo de Unidad</label>
+                                <label for="tipo" class="form-label">Áreas</label>
                                 <select class="form-select" id="tipo" name="tipo" required>
-                                    <option value="">Seleccionar tipo</option>
-                                    <option value="avicola" {{ old('tipo', $unidad->tipo) == 'avicola' ? 'selected' : '' }}>Avícola</option>
-                                    <option value="ganaderia" {{ old('tipo', $unidad->tipo) == 'ganaderia' ? 'selected' : '' }}>Ganadería</option>
-                                    <option value="agricultura" {{ old('tipo', $unidad->tipo) == 'agricultura' ? 'selected' : '' }}>Agricultura</option>
-                                    <option value="piscicultura" {{ old('tipo', $unidad->tipo) == 'piscicultura' ? 'selected' : '' }}>Piscicultura</option>
-                                    <option value="otro" {{ old('tipo', $unidad->tipo) == 'otro' ? 'selected' : '' }}>Otro</option>
+                                    <option value="">Seleccionar Área</option>
+                                    <option value="administrativa" {{ old('tipo', $unidad->tipo) == 'administrativa' ? 'selected' : '' }}>Administrativa</option>
+                                    <option value="investigacion" {{ old('tipo', $unidad->tipo) == 'investigacion' ? 'selected' : '' }}>Investigación</option>
+                                    <option value="comercializacion" {{ old('tipo', $unidad->tipo) == 'comercializacion' ? 'selected' : '' }}>Comercialización</option>
+                                    <option value="produccion" {{ old('tipo', $unidad->tipo) == 'produccion' ? 'selected' : '' }}>Producción</option>
+                                    <option value="pecuaria" {{ old('tipo', $unidad->tipo) == 'pecuaria' ? 'selected' : '' }}>Pecuaria</option>
+                                    <option value="agricola" {{ old('tipo', $unidad->tipo) == 'agricola' ? 'selected' : '' }}>Agrícola</option>
+                                    <option value="ambiental" {{ old('tipo', $unidad->tipo) == 'ambiental' ? 'selected' : '' }}>Ambiental</option>
+                                    <option value="ventas" {{ old('tipo', $unidad->tipo) == 'ventas' ? 'selected' : '' }}>Ventas</option>
                                 </select>
                             </div>
                         </div>
@@ -60,9 +63,9 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="gestor_id" class="form-label">Gestor Asignado</label>
+                                <label for="gestor_id" class="form-label">Encargado Asignado</label>
                                 <select class="form-select" id="gestor_id" name="gestor_id" required>
-                                    <option value="">Seleccionar gestor</option>
+                                    <option value="">Seleccionar Encargado</option>
                                     @foreach($gestores as $gestor)
                                         <option value="{{ $gestor->id }}" {{ old('gestor_id', $unidad->admin_principal_id) == $gestor->id ? 'selected' : '' }}>
                                             {{ $gestor->name }}

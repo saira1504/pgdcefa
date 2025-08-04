@@ -41,14 +41,18 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="tipo" class="form-label form-label-modern">
-                                    <i class="fas fa-layer-group me-2"></i>Tipo de Unidad
+                                    <i class="fas fa-layer-group me-2"></i>Áreas
                                 </label>
                                 <select class="form-select form-control-modern" id="tipo" name="tipo" required>
-                                    <option value="">Seleccionar tipo</option>
-                                    <option value="avicola">🐔 Avícola</option>
-                                    <option value="ganaderia">🐄 Ganadería</option>
-                                    <option value="agricultura">🌾 Agricultura</option>
-                                    <option value="piscicultura">🐟 Piscicultura</option>
+                                    <option value="">Seleccionar área</option>
+                                    <option value="administrativa">Administrativa</option>
+                                    <option value="investigacion">Investigación</option>
+                                    <option value="comercializacion">Comercialización</option>
+                                    <option value="produccion">Producción</option>
+                                    <option value="pecuaria">Pecuaria</option>
+                                    <option value="agricola">Agrícola</option>
+                                    <option value="ambiental">Ambiental</option>
+                                    <option value="ventas">Ventas</option>
                                     <option value="otro">📦 Otro</option>
                                 </select>
                             </div>
@@ -76,10 +80,10 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="gestor_id" class="form-label form-label-modern">
-                                    <i class="fas fa-user-tie me-2"></i>Gestor Asignado
+                                    <i class="fas fa-user-tie me-2"></i>Encargado
                                 </label>
                                 <select class="form-select form-control-modern" id="gestor_id" name="gestor_id" required>
-                                    <option value="">Seleccionar gestor</option>
+                                    <option value="">Seleccionar Encargado</option>
                                     @if(isset($gestores))
                                         @foreach($gestores as $gestor)
                                             <option value="{{ $gestor->id }}">
