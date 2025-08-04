@@ -1,69 +1,66 @@
-<!-- Modal Crear Unidad - Estilo WireUI -->
-<div class="modal fade modal-wireui" id="createUnidadModal" tabindex="-1">
+<!-- Modal Crear Unidad Mejorado -->
+<div class="modal fade modal-modern" id="createUnidadModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <div>
-                    <h4 class="text-lg font-semibold text-gray-900 mb-1">
-                        <i class="fas fa-plus-circle mr-2 text-green-600"></i>
-                        Crear Nueva Unidad Productiva
+                    <h4 class="modal-title mb-2">
+                        <i class="fas fa-plus-circle me-3"></i>Crear Nueva Unidad Productiva
                     </h4>
-                    <p class="text-sm text-gray-600">Completa la información para crear una nueva unidad</p>
+                    <p class="mb-0 opacity-90">Completa la información para crear una nueva unidad</p>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             
             <form id="createUnidadForm" action="{{ route('superadmin.unidades-productivas.store') }}" method="POST">
                 @csrf
-                <div class="modal-body space-y-6">
+                <div class="modal-body">
                     <!-- Información básica -->
-                    <div>
-                        <h6 class="text-sm font-medium text-gray-900 mb-4 flex items-center">
-                            <i class="fas fa-info-circle mr-2 text-blue-500"></i>
-                            Información Básica
+                    <div class="mb-4">
+                        <h6 class="text-uppercase fw-bold mb-3" style="color: var(--primary-color); letter-spacing: 1px;">
+                            <i class="fas fa-info-circle me-2"></i>Información Básica
                         </h6>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="nombre" class="label-wireui">
-                                    <i class="fas fa-tag mr-1"></i>
-                                    Nombre de la Unidad
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="nombre" class="form-label form-label-modern">
+                                    <i class="fas fa-tag me-2"></i>Nombre de la Unidad
                                 </label>
                                 <input type="text" 
-                                       class="input-wireui" 
+                                       class="form-control form-control-modern" 
                                        id="nombre" 
                                        name="nombre" 
                                        placeholder="Ej: Unidad Piscicultura"
                                        required 
                                        maxlength="20">
-                                <div class="text-red-600 text-sm mt-1 hidden" id="nombre-feedback"></div>
+                                <div class="invalid-feedback" id="nombre-feedback"></div>
+                                @error('nombre')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
-                            <div>
-                                <label for="tipo" class="label-wireui">
-                                    <i class="fas fa-layer-group mr-1"></i>
-                                    Área
+                            <div class="col-md-6">
+                                <label for="tipo" class="form-label form-label-modern">
+                                    <i class="fas fa-layer-group me-2"></i>Tipo de Unidad
                                 </label>
-                                <select class="input-wireui" id="tipo" name="tipo" required>
-                                    <option value="">Seleccionar área</option>
-                                    <option value="administrativa">Administrativa</option>
-                                    <option value="investigacion">Investigación</option>
-                                    <option value="comercializacion">Comercialización</option>
-                                    <option value="produccion">Producción</option>
-                                    <option value="pecuaria">Pecuaria</option>
-                                    <option value="agricola">Agrícola</option>
-                                    <option value="ambiental">Ambiental</option>
-                                    <option value="ventas">Ventas</option>
+                                <select class="form-select form-control-modern" id="tipo" name="tipo" required>
+                                    <option value="">Seleccionar tipo</option>
+                                    <option value="avicola">🐔 Avícola</option>
+                                    <option value="ganaderia">🐄 Ganadería</option>
+                                    <option value="agricultura">🌾 Agricultura</option>
+                                    <option value="piscicultura">🐟 Piscicultura</option>
+                                    <option value="otro">📦 Otro</option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Descripción -->
-                    <div>
-                        <label for="proyecto" class="label-wireui">
-                            <i class="fas fa-file-alt mr-1"></i>
-                            Descripción de la Unidad Productiva
+                    <!-- Descripción del proyecto -->
+                    <div class="mb-4">
+                        <label for="proyecto" class="form-label form-label-modern">
+                            <i class="fas fa-file-alt me-2"></i>Descripción de la Unidad Productiva
                         </label>
-                        <textarea class="input-wireui" 
+                        <textarea class="form-control form-control-modern" 
                                   id="proyecto" 
                                   name="proyecto" 
                                   rows="3" 
@@ -72,57 +69,57 @@
                     </div>
 
                     <!-- Gestión y fechas -->
-                    <div>
-                        <h6 class="text-sm font-medium text-gray-900 mb-4 flex items-center">
-                            <i class="fas fa-calendar-alt mr-2 text-purple-500"></i>
-                            Gestión y Fechas
+                    <div class="mb-4">
+                        <h6 class="text-uppercase fw-bold mb-3" style="color: var(--primary-color); letter-spacing: 1px;">
+                            <i class="fas fa-calendar-alt me-2"></i>Gestión y Fechas
                         </h6>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="gestor_id" class="label-wireui">
-                                    <i class="fas fa-user-tie mr-1"></i>
-                                    Gestor Asignado
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="gestor_id" class="form-label form-label-modern">
+                                    <i class="fas fa-user-tie me-2"></i>Gestor Asignado
                                 </label>
-                                <select class="input-wireui" id="gestor_id" name="gestor_id" required>
+                                <select class="form-select form-control-modern" id="gestor_id" name="gestor_id" required>
                                     <option value="">Seleccionar gestor</option>
                                     @if(isset($gestores))
                                         @foreach($gestores as $gestor)
-                                            <option value="{{ $gestor->id }}">{{ $gestor->name }}</option>
+                                            <option value="{{ $gestor->id }}">
+                                                👤 {{ $gestor->name }}
+                                            </option>
                                         @endforeach
                                     @endif
                                 </select>
                             </div>
-                            <div>
-                                <label for="fecha_inicio" class="label-wireui">
-                                    <i class="fas fa-play-circle mr-1"></i>
-                                    Fecha de Inicio
+                            <div class="col-md-6">
+                                <label for="fecha_inicio" class="form-label form-label-modern">
+                                    <i class="fas fa-play-circle me-2"></i>Fecha de Inicio
                                 </label>
                                 <input type="date" 
-                                       class="input-wireui" 
+                                       class="form-control form-control-modern" 
                                        id="fecha_inicio" 
                                        name="fecha_inicio" 
                                        required>
                             </div>
                         </div>
                     </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="fecha_fin" class="label-wireui">
-                                <i class="fas fa-flag-checkered mr-1"></i>
-                                Fecha de Finalización
+        <style>
+            .modal-backdrop.show {
+              background-color: transparent !important;
+            }
+        </style>                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="fecha_fin" class="form-label form-label-modern">
+                                <i class="fas fa-flag-checkered me-2"></i>Fecha de Finalización
                             </label>
                             <input type="date" 
-                                   class="input-wireui" 
+                                   class="form-control form-control-modern" 
                                    id="fecha_fin" 
                                    name="fecha_fin">
                         </div>
-                        <div>
-                            <label for="estado" class="label-wireui">
-                                <i class="fas fa-traffic-light mr-1"></i>
-                                Estado Inicial
+                        <div class="col-md-6">
+                            <label for="estado" class="form-label form-label-modern">
+                                <i class="fas fa-traffic-light me-2"></i>Estado Inicial
                             </label>
-                            <select class="input-wireui" id="estado" name="estado" required>
+                            <select class="form-select form-control-modern" id="estado" name="estado" required>
                                 <option value="iniciando">🌱 Iniciando</option>
                                 <option value="proceso">🚀 En proceso</option>
                                 <option value="pausado">⏸️ Pausado</option>
@@ -131,35 +128,33 @@
                     </div>
 
                     <!-- Objetivos -->
-                    <div>
-                        <label for="objetivos" class="label-wireui">
-                            <i class="fas fa-bullseye mr-1"></i>
-                            Objetivos
+                    <div class="mb-4">
+                        <label for="objetivos" class="form-label form-label-modern">
+                            <i class="fas fa-bullseye me-2"></i>Objetivos
                         </label>
-                        <textarea class="input-wireui" 
+                        <textarea class="form-control form-control-modern" 
                                   id="objetivos" 
                                   name="objetivos" 
                                   rows="3" 
                                   placeholder="Define los objetivos principales de la unidad productiva..."></textarea>
                     </div>
 
-                    <!-- Nota informativa -->
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                        <div class="flex items-center text-blue-800">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            <span class="text-sm font-medium">Todos los campos marcados son obligatorios</span>
+                    <!-- Indicador de progreso -->
+                    <div class="text-center">
+                        <div class="d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill" 
+                             style="background: rgba(82, 183, 136, 0.1); color: var(--secondary-color);">
+                            <i class="fas fa-info-circle"></i>
+                            <small class="fw-semibold">Todos los campos marcados son obligatorios</small>
                         </div>
                     </div>
                 </div>
                 
-                <div class="modal-footer flex justify-end space-x-3">
-                    <button type="button" class="btn-wireui btn-secondary-wireui" data-bs-dismiss="modal">
-                        <i class="fas fa-times"></i>
-                        Cancelar
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-modern btn-modern" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancelar
                     </button>
-                    <button type="submit" class="btn-wireui btn-primary-wireui">
-                        <i class="fas fa-plus"></i>
-                        Crear Unidad
+                    <button type="submit" class="btn btn-primary-modern btn-modern">
+                        <i class="fas fa-plus me-2"></i>Crear Unidad
                     </button>
                 </div>
             </form>
@@ -167,16 +162,17 @@
     </div>
 </div>
 
+@push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const nombreInput = document.getElementById('nombre');
     const nombreFeedback = document.getElementById('nombre-feedback');
     const createUnidadForm = document.getElementById('createUnidadForm');
 
-    // Validación en tiempo real
+    // Validación en tiempo real del nombre
     function validateNombre() {
         const nombre = nombreInput.value.trim();
-        const regex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]*$/;
+        const regex = /^[a-zA-Z\u00C0-\u017F\s]*$/; // Incluye A-Z, a-z, y un rango extendido de caracteres acentuados y la ñ/Ñ
         let isValid = true;
         let message = '';
 
@@ -191,21 +187,36 @@ document.addEventListener('DOMContentLoaded', function() {
             message = 'El nombre solo puede contener letras y espacios.';
         }
 
+        // Aplicar estilos
         if (isValid) {
-            nombreInput.classList.remove('border-red-300');
-            nombreInput.classList.add('border-green-300');
-            nombreFeedback.classList.add('hidden');
+            nombreInput.classList.remove('is-invalid');
+            nombreInput.classList.add('is-valid');
+            nombreFeedback.textContent = '';
         } else {
-            nombreInput.classList.remove('border-green-300');
-            nombreInput.classList.add('border-red-300');
+            nombreInput.classList.remove('is-valid');
+            nombreInput.classList.add('is-invalid');
             nombreFeedback.textContent = message;
-            nombreFeedback.classList.remove('hidden');
         }
         
         return isValid;
     }
 
-    nombreInput.addEventListener('input', validateNombre);
+    // Validar mientras escribe
+    nombreInput.addEventListener('input', function() {
+        validateNombre();
+    });
+
+    // Validar fechas
+    const fechaInicio = document.getElementById('fecha_inicio');
+    const fechaFin = document.getElementById('fecha_fin');
+
+    fechaInicio.addEventListener('change', function() {
+        if (fechaFin.value && fechaInicio.value > fechaFin.value) {
+            fechaFin.value = '';
+            alert('La fecha de finalización debe ser posterior a la fecha de inicio.');
+        }
+        fechaFin.min = fechaInicio.value;
+    });
 
     // Validación del formulario
     createUnidadForm.addEventListener('submit', function(event) {
@@ -219,8 +230,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Limpiar formulario al cerrar modal
     $('#createUnidadModal').on('hidden.bs.modal', function() {
         createUnidadForm.reset();
-        nombreInput.classList.remove('border-red-300', 'border-green-300');
-        nombreFeedback.classList.add('hidden');
+        $('.form-control').removeClass('is-valid is-invalid');
+        $('.invalid-feedback').text('');
+    });
+
+    // Animación de entrada del modal
+    $('#createUnidadModal').on('shown.bs.modal', function() {
+        nombreInput.focus();
     });
 });
 </script>
+@endpush
