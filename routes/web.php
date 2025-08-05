@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AprendizController;
+use App\Http\Controllers\PhaseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,4 +77,7 @@ Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->name('supe
     Route::get('/reportes', function () {
         return view('superadmin.reportes');
     })->name('reportes');
+
+    // RUTAS DE PHASES - CORREGIDAS
+    Route::resource('phases', PhaseController::class);
 });

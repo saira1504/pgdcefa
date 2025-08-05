@@ -45,6 +45,15 @@
                     <span>Inicio</span>
                 </a>
             </li>
+            <!-- fases -->
+            <li class="nav-item">
+                <a href="{{ route('superadmin.phases.index') }}" 
+                   class="nav-link {{ request()->routeIs('superadmin.phases.index') ? 'active' : '' }}">
+                    <i class="fas fa-list"></i>
+                    <span>Fases</span>
+                </a>
+            </li>
+ 
 
             <!-- Lista -->
             <li class="nav-item">
