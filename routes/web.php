@@ -43,6 +43,10 @@ Route::middleware(['auth', 'role:aprendiz'])->group(function () {
     Route::get('/aprendiz/documentos', [AprendizController::class, 'documentos'])->name('aprendiz.documentos');
     Route::post('/aprendiz/documentos/subir', [AprendizController::class, 'subirDocumento'])->name('aprendiz.documentos.subir');
     Route::get('/aprendiz/progreso', [AprendizController::class, 'progreso'])->name('aprendiz.progreso');
+    
+    // Rutas de phases para el aprendiz
+    Route::get('/aprendiz/phases', [PhaseController::class, 'index'])->name('aprendiz.phases.index');
+    Route::get('/aprendiz/phases/{phase}', [PhaseController::class, 'show'])->name('aprendiz.phases.show');
 });
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -78,6 +82,8 @@ Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->name('supe
         return view('superadmin.reportes');
     })->name('reportes');
 
-    // RUTAS DE PHASES - CORREGIDAS
     Route::resource('phases', PhaseController::class);
+
+    Route::get('/phases', [PhaseController::class, 'index'])->name('phases.index');
+    
 });

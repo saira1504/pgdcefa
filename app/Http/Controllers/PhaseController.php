@@ -10,7 +10,13 @@ class PhaseController extends Controller
     public function index()
     {
         $phases = Phase::orderBy('numero', 'asc')->get();
-        return view('superadmin.phases.index', compact('phases'));
+        
+        // Determinar qué vista usar basado en la ruta
+        if (request()->routeIs('superadmin.phases.index')) {
+            return view('superadmin.phases.index', compact('phases'));
+        } else {
+            return view('aprendiz.phases.index', compact('phases'));
+        }
     }
 
     public function create()
@@ -57,5 +63,15 @@ class PhaseController extends Controller
 
         return redirect()->route('superadmin.phases.index')
                         ->with('success', 'Fase eliminada exitosamente.');
+    }
+
+    public function show(Phase $phase)
+    {
+        // Determinar qué vista usar basado en la ruta
+        if (request()->routeIs('superadmin.phases.show')) {
+            return view('superadmin.phases.show', compact('phase'));
+        } else {
+            return view('aprendiz.phases.show', compact('phase'));
+        }
     }
 }

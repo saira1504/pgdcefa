@@ -20,7 +20,7 @@
             </a>
         </li>
         <li class="mb-1">
-            <a href="#" class="nav-link text-white">
+            <a href="{{ route('aprendiz.phases.index') }}" class="nav-link text-white {{ request()->routeIs('aprendiz.phases.*') ? 'active bg-dark' : '' }}">
                 <i class="fas fa-project-diagram me-2"></i>Fases
             </a>
         </li>

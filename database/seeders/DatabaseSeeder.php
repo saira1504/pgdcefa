@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             TareaSeeder::class,
             DocumentoAdminSeeder::class,
             EntregaSeeder::class, // Solo crea directorios por ahora
+            PhaseSeeder::class,
         ]);
     }
 }
