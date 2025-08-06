@@ -35,12 +35,14 @@
                 <i class="fas fa-chart-line me-2"></i>Mi Progreso
             </a>
         </li>
-        <li class="mb-1">
-            <a href="{{ route('aprendiz.documentos') }}" 
-               class="nav-link text-white {{ request()->routeIs('aprendiz.documentos') ? 'active bg-dark' : '' }}">
-                <i class="fas fa-file-alt me-2"></i>Mis Documentos
-            </a>
-        </li>
+        
+                    <li class="mb-1">
+                <a href="{{ route('aprendiz.documentos-requeridos') }}" 
+                   class="nav-link text-white {{ request()->routeIs('aprendiz.documentos-requeridos') ? 'active bg-dark' : '' }}">
+                    <i class="fas fa-upload me-2"></i>Documentos Requeridos
+                </a>
+            </li>
+
     </ul>
     
     <!-- Botón de cerrar sesión -->

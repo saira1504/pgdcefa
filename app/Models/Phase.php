@@ -12,7 +12,7 @@ class Phase extends Model
     protected $table = 'phases';
     
     protected $fillable = [
-        'numero',        // ✅ CAMBIAR A NUMERO
+        'numero',
         'fecha_inicio',
         'fecha_fin',
     ];

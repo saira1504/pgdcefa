@@ -99,16 +99,16 @@
                                 <tbody>
                                     @foreach($misDocumentos as $doc)
                                     <tr>
-                                        <td>
-                                            <strong>{{ $doc->tipoDocumento->nombre ?? 'N/A' }}</strong>
-                                            @if($doc->descripcion)
-                                                <br><small class="text-muted">{{ $doc->descripcion }}</small>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <i class="fas fa-file-pdf text-danger me-1"></i>
-                                            {{ $doc->nombre_archivo }}
-                                        </td>
+                                                                            <td>
+                                        <strong>{{ $doc->tipoDocumento->nombre ?? 'N/A' }}</strong>
+                                        @if($doc->descripcion)
+                                            <br><small class="text-muted">{{ $doc->descripcion }}</small>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-file-pdf text-danger me-1"></i>
+                                        {{ $doc->nombre_archivo }}
+                                    </td>
                                         <td>
                                             @if($doc->estado == 'aprobado')
                                                 <span class="badge bg-success">

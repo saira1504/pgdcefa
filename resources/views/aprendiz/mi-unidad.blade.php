@@ -54,11 +54,11 @@
                 </div>
             </div>
 
-            <!-- Documentos requeridos -->
+            <!-- Documentos requeridos reales -->
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="fas fa-file-alt me-2"></i>Documentos Requeridos
+                        <i class="fas fa-file-alt me-2"></i>Mis Documentos Subidos
                     </h5>
                 </div>
                 <div class="card-body">
@@ -68,81 +68,43 @@
                                 <tr>
                                     <th>Documento</th>
                                     <th>Estado</th>
-                                    <th>Fecha Límite</th>
+                                    <th>Fecha de Subida</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($documentosRequeridos as $doc)
+                                @forelse($misDocumentos as $doc)
                                 <tr>
                                     <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-file-pdf text-danger me-2"></i>
-                                            <div>
-                                                <strong>{{ $doc->nombre }}</strong>
-                                                @if($doc->obligatorio)
-                                                    <span class="badge bg-warning ms-2">Obligatorio</span>
-                                                @endif
-                                            </div>
-                                        </div>
+                                        <i class="fas fa-file-pdf text-danger me-2"></i>
+                                        <strong>{{ $doc->titulo }}</strong>
+                                        <div class="text-muted small">{{ $doc->descripcion }}</div>
                                     </td>
                                     <td>
-                                        @php
-                                            $miDoc = $misDocumentos->where('tipo_documento_id', $doc->id)->first();
-                                        @endphp
-                                        @if($miDoc)
-                                            @if($miDoc->estado == 'aprobado')
-                                                <span class="badge bg-success">
-                                                    <i class="fas fa-check me-1"></i>Aprobado
-                                                </span>
-                                            @elseif($miDoc->estado == 'rechazado')
-                                                <span class="badge bg-danger">
-                                                    <i class="fas fa-times me-1"></i>Rechazado
-                                                </span>
-                                            @else
-                                                <span class="badge bg-warning">
-                                                    <i class="fas fa-clock me-1"></i>En revisión
-                                                </span>
-                                            @endif
+                                        @if($doc->estado == 'aprobado')
+                                            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Aprobado</span>
+                                        @elseif($doc->estado == 'rechazado')
+                                            <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Rechazado</span>
+                                        @elseif($doc->estado == 'subido' || $doc->estado == 'en_revision')
+                                            <span class="badge bg-info"><i class="fas fa-clock me-1"></i>En Revisión</span>
                                         @else
-                                            <span class="badge bg-secondary">
-                                                <i class="fas fa-upload me-1"></i>Pendiente
-                                            </span>
+                                            <span class="badge bg-secondary"><i class="fas fa-exclamation me-1"></i>Pendiente</span>
                                         @endif
                                     </td>
                                     <td>
-                                        @if($doc->fecha_limite)
-                                            <span class="text-danger">
-                                                <i class="fas fa-calendar me-1"></i>
-                                                {{ \Carbon\Carbon::parse($doc->fecha_limite)->format('d/m/Y') }}
-                                            </span>
-                                        @else
-                                            <span class="text-muted">Sin fecha límite</span>
-                                        @endif
+                                        {{ $doc->fecha_subida ? $doc->fecha_subida->format('d/m/Y H:i') : '-' }}
                                     </td>
                                     <td>
-                                        @if($miDoc)
-                                            @if($miDoc->estado == 'aprobado')
-                                                <button class="btn btn-success btn-sm" disabled>
-                                                    <i class="fas fa-check me-1"></i>Completado
-                                                </button>
-                                            @elseif($miDoc->estado == 'rechazado')
-                                                <a href="{{ route('aprendiz.documentos') }}" class="btn btn-warning btn-sm">
-                                                    <i class="fas fa-redo me-1"></i>Resubir
-                                                </a>
-                                            @else
-                                                <button class="btn btn-info btn-sm" disabled>
-                                                    <i class="fas fa-clock me-1"></i>En revisión
-                                                </button>
-                                            @endif
-                                        @else
-                                            <a href="{{ route('aprendiz.documentos') }}" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-upload me-1"></i>Subir
-                                            </a>
-                                        @endif
+                                        <a href="{{ Storage::url($doc->archivo_path) }}" class="btn btn-outline-success btn-sm" target="_blank">
+                                            <i class="fas fa-download"></i> Descargar
+                                        </a>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No has subido documentos aún.</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

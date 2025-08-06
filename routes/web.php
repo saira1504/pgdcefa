@@ -44,6 +44,11 @@ Route::middleware(['auth', 'role:aprendiz'])->group(function () {
     Route::post('/aprendiz/documentos/subir', [AprendizController::class, 'subirDocumento'])->name('aprendiz.documentos.subir');
     Route::get('/aprendiz/progreso', [AprendizController::class, 'progreso'])->name('aprendiz.progreso');
     
+                // Rutas para documentos requeridos
+            Route::get('/aprendiz/documentos-requeridos', [AprendizController::class, 'documentosRequeridos'])->name('aprendiz.documentos-requeridos');
+            Route::post('/aprendiz/documentos-requeridos/subir', [AprendizController::class, 'subirDocumentoRequerido'])->name('aprendiz.documentos-requeridos.subir');
+            Route::get('/aprendiz/documentos/descargar/{documentoId}', [AprendizController::class, 'descargarDocumento'])->name('aprendiz.documentos.descargar');
+    
     // Rutas de phases para el aprendiz
     Route::get('/aprendiz/phases', [PhaseController::class, 'index'])->name('aprendiz.phases.index');
     Route::get('/aprendiz/phases/{phase}', [PhaseController::class, 'show'])->name('aprendiz.phases.show');

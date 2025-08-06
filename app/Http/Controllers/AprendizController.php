@@ -47,22 +47,23 @@ class AprendizController extends Controller
     {
         $aprendiz = Auth::user();
         $unidadAsignada = $this->getUnidadAsignada($aprendiz->id);
-        
         if (!$unidadAsignada) {
             return redirect()->route('aprendiz.dashboard')->with('error', 'No tienes una unidad asignada');
         }
-
         $documentosRequeridos = $this->getDocumentosRequeridos($unidadAsignada->id);
-        $misDocumentos = $this->getMisDocumentos($aprendiz->id, $unidadAsignada->id);
+        $misDocumentos = \App\Models\DocumentoAprendiz::where('aprendiz_id', $aprendiz->id)
+            ->where('unidad_id', $unidadAsignada->id)
+            ->get();
         $progresoReal = $this->calcularProgresoReal($aprendiz->id, $unidadAsignada->id);
-
+        $documentosCompletados = $misDocumentos->where('estado', 'aprobado')->count();
+        $totalDocumentos = count($documentosRequeridos);
         return view('aprendiz.mi-unidad', [
             'unidadAsignada' => $unidadAsignada,
             'documentosRequeridos' => $documentosRequeridos,
             'misDocumentos' => $misDocumentos,
             'progresoReal' => $progresoReal,
-            'documentosCompletados' => $misDocumentos->where('estado', 'aprobado')->count(),
-            'totalDocumentos' => count($documentosRequeridos)
+            'documentosCompletados' => $documentosCompletados,
+            'totalDocumentos' => $totalDocumentos
         ]);
     }
 
@@ -101,18 +102,96 @@ class AprendizController extends Controller
         }
 
         try {
-            // Subir archivo
-            $file = $request->file('documento');
-            $filename = time() . '_' . $aprendiz->id . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('documentos/aprendices/' . $aprendiz->id, $filename, 'public');
+            $archivo = $request->file('documento');
+            $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+            $ruta = $archivo->storeAs('documentos/aprendiz/' . $aprendiz->id, $nombreArchivo, 'public');
 
-            // Aquí conectarías con tu base de datos real
-            // Por ahora simularemos que se guardó correctamente
+            // Aquí guardarías en la base de datos
+            // Por ahora simulamos el guardado
 
-            return back()->with('success', 'Documento subido exitosamente. Está pendiente de revisión por tu gestor.');
+            return back()->with('success', 'Documento subido exitosamente');
         } catch (\Exception $e) {
-            return back()->with('error', 'Error al subir el documento. Inténtalo nuevamente.');
+            return back()->with('error', 'Error al subir el documento: ' . $e->getMessage());
         }
+    }
+
+    public function documentosRequeridos()
+    {
+        $aprendiz = Auth::user();
+        $unidadAsignada = $this->getUnidadAsignada($aprendiz->id);
+        if (!$unidadAsignada) {
+            return redirect()->route('aprendiz.dashboard')->with('error', 'No tienes una unidad asignada');
+        }
+        // Obtener documentos subidos reales
+        $documentosRequeridos = \App\Models\DocumentoAprendiz::where('aprendiz_id', $aprendiz->id)
+            ->where('unidad_id', $unidadAsignada->id)
+            ->get();
+        $fases = $this->getFasesDisponibles();
+        $faseActual = $this->getFaseActual();
+        $documentosEnviados = session('documentos_enviados', []);
+        return view('aprendiz.documentos-requeridos', [
+            'unidadAsignada' => $unidadAsignada,
+            'documentosRequeridos' => $documentosRequeridos,
+            'fases' => $fases,
+            'faseActual' => $faseActual,
+            'documentosEnviados' => $documentosEnviados
+        ]);
+    }
+
+    public function subirDocumentoRequerido(Request $request)
+    {
+        $request->validate([
+            'fase_id' => 'required|integer',
+            'unidad_id' => 'required|integer',
+            'descripcion' => 'required|string|max:255',
+            'documento' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
+        ]);
+        $aprendiz = Auth::user();
+        $unidadId = $request->input('unidad_id');
+        $faseId = $request->input('fase_id');
+        $descripcion = $request->input('descripcion');
+        try {
+            $archivo = $request->file('documento');
+            $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+            $ruta = $archivo->storeAs('documentos/aprendiz/' . $aprendiz->id, $nombreArchivo, 'public');
+            $documento = new \App\Models\DocumentoAprendiz();
+            $documento->aprendiz_id = $aprendiz->id;
+            $documento->unidad_id = $unidadId;
+            $documento->tipo_documento_id = $faseId; // Usamos tipo_documento_id para la fase
+            $fase = \App\Models\Phase::find($faseId);
+            $documento->titulo = 'Documento Fase ' . ($fase ? $fase->numero : $faseId);
+            $documento->descripcion = $descripcion;
+            $documento->archivo_path = $ruta;
+            $documento->archivo_original = $archivo->getClientOriginalName();
+            $documento->mime_type = $archivo->getClientMimeType();
+            $documento->tamaño_archivo = $archivo->getSize();
+            $documento->estado = 'pendiente';
+            $documento->fecha_subida = now();
+            $documento->save();
+            // Guardar en la sesión para mostrar en Documentos Enviados
+            $documentos = session('documentos_enviados', []);
+            $documentos[] = [
+                'fase_id' => $faseId,
+                'unidad_id' => $unidadId,
+                'descripcion' => $descripcion,
+                'archivo_original' => $archivo->getClientOriginalName(),
+                'fecha_subida' => now()->format('d/m/Y H:i'),
+            ];
+            session(['documentos_enviados' => $documentos]);
+            return redirect()->route('aprendiz.documentos-requeridos')->with('success', 'Documento subido exitosamente. Será revisado por el superadministrador.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al subir el documento: ' . $e->getMessage());
+        }
+    }
+
+    public function descargarDocumento($documentoId)
+    {
+        $aprendiz = Auth::user();
+        
+        // Aquí verificarías que el documento pertenece al aprendiz
+        // Por ahora simulamos la descarga
+        
+        return response()->download(storage_path('app/public/documentos/aprendiz/' . $aprendiz->id . '/documento.pdf'));
     }
 
     public function progreso()
@@ -211,5 +290,124 @@ class AprendizController extends Controller
             'documentos_en_revision' => 0,
             'documentos_rechazados' => 0
         ];
+    }
+
+    private function getDocumentosRequeridosConFases($unidadId)
+    {
+        // Obtener documentos requeridos desde la base de datos
+        // Aquí deberías obtener los documentos requeridos vinculados a la unidad
+        // Por ahora, simulamos algunos documentos pero con fases reales
+        
+        $fases = \App\Models\Phase::orderBy('numero', 'asc')->get();
+        $documentos = collect();
+        
+        // Simular documentos requeridos pero usando las fases reales de la BD
+        foreach ($fases as $index => $fase) {
+            $documentos->push((object) [
+                'id' => $index + 1,
+                'nombre' => 'Documento Requerido ' . ($index + 1),
+                'descripcion' => 'Documento requerido para la Fase ' . $fase->numero,
+                'fase_id' => $fase->id,
+                'fecha_limite' => $fase->fecha_fin ? $fase->fecha_fin->subDays(5) : now()->addDays(10),
+                'estado' => $this->getEstadoAleatorio(),
+                'archivo_subido' => $this->getArchivoAleatorio(),
+                'fecha_subida' => $this->getFechaSubidaAleatoria(),
+                'comentarios_rechazo' => $this->getComentariosRechazoAleatorio()
+            ]);
+        }
+        
+        return $documentos;
+    }
+
+    private function getEstadoAleatorio()
+    {
+        $estados = ['pendiente', 'subido', 'aprobado', 'rechazado'];
+        return $estados[array_rand($estados)];
+    }
+
+    private function getArchivoAleatorio()
+    {
+        $archivos = [null, 'documento_requerido.pdf', 'informe_proyecto.pdf', 'analisis_mercado.pdf'];
+        return $archivos[array_rand($archivos)];
+    }
+
+    private function getFechaSubidaAleatoria()
+    {
+        $fechas = [null, now()->subDays(2), now()->subDays(5), now()->subDays(8)];
+        return $fechas[array_rand($fechas)];
+    }
+
+    private function getComentariosRechazoAleatorio()
+    {
+        $comentarios = [
+            null,
+            'El documento no cumple con los requisitos especificados.',
+            'Faltan datos importantes en el análisis.',
+            'Por favor, incluye información más detallada.'
+        ];
+        return $comentarios[array_rand($comentarios)];
+    }
+
+    private function getFasesDisponibles()
+    {
+        // Obtener todas las fases desde la base de datos
+        $fases = \App\Models\Phase::orderBy('numero', 'asc')->get();
+        
+        return $fases->map(function($fase) {
+            return (object) [
+                'id' => $fase->id,
+                'numero' => $fase->numero,
+                'nombre' => 'Fase ' . $fase->numero, // Generar nombre basado en el número
+                'descripcion' => 'Descripción de la fase ' . $fase->numero, // Generar descripción
+                'fecha_inicio' => $fase->fecha_inicio,
+                'fecha_fin' => $fase->fecha_fin,
+                'estado' => $this->determinarEstadoFase($fase)
+            ];
+        });
+    }
+
+    private function getFaseActual()
+    {
+        // Obtener la fase actual desde la base de datos
+        // Buscar la fase que está actualmente en progreso
+        $faseActual = \App\Models\Phase::where(function($query) {
+                $query->where('fecha_inicio', '<=', now())
+                      ->where('fecha_fin', '>=', now());
+            })
+            ->orderBy('numero', 'asc')
+            ->first();
+
+        if (!$faseActual) {
+            // Si no hay fase activa, buscar la última fase creada
+            $faseActual = \App\Models\Phase::orderBy('numero', 'desc')->first();
+        }
+
+        if ($faseActual) {
+            return (object) [
+                'id' => $faseActual->id,
+                'numero' => $faseActual->numero,
+                'nombre' => 'Fase ' . $faseActual->numero,
+                'descripcion' => 'Descripción de la fase ' . $faseActual->numero . '. Esta es la fase actual del proyecto.',
+                'fecha_inicio' => $faseActual->fecha_inicio,
+                'fecha_fin' => $faseActual->fecha_fin,
+                'estado' => $this->determinarEstadoFase($faseActual)
+            ];
+        }
+
+        // Si no hay fases en la base de datos, retornar null
+        return null;
+    }
+
+    private function determinarEstadoFase($fase)
+    {
+        $now = now();
+        
+        if ($now < $fase->fecha_inicio) {
+            return 'Pendiente';
+        } elseif ($now > $fase->fecha_fin) {
+            return 'Completada';
+        } else {
+            return 'En Progreso';
+        }
     }
 }
