@@ -205,8 +205,9 @@
                             <label class="form-label">Filtrar por Unidad Productiva</label>
                             <select class="form-select" id="filtroUnidad">
                                 <option value="">Todas las unidades</option>
-                                <option value="{{ $unidadAsignada->id }}">{{ $unidadAsignada->nombre }}</option>
-                                <option value="otras">Otras unidades</option>
+                                @foreach($todasUnidades as $unidad)
+                                    <option value="{{ $unidad->id }}">{{ $unidad->nombre }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">

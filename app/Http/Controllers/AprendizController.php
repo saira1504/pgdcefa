@@ -122,6 +122,8 @@ class AprendizController extends Controller
         if (!$unidadAsignada) {
             return redirect()->route('aprendiz.dashboard')->with('error', 'No tienes una unidad asignada');
         }
+        // Obtener todas las unidades productivas reales
+        $todasUnidades = \App\Models\UnidadProductiva::all();
         // Obtener documentos subidos reales
         $documentosRequeridos = \App\Models\DocumentoAprendiz::where('aprendiz_id', $aprendiz->id)
             ->where('unidad_id', $unidadAsignada->id)
@@ -131,6 +133,7 @@ class AprendizController extends Controller
         $documentosEnviados = session('documentos_enviados', []);
         return view('aprendiz.documentos-requeridos', [
             'unidadAsignada' => $unidadAsignada,
+            'todasUnidades' => $todasUnidades,
             'documentosRequeridos' => $documentosRequeridos,
             'fases' => $fases,
             'faseActual' => $faseActual,
