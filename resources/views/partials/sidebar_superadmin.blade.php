@@ -55,14 +55,6 @@
             </li>
  
 
-            <!-- Lista -->
-            <li class="nav-item">
-                <a href="{{ route('superadmin.lista') }}" 
-                   class="nav-link {{ request()->routeIs('superadmin.lista') ? 'active' : '' }}">
-                    <i class="fas fa-list"></i>
-                    <span>Lista</span>
-                </a>
-            </li>
 
             <!-- Unidades Productivas con Dropdown -->
             <li class="nav-item has-dropdown">
@@ -109,7 +101,7 @@
                 </a>
                 <ul class="dropdown-submenu" id="documentos-dropdown">
                     <li>
-                        <a href="{{ route('superadmin.documentos') }}" 
+                        <a href="#" 
                            class="submenu-link {{ request()->routeIs('superadmin.documentos') ? 'active' : '' }}">
                             <i class="fas fa-folder-open"></i>
                             <span>Ver Documentos</span>
@@ -132,7 +124,7 @@
 
             <!-- Resultados -->
             <li class="nav-item">
-                <a href="{{ route('superadmin.resultados') }}" 
+                <a href="#" 
                    class="nav-link {{ request()->routeIs('superadmin.resultados') ? 'active' : '' }}">
                     <i class="fas fa-chart-bar"></i>
                     <span>Resultados</span>
@@ -141,7 +133,7 @@
 
             <!-- Reportes -->
             <li class="nav-item">
-                <a href="{{ route('superadmin.reportes') }}" 
+                <a href="#" 
                    class="nav-link {{ request()->routeIs('superadmin.reportes') ? 'active' : '' }}">
                     <i class="fas fa-flag"></i>
                     <span>Reportes</span>
