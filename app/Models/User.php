@@ -71,8 +71,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(UnidadProductiva::class, 'aprendiz_unidad', 'aprendiz_id', 'unidad_id')
                     ->withPivot('fecha_asignacion', 'activo')
-                    ->wherePivot('activo', true)
-                    ->first();
+                    ->wherePivot('activo', true);
     }
 
     public function aprendizUnidad()

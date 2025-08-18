@@ -103,10 +103,16 @@
                 </a>
                 <ul class="dropdown-submenu" id="documentos-dropdown">
                     <li>
-                        <a href="#" 
-                           class="submenu-link {{ request()->routeIs('superadmin.documentos') ? 'active' : '' }}">
+                        <a href="{{ route('superadmin.documentos.index') }}" 
+                           class="submenu-link {{ request()->routeIs('superadmin.documentos.*') ? 'active' : '' }}">
                             <i class="fas fa-folder-open"></i>
-                            <span>Ver Documentos</span>
+                            <span>Revisar Documentos de Aprendices</span>
+                            @php
+                                $documentosPendientes = \App\Models\DocumentoAprendiz::where('estado', 'pendiente')->count();
+                            @endphp
+                            @if($documentosPendientes > 0)
+                                <span class="badge bg-warning text-dark ms-auto">{{ $documentosPendientes }}</span>
+                            @endif
                         </a>
                     </li>
                     <li>

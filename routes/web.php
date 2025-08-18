@@ -25,13 +25,21 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     
     Route::get('/admin/unidades-productivas', [App\Http\Controllers\AdminController::class, 'unidadesProductivas'])->name('admin.unidades-productivas');
     Route::post('/admin/asignar-aprendiz', [App\Http\Controllers\AdminController::class, 'asignarAprendiz'])->name('admin.asignar-aprendiz');
+    
+    // Rutas para revisión de documentos de aprendices
+    Route::prefix('admin/documentos')->name('admin.documentos.')->group(function () {
+        Route::get('/', [App\Http\Controllers\AdminDocumentoController::class, 'index'])->name('index');
+        Route::get('/{documento}', [App\Http\Controllers\AdminDocumentoController::class, 'show'])->name('show');
+        Route::post('/{documento}/aprobar', [App\Http\Controllers\AdminDocumentoController::class, 'aprobar'])->name('aprobar');
+        Route::post('/{documento}/rechazar', [App\Http\Controllers\AdminDocumentoController::class, 'rechazar'])->name('rechazar');
+        Route::post('/{documento}/en-revision', [App\Http\Controllers\AdminDocumentoController::class, 'enRevision'])->name('en-revision');
+        Route::get('/{documento}/descargar', [App\Http\Controllers\AdminDocumentoController::class, 'descargar'])->name('descargar');
+        Route::get('/{documento}/preview', [App\Http\Controllers\AdminDocumentoController::class, 'preview'])->name('preview');
+        Route::get('/estadisticas', [App\Http\Controllers\AdminDocumentoController::class, 'estadisticas'])->name('estadisticas');
+    });
 });
 
-Route::middleware(['auth', 'role:superadmin'])->group(function () {
-    Route::get('/superadmin', function () {
-        return view('superadmin.dashboard');
-    })->name('superadmin.dashboard');
-});
+
 
 // ===== RUTAS DEL APRENDIZ - NUEVAS =====
 Route::middleware(['auth', 'role:aprendiz'])->group(function () {
@@ -69,15 +77,15 @@ Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->name('supe
     Route::put('/unidades-productivas/{unidad}', [App\Http\Controllers\UnidadProductivaController::class, 'update'])->name('unidades-productivas.update');
     Route::delete('/unidades-productivas/{unidad}', [App\Http\Controllers\UnidadProductivaController::class, 'destroy'])->name('unidades-productivas.destroy');
     
-    Route::post('/documentos', 'DocumentoController@store')->name('documentos.store');
+    // Route::post('/documentos', 'DocumentoController@store')->name('documentos.store'); // Comentado - controlador no existe
     
     Route::get('/lista', function () {
         return view('superadmin.lista');
     })->name('lista');
     
-    Route::get('/documentos', function () {
-        return view('superadmin.documentos');
-    })->name('documentos');
+    // Route::get('/documentos', function () {
+    //     return view('superadmin.documentos');
+    // })->name('documentos'); // Comentado - conflicto con las rutas de documentos de aprendices
     
     Route::get('/resultados', function () {
         return view('superadmin.resultados');
@@ -90,5 +98,17 @@ Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->name('supe
     Route::resource('phases', PhaseController::class);
 
     Route::get('/phases', [PhaseController::class, 'index'])->name('phases.index');
+    
+    // Rutas para revisión de documentos de aprendices (superadmin)
+    Route::prefix('documentos')->name('documentos.')->group(function () {
+        Route::get('/', [App\Http\Controllers\AdminDocumentoController::class, 'index'])->name('index');
+        Route::get('/{documento}', [App\Http\Controllers\AdminDocumentoController::class, 'show'])->name('show');
+        Route::post('/{documento}/aprobar', [App\Http\Controllers\AdminDocumentoController::class, 'aprobar'])->name('aprobar');
+        Route::post('/{documento}/rechazar', [App\Http\Controllers\AdminDocumentoController::class, 'rechazar'])->name('rechazar');
+        Route::post('/{documento}/en-revision', [App\Http\Controllers\AdminDocumentoController::class, 'enRevision'])->name('en-revision');
+        Route::get('/{documento}/descargar', [App\Http\Controllers\AdminDocumentoController::class, 'descargar'])->name('descargar');
+        Route::get('/{documento}/preview', [App\Http\Controllers\AdminDocumentoController::class, 'preview'])->name('preview');
+        Route::get('/estadisticas', [App\Http\Controllers\AdminDocumentoController::class, 'estadisticas'])->name('estadisticas');
+    });
     
 });

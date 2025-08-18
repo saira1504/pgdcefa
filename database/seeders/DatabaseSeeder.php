@@ -12,11 +12,13 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             UnidadProductivaSeeder::class,
             AdminUnidadSeeder::class,
-            // AprendizUnidadSeeder::class, // Comentado por ahora
+            AprendizUnidadSeeder::class,
             TareaSeeder::class,
             DocumentoAdminSeeder::class,
             EntregaSeeder::class, // Solo crea directorios por ahora
             PhaseSeeder::class,
+            TipoDocumentoSeeder::class,
+            DocumentoAprendizSeeder::class,
         ]);
     }
 }

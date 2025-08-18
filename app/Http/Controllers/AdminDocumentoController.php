@@ -2,160 +2,373 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DocumentoAdmin;
+use App\Models\DocumentoAprendiz;
 use App\Models\UnidadProductiva;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class AdminDocumentoController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('role:admin');
+        $this->middleware(['auth', 'role:admin,superadmin']);
     }
 
-    public function index()
+    /**
+     * Mostrar todos los documentos de aprendices para revisión
+     */
+    public function index(Request $request)
     {
         $admin = Auth::user();
         
-        $documentos = DocumentoAdmin::delAdmin($admin->id)
-            ->with(['unidad'])
-            ->latest()
-            ->paginate(15);
+        // Obtener documentos según el rol del usuario
+        $query = DocumentoAprendiz::with(['aprendiz', 'unidad', 'tipoDocumento']);
+        
+        if ($admin->role === 'admin') {
+            // Admin solo ve documentos de sus unidades
+            $query->whereHas('unidad', function($q) use ($admin) {
+                $q->where('admin_principal_id', $admin->id)
+                  ->orWhereHas('admins', function($q2) use ($admin) {
+                      $q2->where('admin_id', $admin->id);
+                  });
+            });
+        }
+        // Superadmin ve todos los documentos
 
+        // Filtros
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        if ($request->filled('unidad_id')) {
+            $query->where('unidad_id', $request->unidad_id);
+        }
+
+        if ($request->filled('fase_id')) {
+            $query->where('tipo_documento_id', $request->fase_id);
+        }
+
+        if ($request->filled('aprendiz_id')) {
+            $query->where('aprendiz_id', $request->aprendiz_id);
+        }
+
+        // Ordenamiento
+        $orden = $request->get('orden', 'fecha_subida');
+        $direccion = $request->get('direccion', 'desc');
+        
+        switch ($orden) {
+            case 'fecha_subida':
+                $query->orderBy('fecha_subida', $direccion);
+                break;
+            case 'aprendiz':
+                $query->orderBy('aprendiz_id', $direccion);
+                break;
+            case 'unidad':
+                $query->orderBy('unidad_id', $direccion);
+                break;
+            case 'estado':
+                $query->orderBy('estado', $direccion);
+                break;
+            default:
+                $query->orderBy('fecha_subida', 'desc');
+        }
+
+        $documentos = $query->paginate(20);
+
+        // Obtener unidades y aprendices para filtros según el rol
+        if ($admin->role === 'admin') {
+            $unidadesAdmin = $admin->unidadesAsignadas()->get();
+            $aprendicesAdmin = User::aprendicesDeAdmin($admin->id)->get();
+        } else {
+            // Superadmin ve todas las unidades y aprendices
+            $unidadesAdmin = UnidadProductiva::all();
+            $aprendicesAdmin = User::where('role', 'aprendiz')->get();
+        }
+
+        // Estadísticas según el rol
+        if ($admin->role === 'admin') {
+            $estadisticas = [
+                'total' => DocumentoAprendiz::whereHas('unidad', function($q) use ($admin) {
+                    $q->where('admin_principal_id', $admin->id)
+                      ->orWhereHas('admins', function($q2) use ($admin) {
+                          $q2->where('admin_id', $admin->id);
+                      });
+                })->count(),
+                'pendientes' => DocumentoAprendiz::whereHas('unidad', function($q) use ($admin) {
+                    $q->where('admin_principal_id', $admin->id)
+                      ->orWhereHas('admins', function($q2) use ($admin) {
+                          $q2->where('admin_id', $admin->id);
+                      });
+                })->where('estado', 'pendiente')->count(),
+                'en_revision' => DocumentoAprendiz::whereHas('unidad', function($q) use ($admin) {
+                    $q->where('admin_principal_id', $admin->id)
+                      ->orWhereHas('admins', function($q2) use ($admin) {
+                          $q2->where('admin_id', $admin->id);
+                      });
+                })->where('estado', 'en_revision')->count(),
+                'aprobados' => DocumentoAprendiz::whereHas('unidad', function($q) use ($admin) {
+                    $q->where('admin_principal_id', $admin->id)
+                      ->orWhereHas('admins', function($q2) use ($admin) {
+                          $q2->where('admin_id', $admin->id);
+                      });
+                })->where('estado', 'aprobado')->count(),
+                'rechazados' => DocumentoAprendiz::whereHas('unidad', function($q) use ($admin) {
+                    $q->where('admin_principal_id', $admin->id)
+                      ->orWhereHas('admins', function($q2) use ($admin) {
+                          $q2->where('admin_id', $admin->id);
+                      });
+                })->where('estado', 'rechazado')->count(),
+            ];
+        } else {
+            // Superadmin ve todas las estadísticas
         $estadisticas = [
-            'total' => DocumentoAdmin::delAdmin($admin->id)->count(),
-            'activos' => DocumentoAdmin::delAdmin($admin->id)->activos()->count(),
-            'descargas_total' => DocumentoAdmin::delAdmin($admin->id)->sum('descargas'),
-            'tamaño_total' => DocumentoAdmin::delAdmin($admin->id)->sum('tamaño_archivo'),
-        ];
+                'total' => DocumentoAprendiz::count(),
+                'pendientes' => DocumentoAprendiz::where('estado', 'pendiente')->count(),
+                'en_revision' => DocumentoAprendiz::where('estado', 'en_revision')->count(),
+                'aprobados' => DocumentoAprendiz::where('estado', 'aprobado')->count(),
+                'rechazados' => DocumentoAprendiz::where('estado', 'rechazado')->count(),
+            ];
+        }
 
-        return view('admin.documentos.index', compact('documentos', 'estadisticas'));
+        // Determinar qué vista usar según el rol
+        $view = $admin->role === 'superadmin' ? 'superadmin.documentos.index' : 'admin.documentos.index';
+        
+        return view($view, compact(
+            'documentos',
+            'unidadesAdmin',
+            'aprendicesAdmin',
+            'estadisticas'
+        ));
     }
 
-    public function create()
-    {
-        $admin = Auth::user();
-        $misUnidades = $admin->unidadesAsignadas;
-        
-        return view('admin.documentos.create', compact('misUnidades'));
-    }
-
-    public function store(Request $request)
+    /**
+     * Mostrar un documento específico para revisión
+     */
+    public function show(DocumentoAprendiz $documento)
     {
         $admin = Auth::user();
         
-        $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'tipo_documento' => 'required|in:guia,manual,plantilla,evaluacion,recurso',
-            'categoria' => 'required|in:teoria,practica,evaluacion,proyecto',
-            'archivo' => 'required|file|max:10240|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx',
-            'destino' => 'required|array',
-            'destino.*' => 'exists:unidades_productivas,id',
-            'prioridad' => 'required|in:normal,alta,urgente',
-            'requiere_entrega' => 'boolean',
-            'notificar_aprendices' => 'boolean',
-            'fecha_limite' => 'nullable|date|after:today',
-        ]);
-
-        // Verificar que el admin tiene acceso a todas las unidades seleccionadas
-        foreach ($request->destino as $unidadId) {
-            if (!$admin->esAdminDe($unidadId)) {
-                abort(403, 'No tienes permisos para subir documentos a una de las unidades seleccionadas.');
+        // Verificar permisos según el rol
+        if ($admin->role === 'admin') {
+            if (!$admin->esAdminDe($documento->unidad_id) && 
+                $documento->unidad->admin_principal_id !== $admin->id) {
+                abort(403, 'No tienes permisos para revisar este documento.');
             }
         }
+        // Superadmin puede revisar cualquier documento
 
-        $archivo = $request->file('archivo');
-        $path = $archivo->store('documentos/admin', 'public');
+        // Cargar relaciones
+        $documento->load(['aprendiz', 'unidad', 'tipoDocumento', 'revisor']);
 
-        // Crear documento para cada unidad seleccionada
-        foreach ($request->destino as $unidadId) {
-            DocumentoAdmin::create([
-                'admin_id' => $admin->id,
-                'unidad_id' => $unidadId,
-                'titulo' => $request->titulo,
-                'descripcion' => $request->descripcion,
-                'tipo_documento' => $request->tipo_documento,
-                'categoria' => $request->categoria,
-                'archivo_path' => $path,
-                'archivo_original' => $archivo->getClientOriginalName(),
-                'mime_type' => $archivo->getMimeType(),
-                'tamaño_archivo' => $archivo->getSize(),
-                'prioridad' => $request->prioridad,
-                'requiere_entrega' => $request->boolean('requiere_entrega'),
-                'notificar_aprendices' => $request->boolean('notificar_aprendices'),
-                'fecha_limite' => $request->fecha_limite,
-            ]);
-        }
-
-        return redirect()->route('admin.documentos.index')
-            ->with('success', 'Documento subido exitosamente a ' . count($request->destino) . ' unidad(es).');
+        // Determinar qué vista usar según el rol
+        $view = $admin->role === 'superadmin' ? 'superadmin.documentos.show' : 'admin.documentos.show';
+        
+        return view($view, compact('documento'));
     }
 
-    public function show(DocumentoAdmin $documento)
+    /**
+     * Aprobar un documento
+     */
+    public function aprobar(Request $request, DocumentoAprendiz $documento)
     {
-        $this->authorize('view', $documento);
-        
-        return view('admin.documentos.show', compact('documento'));
-    }
-
-    public function edit(DocumentoAdmin $documento)
-    {
-        $this->authorize('update', $documento);
-        
         $admin = Auth::user();
-        $misUnidades = $admin->unidadesAsignadas;
         
-        return view('admin.documentos.edit', compact('documento', 'misUnidades'));
-    }
-
-    public function update(Request $request, DocumentoAdmin $documento)
-    {
-        $this->authorize('update', $documento);
+        // Verificar permisos según el rol
+        if ($admin->role === 'admin') {
+            if (!$admin->esAdminDe($documento->unidad_id) && 
+                $documento->unidad->admin_principal_id !== $admin->id) {
+                abort(403, 'No tienes permisos para revisar este documento.');
+            }
+        }
+        // Superadmin puede revisar cualquier documento
         
         $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'tipo_documento' => 'required|in:guia,manual,plantilla,evaluacion,recurso',
-            'categoria' => 'required|in:teoria,practica,evaluacion,proyecto',
-            'prioridad' => 'required|in:normal,alta,urgente',
-            'requiere_entrega' => 'boolean',
-            'fecha_limite' => 'nullable|date',
-            'activo' => 'boolean',
+            'comentarios' => 'nullable|string|max:500'
         ]);
 
-        $documento->update($request->only([
-            'titulo', 'descripcion', 'tipo_documento', 'categoria',
-            'prioridad', 'requiere_entrega', 'fecha_limite', 'activo'
-        ]));
+        DB::transaction(function () use ($documento, $admin, $request) {
+            $documento->marcarComoRevisado(
+                $admin->id,
+                'aprobado',
+                $request->comentarios
+            );
 
-        return redirect()->route('admin.documentos.show', $documento)
-            ->with('success', 'Documento actualizado exitosamente.');
+            // Aquí podrías enviar una notificación al aprendiz
+            // event(new DocumentoAprobado($documento));
+        });
+
+        return redirect()->back()->with('success', 'Documento aprobado correctamente.');
     }
 
-    public function destroy(DocumentoAdmin $documento)
+    /**
+     * Rechazar un documento
+     */
+    public function rechazar(Request $request, DocumentoAprendiz $documento)
     {
-        $this->authorize('delete', $documento);
+        $admin = Auth::user();
         
-        $documento->eliminarArchivo();
-        $documento->delete();
+        // Verificar permisos según el rol
+        if ($admin->role === 'admin') {
+            if (!$admin->esAdminDe($documento->unidad_id) && 
+                $documento->unidad->admin_principal_id !== $admin->id) {
+                abort(403, 'No tienes permisos para revisar este documento.');
+            }
+        }
+        // Superadmin puede revisar cualquier documento
 
-        return redirect()->route('admin.documentos.index')
-            ->with('success', 'Documento eliminado exitosamente.');
+        $request->validate([
+            'comentarios_rechazo' => 'required|string|max:500'
+        ]);
+
+        DB::transaction(function () use ($documento, $admin, $request) {
+            $documento->marcarComoRevisado(
+                $admin->id,
+                'rechazado',
+                $request->comentarios_rechazo
+            );
+
+            // Aquí podrías enviar una notificación al aprendiz
+            // event(new DocumentoRechazado($documento));
+        });
+
+        return redirect()->back()->with('success', 'Documento rechazado correctamente.');
     }
 
-    public function descargar(DocumentoAdmin $documento)
+    /**
+     * Marcar documento como en revisión
+     */
+    public function enRevision(DocumentoAprendiz $documento)
     {
-        $this->authorize('view', $documento);
+        $admin = Auth::user();
         
-        $documento->incrementarDescargas();
+        // Verificar permisos según el rol
+        if ($admin->role === 'admin') {
+            if (!$admin->esAdminDe($documento->unidad_id) && 
+                $documento->unidad->admin_principal_id !== $admin->id) {
+                abort(403, 'No tienes permisos para revisar este documento.');
+            }
+        }
+        // Superadmin puede revisar cualquier documento
+
+        $documento->marcarComoRevisado($admin->id, 'en_revision');
+
+        return redirect()->back()->with('success', 'Documento marcado como en revisión.');
+    }
+
+    /**
+     * Descargar un documento
+     */
+    public function descargar(DocumentoAprendiz $documento)
+    {
+        $admin = Auth::user();
         
-        return Storage::disk('public')->download(
-            $documento->archivo_path,
-            $documento->archivo_original
-        );
+        // Verificar permisos según el rol
+        if ($admin->role === 'admin') {
+            if (!$admin->esAdminDe($documento->unidad_id) && 
+                $documento->unidad->admin_principal_id !== $admin->id) {
+                abort(403, 'No tienes permisos para descargar este documento.');
+            }
+        }
+        // Superadmin puede descargar cualquier documento
+
+        if (!Storage::exists($documento->archivo_path)) {
+            abort(404, 'El archivo no existe.');
+        }
+
+        return Storage::download($documento->archivo_path, $documento->archivo_original);
+    }
+
+    /**
+     * Vista previa de un documento (si es PDF)
+     */
+    public function preview(DocumentoAprendiz $documento)
+    {
+        $admin = Auth::user();
+        
+        // Verificar permisos según el rol
+        if ($admin->role === 'admin') {
+            if (!$admin->esAdminDe($documento->unidad_id) && 
+                $documento->unidad->admin_principal_id !== $admin->id) {
+                abort(403, 'No tienes permisos para ver este documento.');
+            }
+        }
+        // Superadmin puede ver cualquier documento
+
+        if (!Storage::exists($documento->archivo_path)) {
+            abort(404, 'El archivo no existe.');
+        }
+
+        // Solo permitir preview de PDFs
+        if ($documento->mime_type !== 'application/pdf') {
+            return redirect()->route('admin.documentos.descargar', $documento);
+        }
+
+        $url = Storage::url($documento->archivo_path);
+        
+        // Determinar qué vista usar según el rol
+        $view = $admin->role === 'superadmin' ? 'superadmin.documentos.preview' : 'admin.documentos.preview';
+        
+        return view($view, compact('documento', 'url'));
+    }
+
+    /**
+     * Obtener estadísticas para el dashboard
+     */
+    public function estadisticas()
+    {
+        $admin = Auth::user();
+        
+        // Estadísticas según el rol
+        if ($admin->role === 'admin') {
+            $estadisticas = [
+                'documentos_pendientes' => DocumentoAprendiz::whereHas('unidad', function($q) use ($admin) {
+                    $q->where('admin_principal_id', $admin->id)
+                      ->orWhereHas('admins', function($q2) use ($admin) {
+                          $q2->where('admin_id', $admin->id);
+                      });
+                })->where('estado', 'pendiente')->count(),
+                
+                'documentos_esta_semana' => DocumentoAprendiz::whereHas('unidad', function($q) use ($admin) {
+                    $q->where('admin_principal_id', $admin->id)
+                      ->orWhereHas('admins', function($q2) use ($admin) {
+                          $q2->where('admin_id', $admin->id);
+                      });
+                })->whereBetween('fecha_subida', [
+                    now()->startOfWeek(),
+                    now()->endOfWeek()
+                ])->count(),
+                
+                'documentos_por_unidad' => DocumentoAprendiz::whereHas('unidad', function($q) use ($admin) {
+                    $q->where('admin_principal_id', $admin->id)
+                      ->orWhereHas('admins', function($q2) use ($admin) {
+                          $q2->where('admin_id', $admin->id);
+                      });
+                })
+                ->with('unidad')
+                ->selectRaw('unidad_id, COUNT(*) as total')
+                ->groupBy('unidad_id')
+                ->get()
+            ];
+        } else {
+            // Superadmin ve todas las estadísticas
+            $estadisticas = [
+                'documentos_pendientes' => DocumentoAprendiz::where('estado', 'pendiente')->count(),
+                
+                'documentos_esta_semana' => DocumentoAprendiz::whereBetween('fecha_subida', [
+                    now()->startOfWeek(),
+                    now()->endOfWeek()
+                ])->count(),
+                
+                'documentos_por_unidad' => DocumentoAprendiz::with('unidad')
+                    ->selectRaw('unidad_id, COUNT(*) as total')
+                    ->groupBy('unidad_id')
+                    ->get()
+            ];
+        }
+
+        return response()->json($estadisticas);
     }
 }

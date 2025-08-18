@@ -41,49 +41,53 @@
         <ul class="nav-list">
             <!-- Inicio -->
             <li class="nav-item">
-                <a href="#" 
-                   class="nav-link {{ request()->routeIs('#') ? 'active' : '' }}">
+                <a href="{{ route('admin.dashboard') }}" 
+                   class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-home"></i>
-                    <span>Inicio</span>
+                    <span>Dashboard</span>
                 </a>
             </li>
-            <!-- fases -->
+            
+            <!-- Unidades Productivas -->
             <li class="nav-item">
-                <a href="#" 
-                   class="nav-link {{ request()->routeIs('#') ? 'active' : '' }}">
-                    <i class="fas fa-list"></i>
-                    <span>Lista</span>
-                </a>
-            </li>
-          <li class="nav-item">
-                <a href="#" 
-                   class="nav-link {{ request()->routeIs('#') ? 'active' : '' }}">
-                    <i class="fas fa-list"></i>
-                    <span>Archivos</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" 
-                   class="nav-link {{ request()->routeIs('#') ? 'active' : '' }}">
-                    <i class="fas fa-chart-bar"></i>
+                <a href="{{ route('admin.unidades-productivas') }}" 
+                   class="nav-link {{ request()->routeIs('admin.unidades-productivas') ? 'active' : '' }}">
+                    <i class="fas fa-industry"></i>
                     <span>Unidades Productivas</span>
                 </a>
             </li>
+            
+            <!-- Revisión de Documentos -->
+            <li class="nav-item">
+                <a href="{{ route('admin.documentos.index') }}" 
+                   class="nav-link {{ request()->routeIs('admin.documentos.*') ? 'active' : '' }}">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Revisar Documentos</span>
+                    @php
+                        $documentosPendientes = \App\Models\DocumentoAprendiz::whereHas('unidad', function($q) {
+                            $q->where('admin_principal_id', Auth::id())
+                              ->orWhereHas('admins', function($q2) {
+                                  $q2->where('admin_id', Auth::id());
+                              });
+                        })->where('estado', 'pendiente')->count();
+                    @endphp
+                    @if($documentosPendientes > 0)
+                        <span class="badge bg-warning text-dark ms-auto">{{ $documentosPendientes }}</span>
+                    @endif
+                </a>
+            </li>
+            
+            <!-- Lista de Aprendices -->
             <li class="nav-item">
                 <a href="#" 
                    class="nav-link {{ request()->routeIs('#') ? 'active' : '' }}">
-                    <i class="fas fa-flag"></i>
-                    <span>Documentos</span>
+                    <i class="fas fa-users"></i>
+                    <span>Mis Aprendices</span>
                 </a>
             </li>
-             <li class="nav-item">
-                <a href="#" 
-                   class="nav-link {{ request()->routeIs('#') ? 'active' : '' }}">
-                    <i class="fas fa-flag"></i>
-                    <span>Resultados</span>
-                </a>
-            </li>
-              <li class="nav-item">
+            
+            <!-- Reportes -->
+            <li class="nav-item">
                 <a href="#" 
                    class="nav-link {{ request()->routeIs('#') ? 'active' : '' }}">
                     <i class="fas fa-chart-bar"></i>
