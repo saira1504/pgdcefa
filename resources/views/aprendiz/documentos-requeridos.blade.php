@@ -20,10 +20,17 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h2>Documentos Requeridos</h2>
-                    <p class="text-muted mb-0">Sube los documentos requeridos por el superadministrador para {{ $unidadAsignada->nombre }}</p>
+                    <p class="text-muted mb-0">
+                        @if($unidadAsignada && $unidadAsignada->id)
+                            Sube los documentos requeridos por el superadministrador para {{ $unidadAsignada->nombre }} u otras unidades disponibles
+                        @else
+                            Sube los documentos requeridos por el superadministrador para cualquier unidad productiva
+                        @endif
+                    </p>
                 </div>
                 <div class="text-end">
                     <span class="badge bg-warning fs-6">{{ $documentosRequeridos->count() }} Requeridos</span>
+                    <span class="badge bg-info fs-6 ms-2">{{ $todasLasUnidades->count() }} Unidades Disponibles</span>
                     <button class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#modalSubirDocumento">
                         <i class="fas fa-upload me-1"></i> Subir Documento
                     </button>
@@ -52,8 +59,21 @@
                                 <div class="mb-3">
                                     <label for="unidad_id" class="form-label">Unidad Productiva</label>
                                     <select class="form-select" id="unidad_id" name="unidad_id" required>
-                                        <option value="{{ $unidadAsignada->id }}">{{ $unidadAsignada->nombre }}</option>
+                                        <option value="">Selecciona una unidad productiva</option>
+                                        @foreach($todasLasUnidades as $unidad)
+                                            <option value="{{ $unidad->id }}" 
+                                                {{ $unidadAsignada && $unidadAsignada->id == $unidad->id ? 'selected' : '' }}>
+                                                {{ $unidad->nombre }}
+                                            </option>
+                                        @endforeach
                                     </select>
+                                    <div class="form-text">
+                                        @if($unidadAsignada && $unidadAsignada->id)
+                                            Tu unidad asignada está preseleccionada, pero puedes cambiar a otra si lo deseas
+                                        @else
+                                            Selecciona la unidad productiva para la cual es el documento
+                                        @endif
+                                    </div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="descripcion" class="form-label">Descripción del Documento</label>
@@ -83,18 +103,33 @@
                             </h6>
                         </div>
                         <div class="card-body">
-                            <h5 class="text-success">{{ $unidadAsignada->nombre }}</h5>
-                            <p class="text-muted mb-2">{{ $unidadAsignada->descripcion }}</p>
-                            <div class="row">
-                                <div class="col-6">
-                                    <small class="text-muted d-block">Gestor</small>
-                                    <strong>{{ $unidadAsignada->gestor_nombre ?? 'Por asignar' }}</strong>
+                            @if($unidadAsignada && $unidadAsignada->id)
+                                <h5 class="text-success">{{ $unidadAsignada->nombre }}</h5>
+                                <p class="text-muted mb-2">{{ $unidadAsignada->descripcion }}</p>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted d-block">Gestor</small>
+                                        <strong>{{ $unidadAsignada->gestor_nombre ?? 'Por asignar' }}</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted d-block">Estado</small>
+                                        <span class="badge bg-success">{{ $unidadAsignada->estado ?? 'Activa' }}</span>
+                                    </div>
                                 </div>
-                                <div class="col-6">
-                                    <small class="text-muted d-block">Estado</small>
-                                    <span class="badge bg-success">{{ $unidadAsignada->estado ?? 'Activa' }}</span>
+                                <div class="mt-3">
+                                    <small class="text-info">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Esta es tu unidad asignada, pero puedes subir documentos para otras unidades también
+                                    </small>
                                 </div>
-                            </div>
+                            @else
+                                <div class="text-center py-3">
+                                    <i class="fas fa-building fa-2x text-primary mb-2"></i>
+                                    <h6 class="text-primary">Unidades Disponibles</h6>
+                                    <p class="text-muted mb-2">Puedes seleccionar cualquier unidad productiva para subir documentos</p>
+                                    <small class="text-muted">Los documentos serán revisados por el superadministrador de la unidad seleccionada</small>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User; // Added this import for User model
 
 class AprendizController extends Controller
 {
@@ -111,26 +112,40 @@ class AprendizController extends Controller
 
             return back()->with('success', 'Documento subido exitosamente');
         } catch (\Exception $e) {
-            return back()->with('error', 'Error al subir el documento: ' . $e->getMessage());
+            $mensajeError = 'Error al subir el documento: ' . $e->getMessage();
+            
+            // Si es un error de tabla no encontrada, dar instrucciones específicas
+            if (str_contains($e->getMessage(), 'Base table or view not found') || 
+                str_contains($e->getMessage(), 'doesn\'t exist')) {
+                $mensajeError = 'Error: Las tablas de la base de datos no están creadas. ' .
+                               'Por favor, ejecuta: php artisan migrate';
+            }
+            
+            return back()->with('error', $mensajeError);
         }
     }
 
     public function documentosRequeridos()
     {
         $aprendiz = Auth::user();
+        
+        // El aprendiz puede subir documentos sin restricción de unidad
+        // Si no tiene unidad asignada, se le permite crear documentos "sin asignar"
         $unidadAsignada = $this->getUnidadAsignada($aprendiz->id);
-        if (!$unidadAsignada) {
-            return redirect()->route('aprendiz.dashboard')->with('error', 'No tienes una unidad asignada');
-        }
-        // Obtener documentos subidos reales
-        $documentosRequeridos = \App\Models\DocumentoAprendiz::where('aprendiz_id', $aprendiz->id)
-            ->where('unidad_id', $unidadAsignada->id)
-            ->get();
+        
+        // Obtener TODAS las unidades productivas disponibles para que el aprendiz pueda seleccionar
+        $todasLasUnidades = \App\Models\UnidadProductiva::where('activo', true)->get();
+        
+        // Obtener documentos subidos reales del aprendiz
+        $documentosRequeridos = \App\Models\DocumentoAprendiz::where('aprendiz_id', $aprendiz->id)->get();
+        
         $fases = $this->getFasesDisponibles();
         $faseActual = $this->getFaseActual();
         $documentosEnviados = session('documentos_enviados', []);
+        
         return view('aprendiz.documentos-requeridos', [
             'unidadAsignada' => $unidadAsignada,
+            'todasLasUnidades' => $todasLasUnidades,
             'documentosRequeridos' => $documentosRequeridos,
             'fases' => $fases,
             'faseActual' => $faseActual,
@@ -142,22 +157,47 @@ class AprendizController extends Controller
     {
         $request->validate([
             'fase_id' => 'required|integer',
-            'unidad_id' => 'required|integer',
+            'unidad_id' => 'nullable|integer', // Ahora es opcional
             'descripcion' => 'required|string|max:255',
             'documento' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
+        
         $aprendiz = Auth::user();
-        $unidadId = $request->input('unidad_id');
+        $unidadId = $request->input('unidad_id'); // Puede ser null
         $faseId = $request->input('fase_id');
         $descripcion = $request->input('descripcion');
+        
         try {
             $archivo = $request->file('documento');
             $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
             $ruta = $archivo->storeAs('documentos/aprendiz/' . $aprendiz->id, $nombreArchivo, 'public');
+            
+            // Verificar si la tabla tipos_documento existe y crear el tipo de documento
+            $tipoDocumento = null;
+            try {
+                // Buscar si ya existe un tipo de documento para esta fase
+                $tipoDocumento = \App\Models\TipoDocumento::where('nombre', 'Fase ' . $faseId)->first();
+                
+                if (!$tipoDocumento) {
+                    // Crear un nuevo tipo de documento para esta fase
+                    $tipoDocumento = new \App\Models\TipoDocumento();
+                    $tipoDocumento->nombre = 'Fase ' . $faseId;
+                    $tipoDocumento->descripcion = 'Documento de la Fase ' . $faseId;
+                    $tipoDocumento->obligatorio = true;
+                    $tipoDocumento->categoria = 'proyecto';
+                    $tipoDocumento->activo = true;
+                    $tipoDocumento->save();
+                }
+            } catch (\Exception $e) {
+                // Si hay error con la tabla tipos_documento, usar un ID por defecto
+                $tipoDocumento = (object) ['id' => 1];
+            }
+            
             $documento = new \App\Models\DocumentoAprendiz();
             $documento->aprendiz_id = $aprendiz->id;
-            $documento->unidad_id = $unidadId;
-            $documento->tipo_documento_id = $faseId; // Usamos tipo_documento_id para la fase
+            $documento->unidad_id = $unidadId; // Puede ser null si no hay unidad asignada
+            $documento->tipo_documento_id = $tipoDocumento->id; // Usar el ID del tipo de documento creado
+            
             $fase = \App\Models\Phase::find($faseId);
             $documento->titulo = 'Documento Fase ' . ($fase ? $fase->numero : $faseId);
             $documento->descripcion = $descripcion;
@@ -168,6 +208,7 @@ class AprendizController extends Controller
             $documento->estado = 'pendiente';
             $documento->fecha_subida = now();
             $documento->save();
+            
             // Guardar en la sesión para mostrar en Documentos Enviados
             $documentos = session('documentos_enviados', []);
             $documentos[] = [
@@ -178,6 +219,7 @@ class AprendizController extends Controller
                 'fecha_subida' => now()->format('d/m/Y H:i'),
             ];
             session(['documentos_enviados' => $documentos]);
+            
             return redirect()->route('aprendiz.documentos-requeridos')->with('success', 'Documento subido exitosamente. Será revisado por el superadministrador.');
         } catch (\Exception $e) {
             return back()->with('error', 'Error al subir el documento: ' . $e->getMessage());
@@ -214,17 +256,47 @@ class AprendizController extends Controller
     // ===== MÉTODOS PRIVADOS CON DATOS SIMULADOS =====
     private function getUnidadAsignada($aprendizId)
     {
-        // Simular datos de unidad asignada basados en tus wireframes
+        // Obtener la unidad asignada real desde la base de datos
+        $aprendiz = User::find($aprendizId);
+        
+        if (!$aprendiz) {
+            return $this->getUnidadTemporal();
+        }
+        
+        // Obtener la unidad asignada usando la relación del modelo User
+        $unidadAsignada = $aprendiz->unidadAsignada()->first();
+        
+        if (!$unidadAsignada) {
+            return $this->getUnidadTemporal();
+        }
+        
+        // Retornar la unidad con información adicional
         return (object) [
-            'id' => 1,
-            'nombre' => 'Unidad 1 - Avícola',
-            'descripcion' => 'Proyecto de producción y comercialización',
-            'gestor_nombre' => 'María González',
-            'estado' => 'Activa',
-            'tipo' => 'Proyecto productivo',
-            'total_aprendices' => 21,
-            'total_documentos' => 11,
-            'fecha_asignacion' => '2025-01-15'
+            'id' => $unidadAsignada->id,
+            'nombre' => $unidadAsignada->nombre,
+            'descripcion' => $unidadAsignada->descripcion ?? 'Proyecto productivo del SENA',
+            'gestor_nombre' => $unidadAsignada->adminPrincipal ? $unidadAsignada->adminPrincipal->name : 'No asignado',
+            'estado' => $unidadAsignada->estado ?? 'Activa',
+            'tipo' => $unidadAsignada->tipo ?? 'Proyecto productivo',
+            'total_aprendices' => $unidadAsignada->aprendices()->count(),
+            'total_documentos' => $unidadAsignada->documentos()->count(),
+            'fecha_asignacion' => $unidadAsignada->pivot ? $unidadAsignada->pivot->fecha_asignacion : now()->format('Y-m-d')
+        ];
+    }
+
+    private function getUnidadTemporal()
+    {
+        // Retornar una unidad temporal para evitar errores en la vista
+        return (object) [
+            'id' => null,
+            'nombre' => 'Sin Unidad Asignada',
+            'descripcion' => 'No tienes una unidad productiva asignada actualmente',
+            'gestor_nombre' => 'Por asignar',
+            'estado' => 'Pendiente',
+            'tipo' => 'Sin asignar',
+            'total_aprendices' => 0,
+            'total_documentos' => 0,
+            'fecha_asignacion' => now()->format('Y-m-d')
         ];
     }
 

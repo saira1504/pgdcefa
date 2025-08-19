@@ -3,113 +3,89 @@
 @section('content')
 <div class="container-fluid">
     <!-- Breadcrumbs -->
-    <nav aria-label="breadcrumb">
+    <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('superadmin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Documentos de Aprendices</li>
+            <li class="breadcrumb-item active" aria-current="page">Revisión de Documentos</li>
         </ol>
     </nav>
 
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-file-alt text-primary"></i>
-                Documentos de Aprendices
-            </h1>
-            <p class="text-muted">Revisa y gestiona los documentos subidos por los aprendices</p>
+            <h2><i class="fas fa-file-alt me-2"></i>Revisión de Documentos</h2>
+            <p class="text-muted mb-0">Revisa y aprueba los documentos subidos por los aprendices</p>
         </div>
-        <div>
-            <a href="{{ route('superadmin.documentos.estadisticas') }}" class="btn btn-info">
-                <i class="fas fa-chart-bar"></i> Ver Estadísticas
-            </a>
+        <div class="text-end">
+            <span class="badge bg-warning fs-6">{{ $estadisticas['pendientes'] }} Pendientes</span>
         </div>
     </div>
 
-    <!-- Tarjetas de Estadísticas -->
+    <!-- Estadísticas -->
     <div class="row mb-4">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Documentos</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $documentos->total() }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-file-alt fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-md-2 col-6 mb-3">
+            <div class="card border-primary text-center">
+                <div class="card-body py-3">
+                    <h4 class="text-primary mb-1">{{ $estadisticas['total'] }}</h4>
+                    <small class="text-muted">Total</small>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pendientes</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $estadisticas['pendientes'] }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clock fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-md-2 col-6 mb-3">
+            <div class="card border-warning text-center">
+                <div class="card-body py-3">
+                    <h4 class="text-warning mb-1">{{ $estadisticas['pendientes'] }}</h4>
+                    <small class="text-muted">Pendientes</small>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                En Revisión</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $estadisticas['en_revision'] }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-search fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-md-2 col-6 mb-3">
+            <div class="card border-info text-center">
+                <div class="card-body py-3">
+                    <h4 class="text-info mb-1">{{ $estadisticas['en_revision'] }}</h4>
+                    <small class="text-muted">En Revisión</small>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Aprobados</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $estadisticas['aprobados'] }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-md-2 col-6 mb-3">
+            <div class="card border-success text-center">
+                <div class="card-body py-3">
+                    <h4 class="text-success mb-1">{{ $estadisticas['aprobados'] }}</h4>
+                    <small class="text-muted">Aprobados</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-6 mb-3">
+            <div class="card border-danger text-center">
+                <div class="card-body py-3">
+                    <h4 class="text-danger mb-1">{{ $estadisticas['rechazados'] }}</h4>
+                    <small class="text-muted">Rechazados</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-6 mb-3">
+            <div class="card border-secondary text-center">
+                <div class="card-body py-3">
+                    <h4 class="text-secondary mb-1">{{ $documentos->count() }}</h4>
+                    <small class="text-muted">Mostrados</small>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Filtros -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
-                <i class="fas fa-filter"></i> Filtros
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h6 class="mb-0">
+                <i class="fas fa-filter me-2"></i>Filtros de Búsqueda
             </h6>
         </div>
         <div class="card-body">
             <form method="GET" action="{{ route('superadmin.documentos.index') }}" id="filtrosForm">
                 <div class="row">
-                    <div class="col-md-3">
-                        <label for="estado" class="form-label">Estado</label>
-                        <select name="estado" id="estado" class="form-select">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" name="estado" onchange="this.form.submit()">
                             <option value="">Todos los estados</option>
                             <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
                             <option value="en_revision" {{ request('estado') == 'en_revision' ? 'selected' : '' }}>En Revisión</option>
@@ -117,9 +93,9 @@
                             <option value="rechazado" {{ request('estado') == 'rechazado' ? 'selected' : '' }}>Rechazado</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <label for="unidad_id" class="form-label">Unidad Productiva</label>
-                        <select name="unidad_id" id="unidad_id" class="form-select">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Unidad Productiva</label>
+                        <select class="form-select" name="unidad_id" onchange="this.form.submit()">
                             <option value="">Todas las unidades</option>
                             @foreach($unidadesAdmin as $unidad)
                                 <option value="{{ $unidad->id }}" {{ request('unidad_id') == $unidad->id ? 'selected' : '' }}>
@@ -128,9 +104,9 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <label for="aprendiz_id" class="form-label">Aprendiz</label>
-                        <select name="aprendiz_id" id="aprendiz_id" class="form-select">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Aprendiz</label>
+                        <select class="form-select" name="aprendiz_id" onchange="this.form.submit()">
                             <option value="">Todos los aprendices</option>
                             @foreach($aprendicesAdmin as $aprendiz)
                                 <option value="{{ $aprendiz->id }}" {{ request('aprendiz_id') == $aprendiz->id ? 'selected' : '' }}>
@@ -139,25 +115,31 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <label for="orden" class="form-label">Ordenar por</label>
-                        <select name="orden" id="orden" class="form-select">
-                            <option value="fecha_desc" {{ request('orden') == 'fecha_desc' ? 'selected' : '' }}>Más recientes</option>
-                            <option value="fecha_asc" {{ request('orden') == 'fecha_asc' ? 'selected' : '' }}>Más antiguos</option>
-                            <option value="aprendiz" {{ request('orden') == 'aprendiz' ? 'selected' : '' }}>Por aprendiz</option>
-                            <option value="unidad" {{ request('orden') == 'unidad' ? 'selected' : '' }}>Por unidad</option>
-                            <option value="estado" {{ request('orden') == 'estado' ? 'selected' : '' }}>Por estado</option>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Ordenar por</label>
+                        <select class="form-select" name="orden" onchange="this.form.submit()">
+                            <option value="fecha_subida" {{ request('orden') == 'fecha_subida' ? 'selected' : '' }}>Fecha de subida</option>
+                            <option value="titulo" {{ request('orden') == 'titulo' ? 'selected' : '' }}>Título</option>
+                            <option value="aprendiz" {{ request('orden') == 'aprendiz' ? 'selected' : '' }}>Aprendiz</option>
+                            <option value="unidad" {{ request('orden') == 'unidad' ? 'selected' : '' }}>Unidad</option>
                         </select>
                     </div>
                 </div>
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search"></i> Filtrar
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Dirección</label>
+                        <select class="form-select" name="direccion" onchange="this.form.submit()">
+                            <option value="desc" {{ request('direccion') == 'desc' ? 'selected' : '' }}>Descendente</option>
+                            <option value="asc" {{ request('direccion') == 'asc' ? 'selected' : '' }}>Ascendente</option>
+                        </select>
+                    </div>
+                    <div class="col-md-9 mb-3 d-flex align-items-end">
+                        <button type="button" class="btn btn-outline-secondary me-2" onclick="limpiarFiltros()">
+                            <i class="fas fa-eraser me-1"></i>Limpiar
                         </button>
-                        <a href="{{ route('superadmin.documentos.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Limpiar
-                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-1"></i>Filtrar
+                        </button>
                     </div>
                 </div>
             </form>
@@ -182,125 +164,131 @@
     @endif
 
     <!-- Tabla de Documentos -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary">
-                <i class="fas fa-list"></i> Lista de Documentos
+    @if($documentos->count() > 0)
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h6 class="mb-0">
+                <i class="fas fa-list me-2"></i>Documentos para Revisión
             </h6>
-            <span class="badge bg-primary">{{ $documentos->total() }} documentos</span>
         </div>
-        <div class="card-body">
-            @if($documentos->count() > 0)
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead class="table-light">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Documento</th>
+                            <th>Aprendiz</th>
+                            <th>Unidad</th>
+                            <th>Fase</th>
+                            <th>Estado</th>
+                            <th>Fecha Subida</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($documentos as $documento)
                             <tr>
-                                <th>Documento</th>
-                                <th>Aprendiz</th>
-                                <th>Unidad</th>
-                                <th>Estado</th>
-                                <th>Fecha Subida</th>
-                                <th>Acciones</th>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="{{ $documento->icono }} fa-2x me-3 text-primary"></i>
+                                        <div>
+                                            <strong>{{ $documento->titulo }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ $documento->descripcion }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                            {{ strtoupper(substr($documento->aprendiz->name, 0, 1)) }}
+                                        </div>
+                                        <div>
+                                            <strong>{{ $documento->aprendiz->name }}</strong>
+                                            <br><small class="text-muted">{{ $documento->aprendiz->email }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">{{ $documento->unidad->nombre }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">Fase {{ $documento->tipoDocumento->id ?? 'N/A' }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ $documento->estado_color }}">
+                                        {{ $documento->estado_texto }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                        {{ $documento->fecha_subida->format('d/m/Y H:i') }}
+                                        <br>
+                                        <span class="text-muted">{{ $documento->fecha_subida->diffForHumans() }}</span>
+                                    </small>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ route('superadmin.documentos.show', $documento) }}" 
+                                           class="btn btn-sm btn-outline-primary" 
+                                           title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        
+                                        @if($documento->mime_type == 'application/pdf')
+                                        <a href="{{ route('superadmin.documentos.preview', $documento) }}" 
+                                           class="btn btn-sm btn-outline-info" 
+                                           title="Vista previa"
+                                           target="_blank">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        @endif
+                                        
+                                        <a href="{{ route('superadmin.documentos.descargar', $documento) }}" 
+                                           class="btn btn-sm btn-outline-success" 
+                                           title="Descargar">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                        
+                                        @if($documento->estado == 'pendiente')
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-warning" 
+                                                title="Marcar en revisión"
+                                                onclick="marcarEnRevision({{ $documento->id }})">
+                                            <i class="fas fa-clock"></i>
+                                        </button>
+                                        @endif
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($documentos as $documento)
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="{{ $documento->icono }} fa-2x me-3 text-primary"></i>
-                                            <div>
-                                                <strong>{{ $documento->titulo }}</strong>
-                                                <br>
-                                                <small class="text-muted">{{ $documento->tipoDocumento->nombre }}</small>
-                                                <br>
-                                                <small class="text-muted">{{ $documento->tamaño_humano }}</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-user fa-lg me-2 text-info"></i>
-                                            <div>
-                                                <strong>{{ $documento->aprendiz->name }}</strong>
-                                                <br>
-                                                <small class="text-muted">{{ $documento->aprendiz->email }}</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-industry fa-lg me-2 text-warning"></i>
-                                            <div>
-                                                <strong>{{ $documento->unidad->nombre }}</strong>
-                                                <br>
-                                                <small class="text-muted">{{ $documento->unidad->ubicacion }}</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge {{ $documento->estado_color }}">
-                                            {{ $documento->estado_texto }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="text-center">
-                                            <div class="fw-bold">{{ $documento->fecha_subida->format('d/m/Y') }}</div>
-                                            <small class="text-muted">{{ $documento->fecha_subida->format('H:i') }}</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="{{ route('superadmin.documentos.show', $documento) }}" 
-                                               class="btn btn-sm btn-outline-primary" 
-                                               title="Ver detalles">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            
-                                            @if($documento->mime_type == 'application/pdf')
-                                                <a href="{{ route('superadmin.documentos.preview', $documento) }}" 
-                                                   class="btn btn-sm btn-outline-info" 
-                                                   title="Vista previa PDF"
-                                                   target="_blank">
-                                                    <i class="fas fa-file-pdf"></i>
-                                                </a>
-                                            @endif
-                                            
-                                            <a href="{{ route('superadmin.documentos.descargar', $documento) }}" 
-                                               class="btn btn-sm btn-outline-success" 
-                                               title="Descargar">
-                                                <i class="fas fa-download"></i>
-                                            </a>
-                                            
-                                            @if($documento->estado == 'pendiente')
-                                                <button type="button" 
-                                                        class="btn btn-sm btn-outline-warning" 
-                                                        title="Marcar en revisión"
-                                                        onclick="marcarEnRevision({{ $documento->id }})">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    Mostrando {{ $documentos->firstItem() }} a {{ $documentos->lastItem() }} de {{ $documentos->total() }} documentos
                 </div>
-
-                <!-- Paginación -->
-                <div class="d-flex justify-content-center">
-                    {{ $documentos->appends(request()->query())->links() }}
+                <div>
+                    {{ $documentos->links() }}
                 </div>
-            @else
-                <div class="text-center py-5">
-                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                    <h5 class="text-muted">No se encontraron documentos</h5>
-                    <p class="text-muted">Intenta ajustar los filtros o no hay documentos que cumplan con los criterios.</p>
-                </div>
-            @endif
+            </div>
         </div>
     </div>
+    @else
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No hay documentos para revisar</h5>
+            <p class="text-muted">No se encontraron documentos que coincidan con los filtros aplicados.</p>
+            <button type="button" class="btn btn-outline-primary" onclick="limpiarFiltros()">
+                <i class="fas fa-eraser me-1"></i>Limpiar filtros
+            </button>
+        </div>
+    </div>
+    @endif
 </div>
 
 <!-- Formulario oculto para marcar en revisión -->
@@ -308,29 +296,59 @@
     @csrf
 </form>
 
-@endsection
-
-@push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Aplicar filtros automáticamente al cambiar
-    const filtros = ['estado', 'unidad_id', 'aprendiz_id', 'orden'];
-    filtros.forEach(filtro => {
-        const elemento = document.getElementById(filtro);
-        if (elemento) {
-            elemento.addEventListener('change', function() {
-                document.getElementById('filtrosForm').submit();
-            });
-        }
-    });
-});
+function limpiarFiltros() {
+    window.location.href = "{{ route('superadmin.documentos.index') }}";
+}
 
 function marcarEnRevision(documentoId) {
     if (confirm('¿Estás seguro de que quieres marcar este documento como "En Revisión"?')) {
         const form = document.getElementById('formEnRevision');
-        form.action = `/superadmin/documentos/${documentoId}/en-revision`;
+        form.action = "{{ route('superadmin.documentos.en-revision', ':id') }}".replace(':id', documentoId);
         form.submit();
     }
 }
 </script>
-@endpush
+@endsection
+
+<style>
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.btn-group .btn {
+    margin-right: 2px;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.badge {
+    font-size: 0.75em;
+    padding: 0.375em 0.75em;
+}
+</style>
