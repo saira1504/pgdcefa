@@ -64,6 +64,11 @@ class UnidadProductiva extends Model
         return $this->hasMany(DocumentoAdmin::class, 'unidad_id');
     }
 
+    public function documentosAprendiz()
+    {
+        return $this->hasMany(DocumentoAprendiz::class, 'unidad_id');
+    }
+
     // Scopes
     public function scopeActivas($query)
     {

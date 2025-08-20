@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UnidadProductiva;
 use App\Models\User;
+use App\Models\DocumentoAprendiz;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -11,11 +12,32 @@ class UnidadProductivaController extends Controller
 {
     public function index()
     {
-        // Cargar unidades con el admin principal y los conteos de aprendices y documentos
+        // Cargar unidades con el admin principal y conteos
         $unidadesProductivas = UnidadProductiva::with('adminPrincipal')
-                                                ->withCount(['aprendices', 'documentos'])
-                                                ->get();
-        $gestores = User::where('role', 'admin')->get(); // Obtener solo usuarios con rol 'admin'
+            ->withCount([
+                'aprendices',
+                'documentos',
+                'documentosAprendiz',
+                'documentosAprendiz as documentos_aprobados_count' => function ($q) {
+                    $q->where('estado', 'aprobado');
+                },
+                'documentosAprendiz as documentos_pendientes_count' => function ($q) {
+                    $q->where('estado', 'pendiente');
+                },
+                'documentosAprendiz as aprendices_con_documentos_count' => function ($q) {
+                    $q->select(DB::raw('COUNT(DISTINCT aprendiz_id)'));
+                },
+            ])
+            ->get();
+
+        // Calcular progreso por unidad basado en documentos de aprendices aprobados
+        foreach ($unidadesProductivas as $unidad) {
+            $totalDocs = $unidad->documentos_aprendiz_count ?? 0;
+            $aprobados = $unidad->documentos_aprobados_count ?? 0;
+            $unidad->progreso = $totalDocs > 0 ? (int) round(($aprobados / $totalDocs) * 100) : (int) ($unidad->progreso ?? 0);
+        }
+        
+        $gestores = User::where('role', 'admin')->get();
         
         // Definir categorías de documentos
         $categoriasDocumento = [
@@ -29,11 +51,17 @@ class UnidadProductivaController extends Controller
             'Otro',
         ];
 
-        // Calcular estadísticas rápidas
+        // 📊 ESTADÍSTICAS CORREGIDAS
         $totalUnidades = $unidadesProductivas->count();
-        $totalAprendices = User::where('role', 'aprendiz')->count(); // Contar todos los usuarios con rol 'aprendiz'
-        $totalDocumentos = $unidadesProductivas->sum('documentos_count');
-        $progresoPromedio = $unidadesProductivas->avg('progreso');
+        
+        // 🎯 TOTAL DE APRENDICES GENERAL - TODOS LOS APRENDICES DEL SISTEMA
+        $totalAprendices = User::where('role', 'aprendiz')->count();
+        
+        // 📄 TOTAL DE DOCUMENTOS - Solo documentos subidos por aprendices
+        $totalDocumentos = DocumentoAprendiz::count();
+        
+        // 📈 PROGRESO PROMEDIO - Basado en las unidades
+        $progresoPromedio = (int) round($unidadesProductivas->avg('progreso') ?? 0);
 
         return view('superadmin.unidades-productivas.index', compact(
             'unidadesProductivas',
@@ -51,7 +79,26 @@ class UnidadProductivaController extends Controller
         // Cargar la unidad con todas sus relaciones para la vista de detalles
         $unidad->load(['adminPrincipal', 'aprendices', 'tareas', 'documentos']);
 
-        return view('superadmin.unidades-productivas.show', compact('unidad'));
+        $aprendicesConDocumentosAprobados = User::where('role', 'aprendiz')
+            ->whereIn('id', function($query) use ($unidad) {
+                $query->select('aprendiz_id')
+                      ->from('documentos_aprendiz')
+                      ->where('unidad_id', $unidad->id)
+                      ->where('estado', '=', 'aprobado')
+                      ->whereNotIn('estado', ['rechazado', 'pendiente'])
+                      ->distinct();
+            })
+            ->get();
+
+        foreach ($aprendicesConDocumentosAprobados as $aprendiz) {
+            $aprendiz->documentos_aprobados_count = DocumentoAprendiz::where('aprendiz_id', $aprendiz->id)
+                ->where('unidad_id', $unidad->id)
+                ->where('estado', '=', 'aprobado')
+                ->whereNotIn('estado', ['rechazado', 'pendiente'])
+                ->count();
+        }
+
+        return view('superadmin.unidades-productivas.show', compact('unidad', 'aprendicesConDocumentosAprobados'));
     }
 
     public function edit(UnidadProductiva $unidad)
@@ -93,10 +140,6 @@ class UnidadProductivaController extends Controller
                 'estado' => $request->estado,
                 'admin_principal_id' => $request->gestor_id,
             ]);
-
-            // Sincronizar la relación en la tabla pivote si es necesario
-            // Si solo hay un admin principal, el syncWithoutDetaching ya maneja esto.
-            // Si se pudiera asignar múltiples admins, sería más complejo.
         });
 
         return redirect()->route('superadmin.unidades-productivas.index')
@@ -106,10 +149,6 @@ class UnidadProductivaController extends Controller
     public function destroy(UnidadProductiva $unidad)
     {
         DB::transaction(function () use ($unidad) {
-            // Opcional: Desvincular aprendices y tareas antes de eliminar si tienen restricciones FOREIGN KEY
-            // $unidad->aprendices()->sync([]);
-            // $unidad->tareas()->delete();
-            
             $unidad->delete();
         });
 
@@ -117,7 +156,6 @@ class UnidadProductivaController extends Controller
             ->with('success', 'Unidad productiva eliminada correctamente.');
     }
 
-    // Método para crear una nueva unidad productiva y asignar admin principal
     public function store(Request $request)
     {
         $request->validate([
@@ -143,9 +181,11 @@ class UnidadProductivaController extends Controller
             'nombre.unique' => 'Ya existe una unidad con este nombre. Por favor, elige un nombre diferente.',
         ]);
 
-        DB::transaction(function () use ($request) {
+        $unidadCreada = null;
+
+        DB::transaction(function () use ($request, &$unidadCreada) {
             // Crear la unidad productiva
-            $unidad = UnidadProductiva::create([
+            $unidadCreada = UnidadProductiva::create([
                 'nombre' => $request->nombre,
                 'tipo' => $request->tipo,
                 'proyecto' => $request->proyecto,
@@ -158,10 +198,21 @@ class UnidadProductivaController extends Controller
             ]);
 
             // Asignar el admin a la tabla pivote admin_unidades
-            $unidad->asignarAdmin($request->gestor_id);
+            $unidadCreada->asignarAdmin($request->gestor_id);
         });
+
+        if ($request->ajax()) {
+            return response()->json([
+                'ok' => true,
+                'unidad' => [
+                    'id' => $unidadCreada->id,
+                    'nombre' => $unidadCreada->nombre,
+                    'tipo' => $unidadCreada->tipo,
+                ],
+            ]);
+        }
 
         return redirect()->route('superadmin.unidades-productivas.index')
             ->with('success', 'Unidad productiva creada y admin asignado correctamente.');
     }
-} 
+}

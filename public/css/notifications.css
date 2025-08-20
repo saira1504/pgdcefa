@@ -1,0 +1,204 @@
+/* Estilos para el icono de notificaciones */
+.notifications-icon {
+    position: relative;
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.notifications-icon .btn {
+    color: white !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.notifications-icon .btn:hover {
+    transform: scale(1.1);
+    color: #ffd700 !important;
+}
+
+.notifications-icon .badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 0.6rem;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Estilos para la sección de usuario */
+.user-section {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.user-avatar {
+    margin-right: 12px;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.user-dropdown {
+    margin-left: 10px;
+}
+
+/* Estilos para el modal de notificaciones */
+.notification-item {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent !important;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,249,250,0.8));
+    backdrop-filter: blur(10px);
+    border-radius: 12px !important;
+}
+
+.notification-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    background: linear-gradient(135deg, rgba(255,255,255,1), rgba(248,249,250,0.95));
+}
+
+.notification-item.border-success {
+    border-left-color: #28a745 !important;
+    background: linear-gradient(135deg, rgba(40,167,69,0.05), rgba(255,255,255,0.95));
+}
+
+.notification-item.border-danger {
+    border-left-color: #dc3545 !important;
+    background: linear-gradient(135deg, rgba(220,53,69,0.05), rgba(255,255,255,0.95));
+}
+
+.notification-item.border-primary {
+    border-left-color: #007bff !important;
+    background: linear-gradient(135deg, rgba(0,123,255,0.08), rgba(255,255,255,0.95));
+}
+
+.notification-item.border-secondary {
+    border-left-color: #6c757d !important;
+    background: linear-gradient(135deg, rgba(108,117,125,0.05), rgba(255,255,255,0.95));
+}
+
+/* Estilos específicos para notificaciones */
+.notification-item .bg-light {
+    background: rgba(248,249,250,0.8) !important;
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 8px;
+}
+
+.notification-item h6 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.notification-item .badge {
+    font-size: 0.7rem;
+    padding: 0.35em 0.65em;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.modal-header {
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.5em 0.75em;
+}
+
+/* Responsive para dispositivos móviles */
+@media (max-width: 768px) {
+    .notifications-icon {
+        margin-right: 5px;
+    }
+    
+    .notifications-icon .badge {
+        font-size: 0.5rem;
+        min-width: 16px;
+        height: 16px;
+    }
+    
+    .user-section {
+        padding: 10px;
+    }
+    
+    .user-info h4 {
+        font-size: 1rem;
+    }
+    
+    .user-info span {
+        font-size: 0.8rem;
+    }
+}
+
+/* Estilos para el icono de notificaciones global */
+.notifications-icon-global {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    background: rgba(0, 123, 255, 0.9);
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.notifications-icon-global:hover {
+    background: rgba(0, 123, 255, 1);
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+.notifications-icon-global .btn {
+    color: white !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 0;
+    margin: 0;
+}
+
+.notifications-icon-global .badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 0.6rem;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+    background: #dc3545 !important;
+}
+
+/* Responsive para el icono global */
+@media (max-width: 768px) {
+    .notifications-icon-global {
+        top: 15px;
+        right: 15px;
+        padding: 8px;
+    }
+    
+    .notifications-icon-global .badge {
+        font-size: 0.5rem;
+        min-width: 16px;
+        height: 16px;
+    }
+}

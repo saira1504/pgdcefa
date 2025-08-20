@@ -62,25 +62,11 @@
                     <span>Fases</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="#" 
-                   class="nav-link {{ request()->routeIs('superadmin.reportes') ? 'active' : '' }}">
-                    <i class="fas fa-flag"></i>
-                    <span>Subsistemas</span>
-                </a>
-            </li>
              <li class="nav-item">
                 <a href="{{ route('aprendiz.documentos-requeridos') }}" 
                    class="nav-link {{ request()->routeIs('aprendiz.documentos-requeridos') ? 'active' : '' }}">
                     <i class="fas fa-flag"></i>
                     <span>Documentos Requeridos</span>
-                </a>
-            </li>
-              <li class="nav-item">
-                <a href="{{ route('aprendiz.progreso') }}" 
-                   class="nav-link {{ request()->routeIs('aprendiz.progreso') ? 'active' : '' }}">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Mi Progreso</span>
                 </a>
             </li>
         </ul>

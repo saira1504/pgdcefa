@@ -95,7 +95,7 @@ class AdminController extends Controller
             ->doesntHave('unidadAsignada') // Asegura que no tenga ninguna asignación activa
             ->get();
 
-        return view('admin.unidades-productivas.index', compact(
+        return view('admin.unidades-productivas', compact(
             'unidadesAsignadas',
             'misUnidades',
             'misAprendices',

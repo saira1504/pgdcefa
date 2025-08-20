@@ -44,11 +44,11 @@
     </div>
     <div class="col-md-2">
         <select class="form-select form-select-sm py-2" id="filterEstado">
-            <option value="">☀️ Todos los estados</option>
+            <option value="">☀ Todos los estados</option>
             <option value="proceso">🚀 En proceso</option>
             <option value="iniciando">🌱 Iniciando</option>
             <option value="completado">✅ Completado</option>
-            <option value="pausado">⏸️ Pausado</option>
+            <option value="pausado">⏸ Pausado</option>
         </select>
     </div>
     <div class="col-md-3">
@@ -76,71 +76,65 @@
     </div>
 </div>
 
-<!-- Estadísticas HORIZONTALES - Largas hacia los lados pero bajas -->
+<!-- 📊 ESTADÍSTICAS HORIZONTALES SIN PROGRESO -->
 <div class="row mb-4">
-    <div class="col-md-3 mb-2">
-        <div class="card border-0 shadow-sm" style="height: 70px;">
-            <div class="card-body p-2 d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-industry fa-2x text-success"></i>
+    <div class="col-xl-4 col-lg-6 col-md-6 mb-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="me-3 icon-container">
+                    <div class="icon-circle bg-success-light">
+                        <i class="fas fa-industry fa-2x text-success"></i>
+                    </div>
                 </div>
                 <div class="flex-grow-1 d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted mb-0 small fw-semibold">Total Unidades</h6>
+                        <small class="text-muted">Productivas</small>
                     </div>
-                    <div>
-                        <h1 class="mb-0 fw-bold text-success display-6">{{ $totalUnidades ?? 3 }}</h1>
+                    <div class="text-end">
+                        <h2 class="mb-0 fw-bold text-success">{{ $totalUnidades ?? 0 }}</h2>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3 mb-2">
-        <div class="card border-0 shadow-sm" style="height: 70px;">
-            <div class="card-body p-2 d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-users fa-2x text-primary"></i>
+
+    <div class="col-xl-4 col-lg-6 col-md-6 mb-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="me-3 icon-container">
+                    <div class="icon-circle bg-primary-light">
+                        <i class="fas fa-users fa-2x text-primary"></i>
+                    </div>
                 </div>
                 <div class="flex-grow-1 d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted mb-0 small fw-semibold">Total Aprendices</h6>
+                        <small class="text-muted">Del sistema</small>
                     </div>
-                    <div>
-                        <h1 class="mb-0 fw-bold text-primary display-6">{{ $totalAprendices ?? 2 }}</h1>
+                    <div class="text-end">
+                        <h2 class="mb-0 fw-bold text-primary">{{ $totalAprendices ?? 0 }}</h2>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3 mb-2">
-        <div class="card border-0 shadow-sm" style="height: 70px;">
-            <div class="card-body p-2 d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-file-alt fa-2x text-info"></i>
+
+    <div class="col-xl-4 col-lg-6 col-md-6 mb-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="me-3 icon-container">
+                    <div class="icon-circle bg-info-light">
+                        <i class="fas fa-file-alt fa-2x text-info"></i>
+                    </div>
                 </div>
                 <div class="flex-grow-1 d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted mb-0 small fw-semibold">Total Documentos</h6>
+                        <small class="text-muted">Subidos</small>
                     </div>
-                    <div>
-                        <h1 class="mb-0 fw-bold text-info display-6">{{ $totalDocumentos ?? 0 }}</h1>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-2">
-        <div class="card border-0 shadow-sm" style="height: 70px;">
-            <div class="card-body p-2 d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-chart-line fa-2x text-warning"></i>
-                </div>
-                <div class="flex-grow-1 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-muted mb-0 small fw-semibold">Progreso Promedio</h6>
-                    </div>
-                    <div>
-                        <h1 class="mb-0 fw-bold text-warning display-6">{{ $progresoPromedio ?? 0 }}%</h1>
+                    <div class="text-end">
+                        <h2 class="mb-0 fw-bold text-info">{{ $totalDocumentos ?? 0 }}</h2>
                     </div>
                 </div>
             </div>
@@ -148,7 +142,7 @@
     </div>
 </div>
 
-<!-- GRID FIJO de 4 columnas - NUNCA cambia de tamaño -->
+<!-- GRID FIJO de 4 columnas - SIN PROGRESO -->
 <div class="fixed-grid-container">
     @forelse($unidadesProductivas as $unidad)
     <div class="fixed-card-slot unidad-card" 
@@ -169,7 +163,7 @@
                 </div>
             </div>
             
-            <!-- Body -->
+            <!-- Body SIN PROGRESO -->
             <div class="card-body p-4">
                 <!-- Descripción -->
                 <p class="text-muted mb-3">
@@ -186,8 +180,8 @@
                     </div>
                     <div class="col-6">
                         <div class="bg-light rounded p-3 text-center">
-                            <div class="fw-bold text-primary">{{ $unidad->aprendices_count ?? 0 }}</div>
-                            <small class="text-muted">Aprendices</small>
+                            <div class="fw-bold text-primary">{{ $unidad->aprendices_con_documentos_count ?? 0 }}</div>
+                            <small class="text-muted">Aprendiz</small>
                         </div>
                     </div>
                 </div>
@@ -195,7 +189,7 @@
                 <div class="row g-3 mb-3">
                     <div class="col-6">
                         <div class="bg-light rounded p-3 text-center">
-                            <div class="fw-bold text-info">{{ $unidad->documentos_count ?? 0 }}</div>
+                            <div class="fw-bold text-info">{{ $unidad->documentos_aprendiz_count ?? 0 }}</div>
                             <small class="text-muted">Documentos</small>
                         </div>
                     </div>
@@ -215,17 +209,12 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Progreso -->
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="fw-semibold text-dark">Progreso del Proyecto</span>
-                        <span class="fw-bold text-success">{{ $unidad->progreso ?? 0 }}%</span>
-                    </div>
-                    <div class="progress" style="height: 8px;">
-                        <div class="progress-bar bg-success" 
-                             style="width: {{ $unidad->progreso ?? 0 }}%">
-                        </div>
+
+                <!-- Información adicional SIN progreso -->
+                <div class="mt-3 small text-muted text-center">
+                    <div class="d-flex justify-content-between">
+                        <span>Aprobados: <strong class="text-success">{{ $unidad->documentos_aprobados_count ?? 0 }}</strong></span>
+                        <span>Pendientes: <strong class="text-warning">{{ $unidad->documentos_pendientes_count ?? 0 }}</strong></span>
                     </div>
                 </div>
             </div>
@@ -377,7 +366,7 @@ $(document).ready(function() {
                     $.each(errors, function(key, value) {
                         const field = $('#' + key);
                         field.addClass('is-invalid');
-                        field.after(`<div class="invalid-feedback d-block">${value[0]}</div>`);
+                        field.after(<div class="invalid-feedback d-block">${value[0]}</div>);
                     });
                 } else {
                     // Mostrar alerta de error
@@ -400,6 +389,43 @@ $(document).ready(function() {
 </script>
 
 <style>
+/* 🎨 ESTILOS PARA LAS ESTADÍSTICAS MEJORADAS */
+.stat-card {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    min-height: 90px;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.bg-success-light {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(32, 201, 151, 0.1));
+    border: 2px solid rgba(40, 167, 69, 0.2);
+}
+
+.bg-primary-light {
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(102, 16, 242, 0.1));
+    border: 2px solid rgba(0, 123, 255, 0.2);
+}
+
+.bg-info-light {
+    background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(32, 201, 151, 0.1));
+    border: 2px solid rgba(23, 162, 184, 0.2);
+}
+
 @keyframes slideUp {
     from {
         opacity: 0;
@@ -418,15 +444,14 @@ $(document).ready(function() {
 /* GRID FIJO - Siempre 4 columnas exactas */
 .fixed-grid-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* SIEMPRE 4 columnas iguales */
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
     margin-bottom: 2rem;
     position: relative;
 }
 
 .fixed-card-slot {
-    /* Cada tarjeta ocupa exactamente 1/4 del ancho */
-    min-height: 450px;
+    min-height: 350px; /* Reducido sin progreso */
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
@@ -446,19 +471,64 @@ $(document).ready(function() {
 /* Responsive - mantiene proporciones */
 @media (max-width: 1200px) {
     .fixed-grid-container {
-        grid-template-columns: repeat(3, 1fr); /* 3 columnas en pantallas medianas */
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 768px) {
     .fixed-grid-container {
-        grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets */
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .stat-card .card-body {
+        padding: 1rem !important;
+    }
+    
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .icon-circle i {
+        font-size: 1.5rem !important;
     }
 }
 
 @media (max-width: 576px) {
     .fixed-grid-container {
-        grid-template-columns: 1fr; /* 1 columna en móviles */
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 🎯 ANIMACIONES */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-card {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+
+/* 🔢 NÚMEROS GRANDES */
+.stat-card h2 {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    .stat-card h2 {
+        font-size: 2rem;
     }
 }
 </style>

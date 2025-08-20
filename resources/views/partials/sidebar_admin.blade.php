@@ -1,4 +1,5 @@
 <link href="{{ asset('css/sidebar-styles.css') }}" rel="stylesheet">
+<link href="{{ asset('css/notifications.css') }}" rel="stylesheet">
 
 <div class="sidebar-modern">
     <!-- Header del Usuario -->
@@ -10,6 +11,8 @@
             <h4>{{ Auth::user()->name ?? 'admin' }}</h4>
             <span>Admistrador</span>
         </div>
+        
+
         
         <!-- Dropdown del Usuario -->
         <div class="user-dropdown">
@@ -77,21 +80,14 @@
                 </a>
             </li>
             
-            <!-- Lista de Aprendices -->
+         
+
+            <!-- 🚀 Listado Maestro -->
             <li class="nav-item">
-                <a href="#" 
-                   class="nav-link {{ request()->routeIs('#') ? 'active' : '' }}">
-                    <i class="fas fa-users"></i>
-                    <span>Mis Aprendices</span>
-                </a>
-            </li>
-            
-            <!-- Reportes -->
-            <li class="nav-item">
-                <a href="#" 
-                   class="nav-link {{ request()->routeIs('#') ? 'active' : '' }}">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Reportes</span>
+                <a href="{{ route('admin.listado_maestro') }}" 
+                   class="nav-link {{ request()->routeIs('admin.listado_maestro') ? 'active' : '' }}">
+                    <i class="fas fa-list-alt"></i>
+                    <span>Listado Maestro</span>
                 </a>
             </li>
         </ul>
@@ -111,6 +107,7 @@
     </form>
 </div>
 
-
 <!-- JavaScript al final del body -->
 <script src="{{ asset('js/sidebar-functions.js') }}"></script>
+
+
