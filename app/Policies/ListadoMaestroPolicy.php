@@ -82,3 +82,4 @@ class ListadoMaestroPolicy
         return $user->role === 'superadmin';
     }
 }
+
