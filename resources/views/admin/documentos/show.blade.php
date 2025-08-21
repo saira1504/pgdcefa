@@ -1,13 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-3 col-lg-2 px-0">
-            @include('partials.sidebar_admin')
-        </div>
-        
-        <div class="col-md-9 col-lg-10 p-4">
+<div class="container-fluid p-4">
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb" class="mb-4">
                 <ol class="breadcrumb">
@@ -87,14 +81,6 @@
                                     </div>
                                     
                                     <div class="d-grid gap-2">
-                                        @if($documento->mime_type == 'application/pdf')
-                                        <a href="{{ route('admin.documentos.preview', $documento) }}" 
-                                           class="btn btn-outline-info btn-sm" 
-                                           target="_blank">
-                                            <i class="fas fa-eye me-1"></i>Vista Previa
-                                        </a>
-                                        @endif
-                                        
                                         <a href="{{ route('admin.documentos.descargar', $documento) }}" 
                                            class="btn btn-outline-success btn-sm">
                                             <i class="fas fa-download me-1"></i>Descargar
@@ -258,7 +244,6 @@
                 </a>
             </div>
         </div>
-    </div>
 </div>
 
 <!-- Formulario oculto para marcar en revisión -->

@@ -1,179 +1,166 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-3 col-lg-2 px-0">
-            @include('partials.sidebar_admin')
-        </div>
-        
-        <div class="col-md-9 col-lg-10 p-4">
-            <!-- Breadcrumb -->
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Revisión de Documentos</li>
-                </ol>
-            </nav>
-
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container-fluid p-4">
+    <!-- Encabezado con gradiente -->
+    <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+        <div class="card-header text-white py-4" style="background: linear-gradient(135deg, #28a745, #20c997);">
+            <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h2><i class="fas fa-file-alt me-2"></i>Revisión de Documentos</h2>
-                    <p class="text-muted mb-0">Revisa y aprueba los documentos subidos por los aprendices</p>
+                    <h2 class="h4 fw-bold mb-1"><i class="fas fa-file-alt me-2"></i>Revisión de Documentos</h2>
+                    <p class="mb-0 opacity-75">Revisa y aprueba los documentos subidos por los aprendices</p>
                 </div>
-                <div class="text-end">
-                    <span class="badge bg-warning fs-6">{{ $estadisticas['pendientes'] }} Pendientes</span>
+                <span class="badge bg-warning text-dark fs-6">{{ $estadisticas['pendientes'] }} Pendientes</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas compactas -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-2">
+            <div class="card border-0 shadow-sm stat-card h-100">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">Total</div>
+                        <div class="h4 fw-bold text-primary mb-0">{{ $estadisticas['total'] }}</div>
+                    </div>
+                    <i class="fas fa-database text-primary"></i>
                 </div>
             </div>
-
-            <!-- Estadísticas -->
-            <div class="row mb-4">
-                <div class="col-md-2 col-6 mb-3">
-                    <div class="card border-primary text-center">
-                        <div class="card-body py-3">
-                            <h4 class="text-primary mb-1">{{ $estadisticas['total'] }}</h4>
-                            <small class="text-muted">Total</small>
-                        </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card border-0 shadow-sm stat-card h-100">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">Pendientes</div>
+                        <div class="h4 fw-bold text-warning mb-0">{{ $estadisticas['pendientes'] }}</div>
                     </div>
-                </div>
-                <div class="col-md-2 col-6 mb-3">
-                    <div class="card border-warning text-center">
-                        <div class="card-body py-3">
-                            <h4 class="text-warning mb-1">{{ $estadisticas['pendientes'] }}</h4>
-                            <small class="text-muted">Pendientes</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-6 mb-3">
-                    <div class="card border-info text-center">
-                        <div class="card-body py-3">
-                            <h4 class="text-info mb-1">{{ $estadisticas['en_revision'] }}</h4>
-                            <small class="text-muted">En Revisión</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-6 mb-3">
-                    <div class="card border-success text-center">
-                        <div class="card-body py-3">
-                            <h4 class="text-success mb-1">{{ $estadisticas['aprobados'] }}</h4>
-                            <small class="text-muted">Aprobados</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-6 mb-3">
-                    <div class="card border-danger text-center">
-                        <div class="card-body py-3">
-                            <h4 class="text-danger mb-1">{{ $estadisticas['rechazados'] }}</h4>
-                            <small class="text-muted">Rechazados</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-6 mb-3">
-                    <div class="card border-secondary text-center">
-                        <div class="card-body py-3">
-                            <h4 class="text-secondary mb-1">{{ $documentos->count() }}</h4>
-                            <small class="text-muted">Mostrados</small>
-                        </div>
-                    </div>
+                    <i class="fas fa-hourglass-half text-warning"></i>
                 </div>
             </div>
-
-            <!-- Filtros -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-light">
-                    <h6 class="mb-0">
-                        <i class="fas fa-filter me-2"></i>Filtros de Búsqueda
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <form method="GET" action="{{ route('admin.documentos.index') }}" id="filtrosForm">
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Estado</label>
-                                <select class="form-select" name="estado" onchange="this.form.submit()">
-                                    <option value="">Todos los estados</option>
-                                    <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
-                                    <option value="en_revision" {{ request('estado') == 'en_revision' ? 'selected' : '' }}>En Revisión</option>
-                                    <option value="aprobado" {{ request('estado') == 'aprobado' ? 'selected' : '' }}>Aprobado</option>
-                                    <option value="rechazado" {{ request('estado') == 'rechazado' ? 'selected' : '' }}>Rechazado</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Unidad Productiva</label>
-                                <select class="form-select" name="unidad_id" onchange="this.form.submit()">
-                                    <option value="">Todas las unidades</option>
-                                    @foreach($unidadesAdmin as $nombre => $id)
-                                        <option value="{{ $id }}" {{ request('unidad_id') == $id ? 'selected' : '' }}>{{ $nombre }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Aprendiz</label>
-                                <select class="form-select" name="aprendiz_id" onchange="this.form.submit()">
-                                    <option value="">Todos los aprendices</option>
-                                    @foreach($aprendicesAdmin as $id => $nombre)
-                                        <option value="{{ $id }}" {{ request('aprendiz_id') == $id ? 'selected' : '' }}>{{ $nombre }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Ordenar por</label>
-                                <select class="form-select" name="orden" onchange="this.form.submit()">
-                                    <option value="fecha_subida" {{ request('orden') == 'fecha_subida' ? 'selected' : '' }}>Fecha de subida</option>
-                                    <option value="aprendiz" {{ request('orden') == 'aprendiz' ? 'selected' : '' }}>Aprendiz</option>
-                                    <option value="unidad" {{ request('orden') == 'unidad' ? 'selected' : '' }}>Unidad</option>
-                                    <option value="estado" {{ request('estado') == 'estado' ? 'selected' : '' }}>Estado</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Dirección</label>
-                                <select class="form-select" name="direccion" onchange="this.form.submit()">
-                                    <option value="desc" {{ request('direccion') == 'desc' ? 'selected' : '' }}>Descendente</option>
-                                    <option value="asc" {{ request('direccion') == 'asc' ? 'selected' : '' }}>Ascendente</option>
-                                </select>
-                            </div>
-                            <div class="col-md-9 mb-3 d-flex align-items-end">
-                                <button type="button" class="btn btn-outline-secondary me-2" onclick="limpiarFiltros()">
-                                    <i class="fas fa-eraser me-1"></i>Limpiar
-                                </button>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-search me-1"></i>Filtrar
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card border-0 shadow-sm stat-card h-100">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">En revisión</div>
+                        <div class="h4 fw-bold text-info mb-0">{{ $estadisticas['en_revision'] }}</div>
+                    </div>
+                    <i class="fas fa-search text-info"></i>
                 </div>
             </div>
-
-            <!-- Alertas -->
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show">
-                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card border-0 shadow-sm stat-card h-100">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">Aprobados</div>
+                        <div class="h4 fw-bold text-success mb-0">{{ $estadisticas['aprobados'] }}</div>
+                    </div>
+                    <i class="fas fa-check-circle text-success"></i>
                 </div>
-            @endif
-
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show">
-                    <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card border-0 shadow-sm stat-card h-100">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">Rechazados</div>
+                        <div class="h4 fw-bold text-danger mb-0">{{ $estadisticas['rechazados'] }}</div>
+                    </div>
+                    <i class="fas fa-times-circle text-danger"></i>
                 </div>
-            @endif
-
-            <!-- Lista de Documentos -->
-            @if($documentos->count() > 0)
-            <div class="card shadow-sm">
-                <div class="card-header bg-light">
-                    <h6 class="mb-0">
-                        <i class="fas fa-list me-2"></i>Documentos para Revisión
-                    </h6>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card border-0 shadow-sm stat-card h-100">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">Mostrados</div>
+                        <div class="h4 fw-bold text-secondary mb-0">{{ $documentos->count() }}</div>
+                    </div>
+                    <i class="fas fa-list text-secondary"></i>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+            </div>
+        </div>
+    </div>
+
+    <!-- Alertas -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show shadow-sm">
+            <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm">
+            <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    <!-- Filtros -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h6 class="mb-0"><i class="fas fa-filter me-2"></i>Filtros de Búsqueda</h6>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ route('admin.documentos.index') }}" id="filtrosForm">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small">Estado</label>
+                        <select class="form-select" name="estado" onchange="this.form.submit()">
+                            <option value="">Todos los estados</option>
+                            <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+                            <option value="en_revision" {{ request('estado') == 'en_revision' ? 'selected' : '' }}>En Revisión</option>
+                            <option value="aprobado" {{ request('estado') == 'aprobado' ? 'selected' : '' }}>Aprobado</option>
+                            <option value="rechazado" {{ request('estado') == 'rechazado' ? 'selected' : '' }}>Rechazado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small">Unidad Productiva</label>
+                        <select class="form-select" name="unidad_id" onchange="this.form.submit()">
+                            <option value="">Todas las unidades</option>
+                            @foreach($unidadesAdmin as $nombre => $id)
+                                <option value="{{ $id }}" {{ request('unidad_id') == $id ? 'selected' : '' }}>{{ $nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small">Aprendiz</label>
+                        <select class="form-select" name="aprendiz_id" onchange="this.form.submit()">
+                            <option value="">Todos los aprendices</option>
+                            @foreach($aprendicesAdmin as $id => $nombre)
+                                <option value="{{ $id }}" {{ request('aprendiz_id') == $id ? 'selected' : '' }}>{{ $nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">Ordenar por</label>
+                        <select class="form-select" name="orden" onchange="this.form.submit()">
+                            <option value="fecha_subida" {{ request('orden') == 'fecha_subida' ? 'selected' : '' }}>Fecha de subida</option>
+                            <option value="aprendiz" {{ request('orden') == 'aprendiz' ? 'selected' : '' }}>Aprendiz</option>
+                            <option value="unidad" {{ request('orden') == 'unidad' ? 'selected' : '' }}>Unidad</option>
+                            <option value="estado" {{ request('estado') == 'estado' ? 'selected' : '' }}>Estado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 d-grid">
+                        <button type="button" class="btn btn-outline-secondary" onclick="limpiarFiltros()"><i class="fas fa-eraser"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lista de Documentos -->
+    @if($documentos->count() > 0)
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h6 class="mb-0"><i class="fas fa-list me-2"></i>Documentos para Revisión</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
                             <thead class="table-light">
                                 <tr>
                                     <th>Documento</th>
@@ -236,15 +223,6 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             
-                                            @if($documento->mime_type == 'application/pdf')
-                                            <a href="{{ route('admin.documentos.preview', $documento) }}" 
-                                               class="btn btn-sm btn-outline-info" 
-                                               title="Vista previa"
-                                               target="_blank">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            @endif
-                                            
                                             <a href="{{ route('admin.documentos.descargar', $documento) }}" 
                                                class="btn btn-sm btn-outline-success" 
                                                title="Descargar">
@@ -264,34 +242,32 @@
                                 </tr>
                                 @endforeach
                             </tbody>
-                        </table>
-                    </div>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    Mostrando {{ $documentos->firstItem() }} a {{ $documentos->lastItem() }} de {{ $documentos->total() }} documentos
                 </div>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            Mostrando {{ $documentos->firstItem() }} a {{ $documentos->lastItem() }} de {{ $documentos->total() }} documentos
-                        </div>
-                        <div>
-                            {{ $documentos->links() }}
-                        </div>
-                    </div>
+                <div>
+                    {{ $documentos->links() }}
                 </div>
             </div>
-            @else
-            <div class="card shadow-sm">
-                <div class="card-body text-center py-5">
-                    <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
-                    <h5 class="text-muted">No hay documentos para revisar</h5>
-                    <p class="text-muted">No se encontraron documentos que coincidan con los filtros aplicados.</p>
-                    <button type="button" class="btn btn-outline-primary" onclick="limpiarFiltros()">
-                        <i class="fas fa-eraser me-1"></i>Limpiar filtros
-                    </button>
-                </div>
-            </div>
-            @endif
         </div>
     </div>
+    @else
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No hay documentos para revisar</h5>
+            <p class="text-muted">No se encontraron documentos que coincidan con los filtros aplicados.</p>
+            <button type="button" class="btn btn-outline-primary" onclick="limpiarFiltros()">
+                <i class="fas fa-eraser me-1"></i>Limpiar filtros
+            </button>
+        </div>
+    </div>
+    @endif
 </div>
 
 <!-- Formulario oculto para marcar en revisión -->
@@ -329,27 +305,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 @section('styles')
 <style>
-.avatar-sm {
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.btn-group .btn {
-    margin-right: 2px;
-}
-
-.btn-group .btn:last-child {
-    margin-right: 0;
-}
-
-.table td {
-    vertical-align: middle;
-}
-
-.badge {
-    font-size: 0.75em;
-}
+.stat-card i { font-size: 1.3rem; opacity: .9; }
+.avatar-sm { width: 32px; height: 32px; font-size: 14px; font-weight: bold; }
+.btn-group .btn { margin-right: 2px; }
+.btn-group .btn:last-child { margin-right: 0; }
+.table td { vertical-align: middle; }
+.badge { font-size: 0.75em; border-radius: 8px; }
+.table-hover tbody tr:hover { background-color: rgba(40, 167, 69, 0.05); }
+@media (max-width: 768px) { .stat-card .h4 { font-size: 1.1rem; } }
 </style>
 @endsection

@@ -1,73 +1,85 @@
 @extends('layouts.superadmin')
 
 @section('content')
-<div class="container-fluid">
-    <!-- Breadcrumbs -->
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('superadmin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Revisión de Documentos</li>
-        </ol>
-    </nav>
-
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2><i class="fas fa-file-alt me-2"></i>Revisión de Documentos</h2>
-            <p class="text-muted mb-0">Revisa y aprueba los documentos subidos por los aprendices</p>
-        </div>
-        <div class="text-end">
-            <span class="badge bg-warning fs-6">{{ $estadisticas['pendientes'] }} Pendientes</span>
+<div class="container-fluid p-4">
+    <!-- Header con gradiente -->
+    <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+        <div class="card-header text-white py-4" style="background: linear-gradient(135deg, #28a745, #20c997);">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="h4 fw-bold mb-1"><i class="fas fa-file-alt me-2"></i>Revisión de Documentos</h2>
+                    <p class="mb-0 opacity-75">Revisa y aprueba los documentos subidos por los aprendices</p>
+                </div>
+                <span class="badge bg-warning text-dark fs-6">{{ $estadisticas['pendientes'] }} Pendientes</span>
+            </div>
         </div>
     </div>
 
-    <!-- Estadísticas -->
-    <div class="row mb-4">
-        <div class="col-md-2 col-6 mb-3">
-            <div class="card border-primary text-center">
-                <div class="card-body py-3">
-                    <h4 class="text-primary mb-1">{{ $estadisticas['total'] }}</h4>
-                    <small class="text-muted">Total</small>
+    <!-- Estadísticas compactas -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-2">
+            <div class="card border-0 shadow-sm stat-card h-100">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">Total</div>
+                        <div class="h4 fw-bold text-primary mb-0">{{ $estadisticas['total'] }}</div>
+                    </div>
+                    <i class="fas fa-database text-primary"></i>
                 </div>
             </div>
         </div>
-        <div class="col-md-2 col-6 mb-3">
-            <div class="card border-warning text-center">
-                <div class="card-body py-3">
-                    <h4 class="text-warning mb-1">{{ $estadisticas['pendientes'] }}</h4>
-                    <small class="text-muted">Pendientes</small>
+        <div class="col-6 col-md-2">
+            <div class="card border-0 shadow-sm stat-card h-100">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">Pendientes</div>
+                        <div class="h4 fw-bold text-warning mb-0">{{ $estadisticas['pendientes'] }}</div>
+                    </div>
+                    <i class="fas fa-hourglass-half text-warning"></i>
                 </div>
             </div>
         </div>
-        <div class="col-md-2 col-6 mb-3">
-            <div class="card border-info text-center">
-                <div class="card-body py-3">
-                    <h4 class="text-info mb-1">{{ $estadisticas['en_revision'] }}</h4>
-                    <small class="text-muted">En Revisión</small>
+        <div class="col-6 col-md-2">
+            <div class="card border-0 shadow-sm stat-card h-100">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">En revisión</div>
+                        <div class="h4 fw-bold text-info mb-0">{{ $estadisticas['en_revision'] }}</div>
+                    </div>
+                    <i class="fas fa-search text-info"></i>
                 </div>
             </div>
         </div>
-        <div class="col-md-2 col-6 mb-3">
-            <div class="card border-success text-center">
-                <div class="card-body py-3">
-                    <h4 class="text-success mb-1">{{ $estadisticas['aprobados'] }}</h4>
-                    <small class="text-muted">Aprobados</small>
+        <div class="col-6 col-md-2">
+            <div class="card border-0 shadow-sm stat-card h-100">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">Aprobados</div>
+                        <div class="h4 fw-bold text-success mb-0">{{ $estadisticas['aprobados'] }}</div>
+                    </div>
+                    <i class="fas fa-check-circle text-success"></i>
                 </div>
             </div>
         </div>
-        <div class="col-md-2 col-6 mb-3">
-            <div class="card border-danger text-center">
-                <div class="card-body py-3">
-                    <h4 class="text-danger mb-1">{{ $estadisticas['rechazados'] }}</h4>
-                    <small class="text-muted">Rechazados</small>
+        <div class="col-6 col-md-2">
+            <div class="card border-0 shadow-sm stat-card h-100">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">Rechazados</div>
+                        <div class="h4 fw-bold text-danger mb-0">{{ $estadisticas['rechazados'] }}</div>
+                    </div>
+                    <i class="fas fa-times-circle text-danger"></i>
                 </div>
             </div>
         </div>
-        <div class="col-md-2 col-6 mb-3">
-            <div class="card border-secondary text-center">
-                <div class="card-body py-3">
-                    <h4 class="text-secondary mb-1">{{ $documentos->count() }}</h4>
-                    <small class="text-muted">Mostrados</small>
+        <div class="col-6 col-md-2">
+            <div class="card border-0 shadow-sm stat-card h-100">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small">Mostrados</div>
+                        <div class="h4 fw-bold text-secondary mb-0">{{ $documentos->count() }}</div>
+                    </div>
+                    <i class="fas fa-list text-secondary"></i>
                 </div>
             </div>
         </div>
@@ -163,17 +175,15 @@
         </div>
     @endif
 
-    <!-- Tabla de Documentos -->
+    <!-- Tabla de Documentos (misma estructura que administrador) -->
     @if($documentos->count() > 0)
     <div class="card shadow-sm">
         <div class="card-header bg-light">
-            <h6 class="mb-0">
-                <i class="fas fa-list me-2"></i>Documentos para Revisión
-            </h6>
+            <h6 class="mb-0"><i class="fas fa-list me-2"></i>Documentos para Revisión</h6>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
                             <th>Documento</th>
@@ -187,80 +197,58 @@
                     </thead>
                     <tbody>
                         @foreach($documentos as $documento)
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <i class="{{ $documento->icono }} fa-2x me-3 text-primary"></i>
-                                        <div>
-                                            <strong>{{ $documento->titulo }}</strong>
-                                            <br>
-                                            <small class="text-muted">{{ $documento->descripcion }}</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
-                                            {{ strtoupper(substr($documento->aprendiz->name, 0, 1)) }}
-                                        </div>
-                                        <div>
-                                            <strong>{{ $documento->aprendiz->name }}</strong>
-                                            <br><small class="text-muted">{{ $documento->aprendiz->email }}</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="badge bg-info">{{ $documento->unidad->nombre }}</span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-secondary">Fase {{ $documento->tipoDocumento->id ?? 'N/A' }}</span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-{{ $documento->estado_color }}">
-                                        {{ $documento->estado_texto }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <small class="text-muted">
-                                        {{ $documento->fecha_subida->format('d/m/Y H:i') }}
-                                        <br>
-                                        <span class="text-muted">{{ $documento->fecha_subida->diffForHumans() }}</span>
-                                    </small>
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{{ route('superadmin.documentos.show', $documento) }}" 
-                                           class="btn btn-sm btn-outline-primary" 
-                                           title="Ver detalles">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        
-                                        @if($documento->mime_type == 'application/pdf')
-                                        <a href="{{ route('superadmin.documentos.preview', $documento) }}" 
-                                           class="btn btn-sm btn-outline-info" 
-                                           title="Vista previa"
-                                           target="_blank">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        @endif
-                                        
-                                        <a href="{{ route('superadmin.documentos.descargar', $documento) }}" 
-                                           class="btn btn-sm btn-outline-success" 
-                                           title="Descargar">
-                                            <i class="fas fa-download"></i>
-                                        </a>
-                                        
-                                        @if($documento->estado == 'pendiente')
-                                        <button type="button" 
-                                                class="btn btn-sm btn-outline-warning" 
-                                                title="Marcar en revisión"
-                                                onclick="marcarEnRevision({{ $documento->id }})">
-                                            <i class="fas fa-clock"></i>
-                                        </button>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="{{ $documento->icono }} me-2"></i>
+                                    <div>
+                                        <strong>{{ $documento->titulo }}</strong>
+                                        @if($documento->descripcion)
+                                            <br><small class="text-muted">{{ Str::limit($documento->descripcion, 50) }}</small>
                                         @endif
                                     </div>
-                                </td>
-                            </tr>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                        {{ strtoupper(substr($documento->aprendiz->name, 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <strong>{{ $documento->aprendiz->name }}</strong>
+                                        <br><small class="text-muted">{{ $documento->aprendiz->email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-info">{{ $documento->unidad->nombre }}</span></td>
+                            <td><span class="badge bg-secondary">Fase {{ $documento->tipoDocumento->numero ?? 'N/A' }}</span></td>
+                            <td><span class="badge bg-{{ $documento->estado_color }}">{{ $documento->estado_texto }}</span></td>
+                            <td>
+                                <small class="text-muted">
+                                    {{ $documento->fecha_subida->format('d/m/Y H:i') }}
+                                    <br>
+                                    <span class="text-muted">{{ $documento->fecha_subida->diffForHumans() }}</span>
+                                </small>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('superadmin.documentos.show', $documento) }}" class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    @if($documento->mime_type == 'application/pdf')
+                                    
+                                    @endif
+                                    <a href="{{ route('superadmin.documentos.descargar', $documento) }}" class="btn btn-sm btn-outline-success" title="Descargar">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                    @if($documento->estado == 'pendiente')
+                                    <button type="button" class="btn btn-sm btn-outline-warning" title="Marcar en revisión" onclick="marcarEnRevision({{ $documento->id }})">
+                                        <i class="fas fa-clock"></i>
+                                    </button>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -312,6 +300,13 @@ function marcarEnRevision(documentoId) {
 @endsection
 
 <style>
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: translateY(0);} }
+.animate-slide-up { animation: slideUp 0.6s ease-out forwards; }
+.fixed-grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1rem; position: relative; }
+.fixed-card-slot { min-height: 320px; transition: opacity 0.3s ease, visibility 0.3s ease; }
+@media (max-width: 1200px) { .fixed-grid-container { grid-template-columns: repeat(3, 1fr);} }
+@media (max-width: 768px) { .fixed-grid-container { grid-template-columns: repeat(2, 1fr);} }
+@media (max-width: 576px) { .fixed-grid-container { grid-template-columns: 1fr;} }
 .avatar-sm {
     width: 32px;
     height: 32px;
@@ -319,36 +314,8 @@ function marcarEnRevision(documentoId) {
     font-weight: bold;
 }
 
-.table th {
-    border-top: none;
-    font-weight: 600;
-    color: #495057;
-}
-
-.table td {
-    vertical-align: middle;
-}
-
-.btn-group .btn {
-    margin-right: 2px;
-}
-
-.btn-group .btn:last-child {
-    margin-right: 0;
-}
-
-.card {
-    border: none;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-}
-
-.card-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.badge {
-    font-size: 0.75em;
-    padding: 0.375em 0.75em;
-}
+.btn-group .btn { margin-right: 2px; }
+.btn-group .btn:last-child { margin-right: 0; }
+.badge { font-size: 0.75em; padding: 0.375em 0.75em; border-radius: 8px; }
 </style>
+

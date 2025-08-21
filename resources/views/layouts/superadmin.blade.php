@@ -77,6 +77,7 @@
         
         .main-content {
             margin-left: 280px;
+            width: calc(100% - 280px);
             min-height: 100vh;
             overflow-y: auto !important;
             position: relative;
@@ -85,7 +86,7 @@
         }
         
         .content-wrapper {
-            padding: 2.5rem;
+            padding: 0;
             max-width: 100%;
         }
 

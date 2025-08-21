@@ -210,14 +210,7 @@
                         </a>
                     </div>
 
-                    @if($documento->mime_type == 'application/pdf')
-                        <div class="mb-3">
-                            <a href="{{ route('superadmin.documentos.preview', $documento) }}" 
-                               class="btn btn-outline-info btn-block mb-2" target="_blank">
-                                <i class="fas fa-eye"></i> Vista Previa PDF
-                            </a>
-                        </div>
-                    @endif
+                    
 
                     <!-- Información del revisor -->
                     @if($documento->revisor)
