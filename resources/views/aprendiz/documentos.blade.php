@@ -136,6 +136,11 @@
                                                 <a href="{{ Storage::url($doc->ruta_archivo) }}" download class="btn btn-outline-success">
                                                     <i class="fas fa-download"></i>
                                                 </a>
+                                                @if($doc->estado == 'en_revision' || $doc->estado == 'pendiente')
+                                                    <button class="btn btn-outline-warning" onclick="editarDocumento({{ $doc->id }}, '{{ $doc->tipoDocumento->nombre ?? 'N/A' }}', '{{ $doc->descripcion ?? '' }}')" data-bs-toggle="modal" data-bs-target="#editarDocumentoModal">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                @endif
                                                 @if($doc->estado == 'rechazado')
                                                     <button class="btn btn-outline-warning" onclick="resubirDocumento({{ $doc->id }})">
                                                         <i class="fas fa-redo"></i>
@@ -217,6 +222,63 @@
         </div>
     </div>
 </div>
+
+<!-- Modal para editar documento -->
+<div class="modal fade" id="editarDocumentoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit me-2"></i>Editar Documento
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formEditarDocumento" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="documento_id" id="editDocumentoId">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Documento</label>
+                        <input type="text" class="form-control" id="editTipoDocumento" readonly>
+                        <small class="text-muted">No se puede cambiar el tipo de documento</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Archivo Actual</label>
+                        <input type="text" class="form-control" id="editArchivoActual" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nuevo Archivo (Opcional)</label>
+                        <input type="file" name="documento" class="form-control" accept=".pdf,.doc,.docx">
+                        <div class="form-text">
+                            Deja vacío para mantener el archivo actual. Formatos permitidos: PDF, DOC, DOCX. Tamaño máximo: 10MB
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea name="descripcion" class="form-control" rows="3" id="editDescripcion"
+                                  placeholder="Agrega una descripción o comentarios sobre el documento"></textarea>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Nota:</strong> Solo puedes editar documentos que estén en revisión o pendientes. 
+                        Una vez aprobados o rechazados, no se pueden modificar.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-save me-2"></i>Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -230,6 +292,22 @@ function seleccionarTipoDocumento(id, nombre) {
 function resubirDocumento(docId) {
     // Lógica para resubir documento rechazado
     alert('Funcionalidad de resubir documento en desarrollo');
+}
+
+function editarDocumento(docId, tipoDocumento, descripcion) {
+    // Actualizar la acción del formulario
+    document.getElementById('formEditarDocumento').action = '{{ route("aprendiz.documentos.update", "") }}/' + docId;
+    
+    // Llenar los campos del modal
+    document.getElementById('editDocumentoId').value = docId;
+    document.getElementById('editTipoDocumento').value = tipoDocumento;
+    document.getElementById('editDescripcion').value = descripcion;
+    
+    // Obtener el nombre del archivo actual desde la tabla
+    const row = event.target.closest('tr');
+    const archivoCell = row.querySelector('td:nth-child(2)');
+    const nombreArchivo = archivoCell.textContent.trim();
+    document.getElementById('editArchivoActual').value = nombreArchivo;
 }
 </script>
 @endsection

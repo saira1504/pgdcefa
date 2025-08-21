@@ -100,6 +100,7 @@
         .header-info .badge {
             font-size: 0.8rem;
         }
+        
     </style>
 </head>
 <body>

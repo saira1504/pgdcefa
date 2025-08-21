@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User; // Asegúrate de importar el modelo User
+use App\Models\Area;
 
 class ListadoMaestro extends Model
 {
@@ -33,12 +34,18 @@ class ListadoMaestro extends Model
         'aprobacion_cargo',
         'aprobacion_firma',
         'estado',
-        'creado_por'
+        'creado_por',
+        'area_id'
     ];
 
     // Relación con el usuario que creó el registro
     public function creador()
     {
         return $this->belongsTo(User::class, 'creado_por');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'area_id');
     }
 }

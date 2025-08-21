@@ -73,6 +73,15 @@
                 </a>
             </li>
 
+            <!-- Áreas -->
+            <li class="nav-item">
+                <a href="{{ route('superadmin.areas.index') }}" 
+                   class="nav-link {{ request()->routeIs('superadmin.areas.*') ? 'active' : '' }}">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Áreas</span>
+                </a>
+            </li>
+
             <!-- Unidades Productivas -->
             <li class="nav-item">
                 <a href="{{ route('superadmin.unidades-productivas.index') }}" 

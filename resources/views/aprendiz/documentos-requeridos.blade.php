@@ -392,10 +392,19 @@
                                     <div class="card-footer bg-transparent border-0 p-3">
                                         <div class="d-grid gap-2">
                                             @if($doc->archivo_original)
-                                                <a href="{{ Storage::url($doc->archivo_path) }}" 
-                                                   class="btn btn-outline-success btn-sm" target="_blank">
-                                                    <i class="fas fa-download me-1"></i>Descargar
-                                                </a>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{{ Storage::url($doc->archivo_path) }}" 
+                                                       class="btn btn-outline-success btn-sm" target="_blank">
+                                                        <i class="fas fa-download me-1"></i>Descargar
+                                                    </a>
+                                                    @if(in_array($doc->estado ?? 'pendiente', ['pendiente', 'en_revision', 'subido']))
+                                                        <button class="btn btn-outline-warning btn-sm" 
+                                                                onclick="editarDocumentoRequerido('{{ $doc->id }}', '{{ $doc->titulo ?? $doc->nombre }}', '{{ $doc->descripcion ?? '' }}', '{{ $doc->archivo_original ?? '' }}')" 
+                                                                data-bs-toggle="modal" data-bs-target="#modalEditarDocumentoRequerido">
+                                                            <i class="fas fa-edit me-1"></i>Editar
+                                                        </button>
+                                                    @endif
+                                                </div>
                                             @else
                                                 <button class="btn btn-success btn-sm" 
                                                         onclick="abrirModalSubida('{{ $doc->id }}', '{{ $doc->titulo ?? $doc->nombre }}', '{{ $fase->id }}', 'Fase {{ $fase->numero }}')">
@@ -604,6 +613,71 @@
         </div>
     </div>
 </div>
+
+<!-- Modal para editar documento requerido -->
+<div class="modal fade" id="modalEditarDocumentoRequerido" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header text-white py-4 border-0" 
+                 style="background: linear-gradient(135deg, #ffc107, #ff8f00);">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-edit fa-2x me-3"></i>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0">Editar Documento Requerido</h5>
+                        <small class="opacity-75">Modifica el documento y su información</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formEditarDocumentoRequerido" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="documento_requerido_id" id="editDocumentoRequeridoId">
+                
+                <div class="modal-body p-4">
+                    <div class="alert alert-warning border-0" style="background: rgba(255, 193, 7, 0.1);">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Documento:</strong> <span id="editNombreDocumento"></span><br>
+                        <strong>Archivo actual:</strong> <span id="editArchivoActual"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-file text-warning me-1"></i>Nuevo Archivo (Opcional)
+                        </label>
+                        <input type="file" name="archivo" class="form-control form-control-lg" accept=".pdf,.doc,.docx,.xls,.xlsx">
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Deja vacío para mantener el archivo actual. Formatos permitidos: PDF, DOC, DOCX, XLS, XLSX. Tamaño máximo: 10MB
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-comment text-warning me-1"></i>Descripción/Comentarios
+                        </label>
+                        <textarea name="descripcion" id="editDescripcionDocumento" class="form-control" rows="3" 
+                                  placeholder="Agrega una descripción o comentarios sobre el documento"></textarea>
+                    </div>
+
+                    <div class="alert alert-info border-0" style="background: rgba(23, 162, 184, 0.1);">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Nota:</strong> Solo puedes editar documentos que estén pendientes, en revisión o subidos. 
+                        Si cambias el archivo, el documento volverá al estado "pendiente" para nueva revisión.
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary btn-lg" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-warning btn-lg">
+                        <i class="fas fa-save me-2"></i>Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 <!-- JAVASCRIPT DIRECTO EN EL HEAD PARA ASEGURAR QUE FUNCIONE -->
@@ -804,6 +878,18 @@ function verDocumento(documentoId) {
     
     const modal = new bootstrap.Modal(document.getElementById('modalVerDocumento'));
     modal.show();
+}
+
+// Función para editar documento requerido
+function editarDocumentoRequerido(docId, nombreDocumento, descripcion, archivoActual) {
+    // Actualizar la acción del formulario
+    document.getElementById('formEditarDocumentoRequerido').action = '{{ route("aprendiz.documentos-requeridos.update", "") }}/' + docId;
+    
+    // Llenar los campos del modal
+    document.getElementById('editDocumentoRequeridoId').value = docId;
+    document.getElementById('editNombreDocumento').textContent = nombreDocumento;
+    document.getElementById('editArchivoActual').textContent = archivoActual || 'Sin archivo';
+    document.getElementById('editDescripcionDocumento').value = descripcion;
 }
 </script>
 

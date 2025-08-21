@@ -90,6 +90,8 @@
             max-width: 100%;
         }
 
+        
+
         /* Cards mejoradas */
         .card-modern {
             background: rgba(255, 255, 255, 0.95);
@@ -431,6 +433,8 @@
                 observer.observe(el);
             });
         });
+
+        
     </script>
     
     @stack('scripts')

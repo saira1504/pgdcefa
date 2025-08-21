@@ -4,14 +4,14 @@
 
 @section('content')
 <!-- Header compacto -->
-<div class="d-flex justify-content-between align-items-center mb-4 p-4">
+<div class="d-flex justify-content-between align-items-center mb-2 p-4">
     <div>
         <h1 class="h3 fw-bold mb-1 text-primary">
             <i class="fas fa-clipboard-list me-2"></i>Listado Maestro
         </h1>
         <p class="text-muted small mb-0">Como administrador, puedes subir documentos que serán revisados por el super administrador</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 align-items-center">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregar">
             ➕ Agregar Documento
         </button>
@@ -116,9 +116,29 @@
 <div class="mx-4">
     <div class="card shadow-sm border-0">
         <div class="card-header bg-light border-0">
-            <h6 class="mb-0">
-                <i class="fas fa-list me-2"></i>Documentos del Listado Maestro
-            </h6>
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Documentos del Listado Maestro
+                </h6>
+                <div class="d-flex align-items-center">
+                    <form method="GET" action="{{ route('admin.listado_maestro') }}" class="d-flex align-items-center">
+                        <label class="me-2 mb-0 text-muted">Filtrar por Área:</label>
+                        <select name="area" class="form-select form-select-sm me-2" style="width: 200px;" onchange="this.form.submit()">
+                            <option value="">Todas las áreas</option>
+                            @foreach($areas as $area)
+                                <option value="{{ $area->id }}" {{ $areaId == $area->id ? 'selected' : '' }}>
+                                    {{ $area->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @if($areaId)
+                            <a href="{{ route('admin.listado_maestro') }}" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-times me-1"></i>Limpiar filtro
+                            </a>
+                        @endif
+                    </form>
+                </div>
+            </div>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -128,6 +148,7 @@
                             <th>Tipo Proceso</th>
                             <th>Nombre Proceso</th>
                             <th>Subproceso/SIG/Subsistema</th>
+                            <th>Área</th>
                             <th>Documentos</th>
                             <th>Nº</th>
                             <th>Responsable</th>
@@ -135,8 +156,9 @@
                             <th>Nombre Documento</th>
                             <th>Código</th>
                             <th>Versión</th>
-                            <th>Fecha Creación</th>
-                            <th>Estado</th>
+                                                    <th>Fecha Creación</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -145,6 +167,7 @@
                             <td>{{ $doc->tipo_proceso }}</td>
                             <td>{{ $doc->nombre_proceso }}</td>
                             <td>{{ $doc->subproceso_sig_subsistema }}</td>
+                            <td>{{ $doc->area->nombre ?? 'N/A' }}</td>
                             <td>
                                 @if($doc->documentos)
                                     <div class="documento-btn-container">
@@ -178,6 +201,20 @@
                                     <br><small class="text-muted">Aprobado el {{ \Carbon\Carbon::parse($doc->aprobacion_fecha)->format('d/m/Y') }}</small>
                                 @endif
                             </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-primary btn-sm" onclick="editarDocumento({{ $doc->id }})" data-bs-toggle="modal" data-bs-target="#modalEditar">
+                                        <i class="fas fa-edit me-1"></i>Editar
+                                    </button>
+                                    <form action="{{ route('admin.listado_maestro.destroy', $doc->id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este documento?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm" type="submit">
+                                            <i class="fas fa-trash me-1"></i>Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -207,6 +244,18 @@
                 <div class="col-md-6"><label>Nombre del Proceso</label><input type="text" name="nombre_proceso" class="form-control" required></div>
                 <div class="col-md-6"><label>Subproceso/SIG/ Subsistema</label><input type="text" name="subproceso_sig_subsistema" class="form-control"></div>
                 <div class="col-md-6"><label>Documentos</label><input type="file" name="documentos" class="form-control" id="documentos" accept=".pdf,.doc,.docx" required></div>
+                <div class="col-md-6">
+                    <label>Área</label>
+                    <select name="area_id" class="form-control" required>
+                        <option value="">Seleccione un área</option>
+                        @php
+                            $areasList = \App\Models\Area::where('activo', true)->orderBy('nombre')->get();
+                        @endphp
+                        @foreach($areasList as $area)
+                            <option value="{{ $area->id }}">{{ $area->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="col-md-3"><label>Nº</label><input type="text" name="numero_doc" class="form-control"></div>
                 <div class="col-md-3"><label>Responsable</label><input type="text" name="responsable" class="form-control" required></div>
                 <div class="col-md-3"><label>Tipo Documento</label><input type="text" name="tipo_documento" class="form-control" id="tipoDocumento" readonly></div>
@@ -224,6 +273,53 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             <button type="submit" class="btn btn-primary">📤 Enviar para Revisión</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Documento -->
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">✏️ Editar Documento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="formEditar" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6"><label>Tipo de Proceso</label><input type="text" name="tipo_proceso" class="form-control" id="edit_tipo_proceso" required></div>
+                <div class="col-md-6"><label>Nombre del Proceso</label><input type="text" name="nombre_proceso" class="form-control" id="edit_nombre_proceso" required></div>
+                <div class="col-md-6"><label>Subproceso/SIG/ Subsistema</label><input type="text" name="subproceso_sig_subsistema" class="form-control" id="edit_subproceso_sig_subsistema"></div>
+                <div class="col-md-6"><label>Documentos</label><input type="file" name="documentos" class="form-control" id="edit_documentos" accept=".pdf,.doc,.docx"></div>
+                <div class="col-md-6">
+                    <label>Área</label>
+                    <select name="area_id" class="form-control" id="edit_area_id" required>
+                        <option value="">Seleccione un área</option>
+                        @php
+                            $areasList = \App\Models\Area::where('activo', true)->orderBy('nombre')->get();
+                        @endphp
+                        @foreach($areasList as $area)
+                            <option value="{{ $area->id }}">{{ $area->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3"><label>Nº</label><input type="text" name="numero_doc" class="form-control" id="edit_numero_doc"></div>
+                <div class="col-md-3"><label>Responsable</label><input type="text" name="responsable" class="form-control" id="edit_responsable" required></div>
+                <div class="col-md-3"><label>Tipo Documento</label><input type="text" name="tipo_documento" class="form-control" id="edit_tipo_documento" readonly></div>
+                <div class="col-md-3"><label>Nombre Documento</label><input type="text" name="nombre_documento" class="form-control" id="edit_nombre_documento" readonly></div>
+                <div class="col-md-3"><label>Código</label><input type="text" name="codigo" class="form-control" id="edit_codigo"></div>
+                <div class="col-md-3"><label>Versión</label><input type="text" name="version" class="form-control" id="edit_version"></div>
+                <div class="col-md-3"><label>Fecha de Creación</label><input type="date" name="fecha_creacion" class="form-control" id="edit_fecha_creacion"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
         </div>
       </form>
     </div>
@@ -378,6 +474,16 @@ $(document).ready(function() {
             $('#tipoDocumento').val(tipoDocumento);
         }
     });
+
+    // Función para editar documento
+    window.editarDocumento = function(id) {
+        // Aquí deberías hacer una llamada AJAX para obtener los datos del documento
+        // Por ahora, solo actualizamos la acción del formulario
+        $('#formEditar').attr('action', '{{ route("admin.listado_maestro.update", "") }}/' + id);
+        
+        // También podrías precargar los datos del documento aquí
+        // usando una llamada AJAX al controlador
+    }
 });
 </script>
 @endpush

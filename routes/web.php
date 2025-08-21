@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AprendizController;
 use App\Http\Controllers\PhaseController;
 use App\Http\Controllers\MaestroController;
+use App\Http\Controllers\AreaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +43,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // =================== LISTADO MAESTRO ===================
     Route::get('/admin/listado_maestro', [MaestroController::class, 'adminIndex'])->name('admin.listado_maestro');
     Route::post('/admin/listado_maestro', [MaestroController::class, 'store'])->name('admin.listado_maestro.store');
+    Route::put('/admin/listado_maestro/{id}', [MaestroController::class, 'update'])->name('admin.listado_maestro.update');
+    Route::delete('/admin/listado_maestro/{id}', [MaestroController::class, 'destroy'])->name('admin.listado_maestro.destroy');
+    
+    // =================== AREAS (Admin) ===================
+    Route::get('/admin/areas', [AreaController::class, 'adminIndex'])->name('admin.areas.index');
+    Route::post('/admin/areas', [AreaController::class, 'adminStore'])->name('admin.areas.store');
+    Route::put('/admin/areas/{area}', [AreaController::class, 'adminUpdate'])->name('admin.areas.update');
+    Route::delete('/admin/areas/{area}', [AreaController::class, 'adminDestroy'])->name('admin.areas.destroy');
     
     // =================== NOTIFICACIONES ===================
     Route::post('/admin/notifications/{id}/mark-as-read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('admin.notifications.mark-as-read');
@@ -68,11 +77,13 @@ Route::middleware(['auth', 'role:aprendiz'])->group(function () {
     Route::get('/aprendiz/mi-unidad', [AprendizController::class, 'miUnidad'])->name('aprendiz.mi-unidad');
     Route::get('/aprendiz/documentos', [AprendizController::class, 'documentos'])->name('aprendiz.documentos');
     Route::post('/aprendiz/documentos/subir', [AprendizController::class, 'subirDocumento'])->name('aprendiz.documentos.subir');
+    Route::put('/aprendiz/documentos/{id}', [AprendizController::class, 'actualizarDocumento'])->name('aprendiz.documentos.update');
     Route::get('/aprendiz/progreso', [AprendizController::class, 'progreso'])->name('aprendiz.progreso');
 
     // Rutas para documentos requeridos
     Route::get('/aprendiz/documentos-requeridos', [AprendizController::class, 'documentosRequeridos'])->name('aprendiz.documentos-requeridos');
     Route::post('/aprendiz/documentos-requeridos/subir', [AprendizController::class, 'subirDocumentoRequerido'])->name('aprendiz.documentos-requeridos.subir');
+    Route::put('/aprendiz/documentos-requeridos/{id}', [AprendizController::class, 'actualizarDocumentoRequerido'])->name('aprendiz.documentos-requeridos.update');
     Route::get('/aprendiz/documentos/descargar/{documentoId}', [AprendizController::class, 'descargarDocumento'])->name('aprendiz.documentos.descargar');
 
     // Rutas de phases para el aprendiz
@@ -128,6 +139,14 @@ Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->name('supe
 
     // =================== LISTADO MAESTRO SUPERADMIN ===================
     Route::get('/listado_maestro', [MaestroController::class, 'superadminIndex'])->name('listado_maestro.index');
+    Route::put('/listado_maestro/{id}', [MaestroController::class, 'update'])->name('listado_maestro.update');
+    Route::delete('/listado_maestro/{id}', [MaestroController::class, 'destroy'])->name('listado_maestro.destroy');
     Route::post('/listado_maestro/{id}/aprobar', [MaestroController::class, 'aprobar'])->name('listado_maestro.aprobar');
     Route::post('/listado_maestro/{id}/rechazar', [MaestroController::class, 'rechazar'])->name('listado_maestro.rechazar');
+
+    // =================== AREAS (Superadmin) ===================
+    Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
+    Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
+    Route::put('/areas/{area}', [AreaController::class, 'update'])->name('areas.update');
+    Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
 });

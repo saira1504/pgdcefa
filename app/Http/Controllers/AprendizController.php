@@ -482,4 +482,108 @@ class AprendizController extends Controller
             return 'En Progreso';
         }
     }
+
+    public function actualizarDocumento(Request $request, $id)
+    {
+        $request->validate([
+            'documento' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'descripcion' => 'nullable|string|max:500'
+        ]);
+
+        $aprendiz = Auth::user();
+        
+        // Buscar el documento del aprendiz
+        $documento = \App\Models\DocumentoAprendiz::where('id', $id)
+            ->where('aprendiz_id', $aprendiz->id)
+            ->firstOrFail();
+
+        // Verificar que el documento esté en un estado editable
+        if (!in_array($documento->estado, ['en_revision', 'pendiente'])) {
+            return redirect()->back()->with('error', 'Solo puedes editar documentos que estén en revisión o pendientes.');
+        }
+
+        $data = [];
+
+        // Actualizar descripción si se proporciona
+        if ($request->has('descripcion')) {
+            $data['descripcion'] = $request->descripcion;
+        }
+
+        // Manejar nuevo archivo si se proporciona
+        if ($request->hasFile('documento')) {
+            $file = $request->file('documento');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            
+            // Eliminar archivo anterior si existe
+            if ($documento->ruta_archivo && Storage::exists($documento->ruta_archivo)) {
+                Storage::delete($documento->ruta_archivo);
+            }
+            
+            // Guardar nuevo archivo
+            $rutaArchivo = $file->storeAs('documentos_aprendiz', $fileName, 'public');
+            $data['ruta_archivo'] = $rutaArchivo;
+            $data['nombre_archivo'] = $fileName;
+            
+            // Resetear estado a pendiente si se cambia el archivo
+            $data['estado'] = 'pendiente';
+        }
+
+        // Actualizar el documento
+        $documento->update($data);
+
+        return redirect()->back()->with('success', 'Documento actualizado correctamente.');
+    }
+
+    public function actualizarDocumentoRequerido(Request $request, $id)
+    {
+        $request->validate([
+            'archivo' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
+            'descripcion' => 'nullable|string|max:500'
+        ]);
+
+        $aprendiz = Auth::user();
+        
+        // Buscar el documento requerido del aprendiz
+        // Nota: Esto asume que tienes un modelo DocumentoRequerido o similar
+        // Si usas un modelo diferente, ajusta según tu estructura
+        $documento = \App\Models\DocumentoAprendiz::where('id', $id)
+            ->where('aprendiz_id', $aprendiz->id)
+            ->firstOrFail();
+
+        // Verificar que el documento esté en un estado editable
+        if (!in_array($documento->estado, ['pendiente', 'en_revision', 'subido'])) {
+            return redirect()->back()->with('error', 'Solo puedes editar documentos que estén pendientes, en revisión o subidos.');
+        }
+
+        $data = [];
+
+        // Actualizar descripción si se proporciona
+        if ($request->has('descripcion')) {
+            $data['descripcion'] = $request->descripcion;
+        }
+
+        // Manejar nuevo archivo si se proporciona
+        if ($request->hasFile('archivo')) {
+            $file = $request->file('archivo');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            
+            // Eliminar archivo anterior si existe
+            if ($documento->archivo_path && Storage::exists($documento->archivo_path)) {
+                Storage::delete($documento->archivo_path);
+            }
+            
+            // Guardar nuevo archivo
+            $rutaArchivo = $file->storeAs('documentos_requeridos', $fileName, 'public');
+            $data['archivo_path'] = $rutaArchivo;
+            $data['archivo_original'] = $fileName;
+            
+            // Resetear estado a pendiente si se cambia el archivo
+            $data['estado'] = 'pendiente';
+        }
+
+        // Actualizar el documento
+        $documento->update($data);
+
+        return redirect()->back()->with('success', 'Documento requerido actualizado correctamente.');
+    }
 }

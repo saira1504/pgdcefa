@@ -80,6 +80,17 @@
                     <span>Listado Maestro</span>
                 </a>
             </li>
+
+            <!-- Áreas (enlace a filtro dentro de Listado Maestro) -->
+            <li class="nav-item">
+                <a href="{{ route('admin.areas.index') }}" 
+                   class="nav-link {{ request()->routeIs('admin.areas.*') ? 'active' : '' }}">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Áreas</span>
+                </a>
+            </li>
+
+            
         </ul>
     </nav>
 
