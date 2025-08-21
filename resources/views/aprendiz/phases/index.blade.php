@@ -117,9 +117,7 @@
                                     <th class="fw-semibold">
                                         <i class="fas fa-calendar-minus me-1"></i>Fecha de Fin
                                     </th>
-                                    <th class="fw-semibold">
-                                        <i class="fas fa-chart-line me-1"></i>Progreso
-                                    </th>
+                                    
                                     <th class="fw-semibold">
                                         <i class="fas fa-info-circle me-1"></i>Estado
                                     </th>
@@ -214,33 +212,7 @@
                                         @endif
                                     </td>
 
-                                    <!-- PROGRESO -->
-                                    <td>
-                                        @if($phase->fecha_inicio && $phase->fecha_fin)
-                                            @php
-                                                $now = now();
-                                                $start = $phase->fecha_inicio;
-                                                $end = $phase->fecha_fin;
-                                                $total = $end->diffInDays($start);
-                                                $elapsed = max(0, $now->diffInDays($start));
-                                                $progress = $total > 0 ? min(100, max(0, ($elapsed / $total) * 100)) : 0;
-                                            @endphp
-                                            <div class="progress mb-1" style="height: 8px;">
-                                                <div class="progress-bar bg-success" 
-                                                     role="progressbar" 
-                                                     style="width: {{ $progress }}%" 
-                                                     aria-valuenow="{{ $progress }}" 
-                                                     aria-valuemin="0" 
-                                                     aria-valuemax="100">
-                                                </div>
-                                            </div>
-                                            <small class="text-muted">{{ number_format($progress, 1) }}% completado</small>
-                                        @else
-                                            <span class="text-muted">
-                                                <i class="fas fa-minus me-1"></i>Sin fechas
-                                            </span>
-                                        @endif
-                                    </td>
+                                    
 
                                     <!-- ESTADO -->
                                     <td>
@@ -417,20 +389,10 @@
                                 }
                             @endphp
 
-                            <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="mb-2">
                                 <span class="badge bg-{{ $color }} fs-6">
                                     <i class="fas fa-{{ $icon }} me-1"></i>{{ $status }}
                                 </span>
-                                <strong>{{ number_format($progress, 1) }}% completado</strong>
-                            </div>
-                            <div class="progress" style="height: 12px;">
-                                <div class="progress-bar bg-{{ $color }}" 
-                                     role="progressbar" 
-                                     style="width: {{ $progress }}%" 
-                                     aria-valuenow="{{ $progress }}" 
-                                     aria-valuemin="0" 
-                                     aria-valuemax="100">
-                                </div>
                             </div>
                             <div class="row mt-3 text-center">
                                 <div class="col-4">

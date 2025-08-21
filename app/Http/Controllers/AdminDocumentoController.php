@@ -274,11 +274,11 @@ class AdminDocumentoController extends Controller
         }
         // Superadmin puede descargar cualquier documento
 
-        if (!Storage::exists($documento->archivo_path)) {
+        if (!Storage::disk('public')->exists($documento->archivo_path)) {
             abort(404, 'El archivo no existe.');
         }
 
-        return Storage::download($documento->archivo_path, $documento->archivo_original);
+        return Storage::disk('public')->download($documento->archivo_path, $documento->archivo_original);
     }
 
     /**
@@ -297,7 +297,7 @@ class AdminDocumentoController extends Controller
         }
         // Superadmin puede ver cualquier documento
 
-        if (!Storage::exists($documento->archivo_path)) {
+        if (!Storage::disk('public')->exists($documento->archivo_path)) {
             abort(404, 'El archivo no existe.');
         }
 
@@ -306,7 +306,7 @@ class AdminDocumentoController extends Controller
             return redirect()->route('admin.documentos.descargar', $documento);
         }
 
-        $url = Storage::url($documento->archivo_path);
+        $url = Storage::disk('public')->url($documento->archivo_path);
         
         // Determinar qué vista usar según el rol
         $view = $admin->role === 'superadmin' ? 'superadmin.documentos.preview' : 'admin.documentos.preview';

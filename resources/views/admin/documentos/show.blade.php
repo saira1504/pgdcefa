@@ -2,14 +2,7 @@
 
 @section('content')
 <div class="container-fluid p-4">
-            <!-- Breadcrumb -->
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.documentos.index') }}">Documentos</a></li>
-                    <li class="breadcrumb-item active">Revisar Documento</li>
-                </ol>
-            </nav>
+          
 
             <!-- Alertas -->
             @if(session('success'))

@@ -3,13 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <!-- Breadcrumbs -->
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('superadmin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('superadmin.documentos.index') }}">Documentos de Aprendices</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Detalle del Documento</li>
-        </ol>
-    </nav>
+ 
 
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
