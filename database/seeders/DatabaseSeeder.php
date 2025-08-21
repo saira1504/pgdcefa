@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             PhaseSeeder::class,
             TipoDocumentoSeeder::class,
             DocumentoAprendizSeeder::class,
+            ListadoMaestroSeeder::class,
         ]);
     }
 }

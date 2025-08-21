@@ -50,16 +50,6 @@
                     <span>Dashboard</span>
                 </a>
             </li>
-            
-            <!-- Unidades Productivas -->
-            <li class="nav-item">
-                <a href="{{ route('admin.unidades-productivas') }}" 
-                   class="nav-link {{ request()->routeIs('admin.unidades-productivas') ? 'active' : '' }}">
-                    <i class="fas fa-industry"></i>
-                    <span>Unidades Productivas</span>
-                </a>
-            </li>
-            
             <!-- Revisión de Documentos -->
             <li class="nav-item">
                 <a href="{{ route('admin.documentos.index') }}" 
@@ -109,5 +99,7 @@
 
 <!-- JavaScript al final del body -->
 <script src="{{ asset('js/sidebar-functions.js') }}"></script>
+
+
 
 

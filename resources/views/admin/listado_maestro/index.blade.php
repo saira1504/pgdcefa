@@ -1,104 +1,190 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Listado Maestro - Administrador')
 
 @section('content')
-<div class="container">
-    <h2 class="mb-4">📋 Listado Maestro - Admin</h2>
-    <p class="text-muted mb-4">Como administrador, puedes subir documentos que serán revisados por el super administrador.</p>
+<!-- Header compacto -->
+<div class="d-flex justify-content-between align-items-center mb-4 p-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1 text-primary">
+            <i class="fas fa-clipboard-list me-2"></i>Listado Maestro
+        </h1>
+        <p class="text-muted small mb-0">Como administrador, puedes subir documentos que serán revisados por el super administrador</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregar">
+            ➕ Agregar Documento
+        </button>
+    </div>
+</div>
 
-    <!-- Botón modal -->
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAgregar">
-        ➕ Agregar Documento
-    </button>
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show mx-4" role="alert">
+        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    <!-- Notificaciones discretas -->
-    @php
-        $notificaciones = Auth::user()->notifications()->where('type', 'App\Notifications\DocumentoProcesadoNotification')->take(3)->get();
-    @endphp
-    
-    @if($notificaciones->count() > 0)
-        <div id="notificaciones-container" class="mb-3">
-            @foreach($notificaciones as $index => $notif)
-                @php
-                    $data = $notif->data;
-                    $color = $data['accion'] === 'aprobado' ? 'success' : 'danger';
-                    $icono = $data['accion'] === 'aprobado' ? '✅' : '❌';
-                @endphp
-                <div class="notification-toast alert alert-{{ $color }} alert-dismissible fade show" 
-                     style="font-size: 0.85rem; padding: 0.5rem 0.75rem; margin-bottom: 0.5rem; opacity: 0.9;"
-                     data-delay="{{ 3000 + ($index * 1000) }}">
-                    <div class="d-flex align-items-center">
-                        <span class="me-2" style="font-size: 0.9rem;">{{ $icono }}</span>
-                        <div class="flex-grow-1">
-                            <small class="fw-bold">{{ $data['titulo'] }}</small>
-                            <small class="text-muted ms-2">{{ \Carbon\Carbon::parse($data['fecha'])->diffForHumans() }}</small>
-                        </div>
-                        <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close" style="font-size: 0.7rem;"></button>
+<!-- 📊 ESTADÍSTICAS HORIZONTALES -->
+<div class="row mx-4 mb-4">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="me-3 icon-container">
+                    <div class="icon-circle bg-warning-light">
+                        <i class="fas fa-clock fa-2x text-warning"></i>
                     </div>
                 </div>
-            @endforeach
+                <div class="flex-grow-1 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-0 small fw-semibold">Pendientes</h6>
+                        <small class="text-muted">Por revisar</small>
+                    </div>
+                    <div class="text-end">
+                        <h2 class="mb-0 fw-bold text-warning">{{ $documentos->where('estado', 'pendiente')->count() }}</h2>
+                    </div>
+                </div>
+            </div>
         </div>
-    @endif
+    </div>
+    
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="me-3 icon-container">
+                    <div class="icon-circle bg-success-light">
+                        <i class="fas fa-check-circle fa-2x text-success"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-0 small fw-semibold">Aprobados</h6>
+                        <small class="text-muted">Documentos</small>
+                    </div>
+                    <div class="text-end">
+                        <h2 class="mb-0 fw-bold text-success">{{ $documentos->where('estado', 'aprobado')->count() }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="me-3 icon-container">
+                    <div class="icon-circle bg-danger-light">
+                        <i class="fas fa-times-circle fa-2x text-danger"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-0 small fw-semibold">Rechazados</h6>
+                        <small class="text-muted">Documentos</small>
+                    </div>
+                    <div class="text-end">
+                        <h2 class="mb-0 fw-bold text-danger">{{ $documentos->where('estado', 'rechazado')->count() }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+        <div class="card border-0 shadow-sm stat-card">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="me-3 icon-container">
+                    <div class="icon-circle bg-info-light">
+                        <i class="fas fa-file-alt fa-2x text-info"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-0 small fw-semibold">Total</h6>
+                        <small class="text-muted">Documentos</small>
+                    </div>
+                    <div class="text-end">
+                        <h2 class="mb-0 fw-bold text-info">{{ $documentos->count() }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <!-- Tabla -->
-    <table id="tablaDocumentos" class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Tipo Proceso</th>
-                <th>Nombre Proceso</th>
-                <th>Subproceso/SIG/Subsistema</th>
-                <th>Documentos</th>
-                <th>Nº</th>
-                <th>Responsable</th>
-                <th>Tipo Documento</th>
-                <th>Nombre Documento</th>
-                <th>Código</th>
-                <th>Versión</th>
-                <th>Fecha Creación</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($documentos as $doc)
-            <tr>
-                <td>{{ $doc->tipo_proceso }}</td>
-                <td>{{ $doc->nombre_proceso }}</td>
-                <td>{{ $doc->subproceso_sig_subsistema }}</td>
-                <td>
-                    @if($doc->documentos)
-                        <a href="{{ asset('uploads/' . $doc->documentos) }}" target="_blank">{{ $doc->documentos }}</a>
-                    @else
-                        No disponible
-                    @endif
-                </td>
-                <td>{{ $doc->numero_doc }}</td>
-                <td>{{ $doc->responsable }}</td>
-                <td>{{ $doc->tipo_documento }}</td>
-                <td>{{ $doc->nombre_documento }}</td>
-                <td>{{ $doc->codigo }}</td>
-                <td>{{ $doc->version }}</td>
-                <td>{{ \Carbon\Carbon::parse($doc->fecha_creacion)->format('d-m-Y') }}</td>
-                <td>
-                    <span class="badge bg-{{ $doc->estado === 'pendiente' ? 'warning' : ($doc->estado === 'aprobado' ? 'success' : 'danger') }}">
-                        @if($doc->estado === 'pendiente')
-                            ⏳ Pendiente
-                        @elseif($doc->estado === 'aprobado')
-                            ✅ Aprobado
-                        @else
-                            ❌ Rechazado
-                        @endif
-                    </span>
-                    @if($doc->estado === 'aprobado' && $doc->aprobacion_fecha)
-                        <br><small class="text-muted">Aprobado el {{ \Carbon\Carbon::parse($doc->aprobacion_fecha)->format('d/m/Y') }}</small>
-                    @endif
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+<!-- 📋 TABLA DE DOCUMENTOS -->
+<div class="mx-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-light border-0">
+            <h6 class="mb-0">
+                <i class="fas fa-list me-2"></i>Documentos del Listado Maestro
+            </h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table id="tablaDocumentos" class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tipo Proceso</th>
+                            <th>Nombre Proceso</th>
+                            <th>Subproceso/SIG/Subsistema</th>
+                            <th>Documentos</th>
+                            <th>Nº</th>
+                            <th>Responsable</th>
+                            <th>Tipo Documento</th>
+                            <th>Nombre Documento</th>
+                            <th>Código</th>
+                            <th>Versión</th>
+                            <th>Fecha Creación</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($documentos as $doc)
+                        <tr>
+                            <td>{{ $doc->tipo_proceso }}</td>
+                            <td>{{ $doc->nombre_proceso }}</td>
+                            <td>{{ $doc->subproceso_sig_subsistema }}</td>
+                            <td>
+                                @if($doc->documentos)
+                                    <div class="documento-btn-container">
+                                        <a href="{{ asset('uploads/' . $doc->documentos) }}" target="_blank" class="btn btn-sm btn-outline-primary documento-btn" title="{{ $doc->documentos }}">
+                                            <i class="fas fa-file-pdf me-1"></i>
+                                            <span class="documento-text">{{ Str::limit($doc->documentos, 20) }}</span>
+                                        </a>
+                                    </div>
+                                @else
+                                    <span class="text-muted">No disponible</span>
+                                @endif
+                            </td>
+                            <td>{{ $doc->numero_doc }}</td>
+                            <td>{{ $doc->responsable }}</td>
+                            <td>{{ $doc->tipo_documento }}</td>
+                            <td>{{ $doc->nombre_documento }}</td>
+                            <td>{{ $doc->codigo }}</td>
+                            <td>{{ $doc->version }}</td>
+                            <td>{{ \Carbon\Carbon::parse($doc->fecha_creacion)->format('d-m-Y') }}</td>
+                            <td>
+                                <span class="badge bg-{{ $doc->estado === 'pendiente' ? 'warning' : ($doc->estado === 'aprobado' ? 'success' : 'danger') }}">
+                                    @if($doc->estado === 'pendiente')
+                                        ⏳ Pendiente
+                                    @elseif($doc->estado === 'aprobado')
+                                        ✅ Aprobado
+                                    @else
+                                        ❌ Rechazado
+                                    @endif
+                                </span>
+                                @if($doc->estado === 'aprobado' && $doc->aprobacion_fecha)
+                                    <br><small class="text-muted">Aprobado el {{ \Carbon\Carbon::parse($doc->aprobacion_fecha)->format('d/m/Y') }}</small>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal Agregar Documento -->
@@ -143,15 +229,121 @@
     </div>
   </div>
 </div>
+@endsection
 
-<!-- Scripts y estilos -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+@push('styles')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<style>
+.stat-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-success-light {
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.bg-warning-light {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.bg-danger-light {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.bg-info-light {
+    background-color: rgba(23, 162, 184, 0.1);
+}
+
+/* Estilos para tabla uniforme */
+.table {
+    margin-bottom: 0;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-top: 1px solid #dee2e6;
+    height: 60px; /* Altura fija para todas las filas */
+}
+
+.table tbody tr {
+    height: 60px; /* Altura fija para todas las filas */
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Contenedor para botones de documentos */
+.documento-btn-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botones de documentos uniformes */
+.documento-btn {
+    width: 100%;
+    max-width: 200px;
+    height: 35px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.documento-text {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Asegurar que los botones no rompan la altura */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Badges uniformes */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+
+/* Texto pequeño uniforme */
+small {
+    font-size: 0.875rem;
+    line-height: 1.2;
+}
+</style>
+@endpush
+
+@push('scripts')
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
 $(document).ready(function() {
     $('#tablaDocumentos').DataTable({
@@ -160,18 +352,6 @@ $(document).ready(function() {
         },
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50]
-    });
-
-    // Auto-ocultar notificaciones después de unos segundos
-    $('.notification-toast').each(function() {
-        const $notification = $(this);
-        const delay = parseInt($notification.data('delay')) || 3000;
-        
-        setTimeout(function() {
-            $notification.fadeOut(500, function() {
-                $(this).remove();
-            });
-        }, delay);
     });
 
     // Detectar cambio en el input de archivo
@@ -200,4 +380,4 @@ $(document).ready(function() {
     });
 });
 </script>
-@endsection
+@endpush

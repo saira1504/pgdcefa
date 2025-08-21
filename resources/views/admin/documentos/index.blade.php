@@ -123,7 +123,7 @@
                                     <option value="fecha_subida" {{ request('orden') == 'fecha_subida' ? 'selected' : '' }}>Fecha de subida</option>
                                     <option value="aprendiz" {{ request('orden') == 'aprendiz' ? 'selected' : '' }}>Aprendiz</option>
                                     <option value="unidad" {{ request('orden') == 'unidad' ? 'selected' : '' }}>Unidad</option>
-                                    <option value="estado" {{ request('orden') == 'estado' ? 'selected' : '' }}>Estado</option>
+                                    <option value="estado" {{ request('estado') == 'estado' ? 'selected' : '' }}>Estado</option>
                                 </select>
                             </div>
                         </div>
@@ -301,7 +301,7 @@
 
 @endsection
 
-@push('scripts')
+@section('scripts')
 <script>
 function limpiarFiltros() {
     window.location.href = "{{ route('admin.documentos.index') }}";
@@ -325,9 +325,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-@endpush
+@endsection
 
-@push('styles')
+@section('styles')
 <style>
 .avatar-sm {
     width: 32px;
@@ -352,4 +352,4 @@ document.addEventListener('DOMContentLoaded', function() {
     font-size: 0.75em;
 }
 </style>
-@endpush
+@endsection
