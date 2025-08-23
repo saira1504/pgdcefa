@@ -49,8 +49,7 @@
                             @endphp
                             <span class="badge {{ $estadoConfig['class'] }}">{{ $estadoConfig['text'] }}</span>
                         </p>
-                        <p><strong>Fecha de Inicio:</strong> {{ $unidad->fecha_inicio ? $unidad->fecha_inicio->format('d/m/Y') : 'N/A' }}</p>
-                        <p><strong>Fecha de Finalización:</strong> {{ $unidad->fecha_fin ? $unidad->fecha_fin->format('d/m/Y') : 'N/A' }}</p>
+                        <p><strong>Instructor Encargado:</strong> {{ $unidad->instructor_encargado ?? 'N/A' }}</p>
                     </div>
                 </div>
                 <div class="row">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DocumentoAprendiz;
 use App\Models\UnidadProductiva;
 use App\Models\User;
+use App\Models\Area;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -55,6 +56,12 @@ class AdminDocumentoController extends Controller
             $query->where('aprendiz_id', $request->aprendiz_id);
         }
 
+        if ($request->filled('area_id')) {
+            $query->whereHas('unidad', function($q) use ($request) {
+                $q->where('tipo', $request->area_id);
+            });
+        }
+
         // Ordenamiento
         $orden = $request->get('orden', 'fecha_subida');
         $direccion = $request->get('direccion', 'desc');
@@ -87,6 +94,9 @@ class AdminDocumentoController extends Controller
             $unidadesAdmin = UnidadProductiva::all();
             $aprendicesAdmin = User::where('role', 'aprendiz')->get();
         }
+
+        // Obtener áreas para filtros
+        $areas = Area::where('activo', true)->get();
 
         // Estadísticas según el rol
         if ($admin->role === 'admin') {
@@ -140,6 +150,7 @@ class AdminDocumentoController extends Controller
             'documentos',
             'unidadesAdmin',
             'aprendicesAdmin',
+            'areas',
             'estadisticas'
         ));
     }

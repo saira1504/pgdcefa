@@ -54,14 +54,11 @@
     <div class="col-md-3">
         <select class="form-select form-select-sm py-2" id="filterTipo">
             <option value="">📋 Todos los sectores</option>
-            <option value="administrativa">📋 Administrativa</option>
-            <option value="investigacion">🔬 Investigación</option>
-            <option value="comercializacion">💼 Comercialización</option>
-            <option value="produccion">🏭 Producción</option>
-            <option value="pecuaria">🐄 Pecuaria</option>
-            <option value="agricola">🌾 Agrícola</option>
-            <option value="ambiental">🌿 Ambiental</option>
-            <option value="ventas">💰 Ventas</option>
+            @if(isset($areas))
+                @foreach($areas as $area)
+                    <option value="{{ $area->nombre }}">{{ $area->nombre }}</option>
+                @endforeach
+            @endif
         </select>
     </div>
     <div class="col-md-2">
@@ -180,8 +177,23 @@
                     </div>
                     <div class="col-6">
                         <div class="bg-light rounded p-3 text-center">
+                            <div class="fw-bold text-warning">{{ Str::limit($unidad->instructor_encargado ?? 'Sin asignar', 15) }}</div>
+                            <small class="text-muted">Instructor</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <div class="bg-light rounded p-3 text-center">
                             <div class="fw-bold text-primary">{{ $unidad->aprendices_con_documentos_count ?? 0 }}</div>
                             <small class="text-muted">Aprendiz</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-light rounded p-3 text-center">
+                            <div class="fw-bold text-info">{{ $unidad->documentos_aprendiz_count ?? 0 }}</div>
+                            <small class="text-muted">Documentos</small>
                         </div>
                     </div>
                 </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UnidadProductiva;
 use App\Models\User;
 use App\Models\DocumentoAprendiz;
+use App\Models\Area;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -38,6 +39,7 @@ class UnidadProductivaController extends Controller
         }
         
         $gestores = User::where('role', 'admin')->get();
+        $areas = Area::where('activo', true)->get();
         
         // Definir categorías de documentos
         $categoriasDocumento = [
@@ -66,6 +68,7 @@ class UnidadProductivaController extends Controller
         return view('superadmin.unidades-productivas.index', compact(
             'unidadesProductivas',
             'gestores',
+            'areas',
             'totalUnidades',
             'totalAprendices',
             'totalDocumentos',
@@ -104,7 +107,8 @@ class UnidadProductivaController extends Controller
     public function edit(UnidadProductiva $unidad)
     {
         $gestores = User::where('role', 'admin')->get();
-        return view('superadmin.unidades-productivas.edit', compact('unidad', 'gestores'));
+        $areas = Area::where('activo', true)->get();
+        return view('superadmin.unidades-productivas.edit', compact('unidad', 'gestores', 'areas'));
     }
 
     public function update(Request $request, UnidadProductiva $unidad)
@@ -123,8 +127,7 @@ class UnidadProductivaController extends Controller
             'tipo' => 'required|string|max:50',
             'proyecto' => 'required|string',
             'gestor_id' => 'required|exists:users,id',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
+            'instructor_encargado' => 'required|string|max:100',
             'estado' => 'required|string',
             'objetivos' => 'nullable|string',
         ]);
@@ -135,10 +138,9 @@ class UnidadProductivaController extends Controller
                 'tipo' => $request->tipo,
                 'proyecto' => $request->proyecto,
                 'objetivos' => $request->objetivos,
-                'fecha_inicio' => $request->fecha_inicio,
-                'fecha_fin' => $request->fecha_fin,
                 'estado' => $request->estado,
                 'admin_principal_id' => $request->gestor_id,
+                'instructor_encargado' => $request->instructor_encargado,
             ]);
         });
 
@@ -173,8 +175,7 @@ class UnidadProductivaController extends Controller
             'tipo' => 'required|string|max:50',
             'proyecto' => 'required|string',
             'gestor_id' => 'required|exists:users,id',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
+            'instructor_encargado' => 'required|string|max:100',
             'estado' => 'required|string',
             'objetivos' => 'nullable|string',
         ], [
@@ -190,10 +191,9 @@ class UnidadProductivaController extends Controller
                 'tipo' => $request->tipo,
                 'proyecto' => $request->proyecto,
                 'objetivos' => $request->objetivos,
-                'fecha_inicio' => $request->fecha_inicio,
-                'fecha_fin' => $request->fecha_fin,
                 'estado' => $request->estado,
                 'admin_principal_id' => $request->gestor_id,
+                'instructor_encargado' => $request->instructor_encargado,
                 'activo' => true,
             ]);
 

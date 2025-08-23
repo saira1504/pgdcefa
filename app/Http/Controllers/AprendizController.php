@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User; // Added this import for User model
+use App\Models\UnidadProductiva;
+use App\Models\Area;
 
 class AprendizController extends Controller
 {
@@ -66,6 +68,51 @@ class AprendizController extends Controller
             'documentosCompletados' => $documentosCompletados,
             'totalDocumentos' => $totalDocumentos
         ]);
+    }
+
+    public function unidadesDisponibles()
+    {
+        $aprendiz = Auth::user();
+        $unidadAsignada = $this->getUnidadAsignada($aprendiz->id);
+        
+        // Obtener todas las unidades productivas activas con información completa
+        $unidadesDisponibles = UnidadProductiva::with(['adminPrincipal', 'aprendices'])
+            ->where('activo', true)
+            ->withCount([
+                'aprendices',
+                'documentosAprendiz',
+                'documentosAprendiz as documentos_aprobados_count' => function ($q) {
+                    $q->where('estado', 'aprobado');
+                },
+                'documentosAprendiz as documentos_pendientes_count' => function ($q) {
+                    $q->where('estado', 'pendiente');
+                },
+            ])
+            ->get();
+
+        // Calcular progreso por unidad
+        foreach ($unidadesDisponibles as $unidad) {
+            $totalDocs = $unidad->documentos_aprendiz_count ?? 0;
+            $aprobados = $unidad->documentos_aprobados_count ?? 0;
+            $unidad->progreso = $totalDocs > 0 ? (int) round(($aprobados / $totalDocs) * 100) : 0;
+        }
+
+        // Obtener áreas para filtros
+        $areas = Area::where('activo', true)->get();
+        
+        // Estadísticas generales
+        $totalUnidades = $unidadesDisponibles->count();
+        $unidadesConAprendices = $unidadesDisponibles->where('aprendices_count', '>', 0)->count();
+        $progresoPromedio = (int) round($unidadesDisponibles->avg('progreso') ?? 0);
+
+        return view('aprendiz.unidades-disponibles', compact(
+            'unidadesDisponibles',
+            'unidadAsignada',
+            'areas',
+            'totalUnidades',
+            'unidadesConAprendices',
+            'progresoPromedio'
+        ));
     }
 
     public function documentos()

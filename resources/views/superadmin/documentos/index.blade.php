@@ -117,12 +117,12 @@
                         </select>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label class="form-label">Aprendiz</label>
-                        <select class="form-select" name="aprendiz_id" onchange="this.form.submit()">
-                            <option value="">Todos los aprendices</option>
-                            @foreach($aprendicesAdmin as $aprendiz)
-                                <option value="{{ $aprendiz->id }}" {{ request('aprendiz_id') == $aprendiz->id ? 'selected' : '' }}>
-                                    {{ $aprendiz->name }}
+                        <label class="form-label">Área</label>
+                        <select class="form-select" name="area_id" onchange="this.form.submit()">
+                            <option value="">Todas las áreas</option>
+                            @foreach($areas as $area)
+                                <option value="{{ $area->nombre }}" {{ request('area_id') == $area->nombre ? 'selected' : '' }}>
+                                    {{ $area->nombre }}
                                 </option>
                             @endforeach
                         </select>
@@ -139,13 +139,24 @@
                 </div>
                 <div class="row">
                     <div class="col-md-3 mb-3">
+                        <label class="form-label">Aprendiz</label>
+                        <select class="form-select" name="aprendiz_id" onchange="this.form.submit()">
+                            <option value="">Todos los aprendices</option>
+                            @foreach($aprendicesAdmin as $aprendiz)
+                                <option value="{{ $aprendiz->id }}" {{ request('aprendiz_id') == $aprendiz->id ? 'selected' : '' }}>
+                                    {{ $aprendiz->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
                         <label class="form-label">Dirección</label>
                         <select class="form-select" name="direccion" onchange="this.form.submit()">
                             <option value="desc" {{ request('direccion') == 'desc' ? 'selected' : '' }}>Descendente</option>
                             <option value="asc" {{ request('direccion') == 'asc' ? 'selected' : '' }}>Ascendente</option>
                         </select>
                     </div>
-                    <div class="col-md-9 mb-3 d-flex align-items-end">
+                    <div class="col-md-6 mb-3 d-flex align-items-end">
                         <button type="button" class="btn btn-outline-secondary me-2" onclick="limpiarFiltros()">
                             <i class="fas fa-eraser me-1"></i>Limpiar
                         </button>

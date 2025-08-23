@@ -45,15 +45,11 @@
                                 </label>
                                 <select class="form-select form-control-modern" id="tipo" name="tipo" required>
                                     <option value="">Seleccionar área</option>
-                                    <option value="administrativa">Administrativa</option>
-                                    <option value="investigacion">Investigación</option>
-                                    <option value="comercializacion">Comercialización</option>
-                                    <option value="produccion">Producción</option>
-                                    <option value="pecuaria">Pecuaria</option>
-                                    <option value="agricola">Agrícola</option>
-                                    <option value="ambiental">Ambiental</option>
-                                    <option value="ventas">Ventas</option>
-                                    <option value="otro">📦 Otro</option>
+                                    @if(isset($areas))
+                                        @foreach($areas as $area)
+                                            <option value="{{ $area->nombre }}">{{ $area->nombre }}</option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
                         </div>
@@ -72,10 +68,10 @@
                                   required></textarea>
                     </div>
 
-                    <!-- Gestión y fechas -->
+                    <!-- Gestión -->
                     <div class="mb-4">
                         <h6 class="text-uppercase fw-bold mb-3" style="color: var(--primary-color); letter-spacing: 1px;">
-                            <i class="fas fa-calendar-alt me-2"></i>Gestión y Fechas
+                            <i class="fas fa-users me-2"></i>Gestión y Personal
                         </h6>
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -94,13 +90,14 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="fecha_inicio" class="form-label form-label-modern">
-                                    <i class="fas fa-play-circle me-2"></i>Fecha de Inicio
+                                <label for="instructor_encargado" class="form-label form-label-modern">
+                                    <i class="fas fa-chalkboard-teacher me-2"></i>Instructor Encargado
                                 </label>
-                                <input type="date" 
+                                <input type="text" 
                                        class="form-control form-control-modern" 
-                                       id="fecha_inicio" 
-                                       name="fecha_inicio" 
+                                       id="instructor_encargado" 
+                                       name="instructor_encargado" 
+                                       placeholder="Nombre del instructor"
                                        required>
                             </div>
                         </div>
@@ -110,15 +107,6 @@
               background-color: transparent !important;
             }
         </style>                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label for="fecha_fin" class="form-label form-label-modern">
-                                <i class="fas fa-flag-checkered me-2"></i>Fecha de Finalización
-                            </label>
-                            <input type="date" 
-                                   class="form-control form-control-modern" 
-                                   id="fecha_fin" 
-                                   name="fecha_fin">
-                        </div>
                         <div class="col-md-6">
                             <label for="estado" class="form-label form-label-modern">
                                 <i class="fas fa-traffic-light me-2"></i>Estado Inicial
@@ -210,17 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         validateNombre();
     });
 
-    // Validar fechas
-    const fechaInicio = document.getElementById('fecha_inicio');
-    const fechaFin = document.getElementById('fecha_fin');
 
-    fechaInicio.addEventListener('change', function() {
-        if (fechaFin.value && fechaInicio.value > fechaFin.value) {
-            fechaFin.value = '';
-            alert('La fecha de finalización debe ser posterior a la fecha de inicio.');
-        }
-        fechaFin.min = fechaInicio.value;
-    });
 
     // Validación del formulario
     createUnidadForm.addEventListener('submit', function(event) {

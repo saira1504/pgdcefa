@@ -11,61 +11,87 @@ class UnidadProductivaSeeder extends Seeder
 {
     public function run()
     {
-        $admins = User::where('role', 'admin')->get();
+        // Obtener el primer admin disponible o crear uno si no existe
+        $admin = User::where('role', 'admin')->first();
+        
+        if (!$admin) {
+            // Crear un admin por defecto si no existe
+            $admin = User::create([
+                'name' => 'Admin Principal',
+                'email' => 'admin@example.com',
+                'password' => bcrypt('password'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
+            ]);
+        }
 
         $unidades = [
             [
                 'nombre' => 'Unidad 1 - Avícola',
                 'descripcion' => 'Unidad productiva especializada en la cría y manejo de aves de corral',
-                'tipo' => 'avicola',
-                'proyecto' => 'Proyecto de producción y comercialización de huevos y carne de pollo',
+                'tipo' => 'Talento Humano',
+                'proyecto' => 'Proyecto de producción y comercialización de huevos y carne de pollo. Formación integral en técnicas modernas de avicultura, manejo sanitario y comercialización de productos avícolas.',
                 'objetivos' => 'Formar aprendices en técnicas modernas de avicultura, manejo sanitario y comercialización de productos avícolas.',
-                'fecha_inicio' => Carbon::now()->subMonths(6),
-                'fecha_fin' => Carbon::now()->addMonths(18),
                 'estado' => 'en_proceso',
                 'progreso' => 75,
-                'admin_principal_id' => $admins->where('name', 'María González')->first()->id,
+                'admin_principal_id' => $admin->id,
+                'instructor_encargado' => 'Dr. María González',
+                'activo' => true,
             ],
             [
                 'nombre' => 'Unidad 2 - Ganadería',
                 'descripcion' => 'Unidad productiva enfocada en la ganadería bovina y caprina',
-                'tipo' => 'ganaderia',
-                'proyecto' => 'Proyecto de producción de leche y carne bovina sostenible',
+                'tipo' => 'Finanzas',
+                'proyecto' => 'Proyecto de producción de leche y carne bovina sostenible. Desarrollo de competencias en manejo ganadero, nutrición animal y sistemas de pastoreo rotacional.',
                 'objetivos' => 'Desarrollar competencias en manejo ganadero, nutrición animal y sistemas de pastoreo rotacional.',
-                'fecha_inicio' => Carbon::now()->subMonths(4),
-                'fecha_fin' => Carbon::now()->addMonths(20),
                 'estado' => 'en_proceso',
                 'progreso' => 60,
-                'admin_principal_id' => $admins->where('name', 'Carlos Rodríguez')->first()->id,
+                'admin_principal_id' => $admin->id,
+                'instructor_encargado' => 'Ing. Carlos Rodríguez',
+                'activo' => true,
             ],
             [
                 'nombre' => 'Unidad 3 - Agricultura',
                 'descripcion' => 'Unidad productiva de cultivos agrícolas sostenibles',
-                'tipo' => 'agricultura',
-                'proyecto' => 'Proyecto de cultivos orgánicos y agricultura de precisión',
+                'tipo' => 'Operaciones',
+                'proyecto' => 'Proyecto de cultivos orgánicos y agricultura de precisión. Capacitación en técnicas de agricultura sostenible, manejo de cultivos y comercialización de productos agrícolas.',
                 'objetivos' => 'Capacitar en técnicas de agricultura sostenible, manejo de cultivos y comercialización de productos agrícolas.',
-                'fecha_inicio' => Carbon::now()->subMonths(2),
-                'fecha_fin' => Carbon::now()->addMonths(22),
                 'estado' => 'iniciando',
                 'progreso' => 25,
-                'admin_principal_id' => $admins->where('name', 'Ana Martínez')->first()->id,
+                'admin_principal_id' => $admin->id,
+                'instructor_encargado' => 'MSc. Ana Martínez',
+                'activo' => true,
             ],
             [
                 'nombre' => 'Unidad 4 - Piscicultura',
                 'descripcion' => 'Unidad productiva de cultivo de peces en estanques',
-                'tipo' => 'piscicultura',
-                'proyecto' => 'Proyecto de piscicultura intensiva y procesamiento de pescado',
+                'tipo' => 'Tecnología',
+                'proyecto' => 'Proyecto de piscicultura intensiva y procesamiento de pescado. Formación en técnicas de piscicultura, manejo de calidad del agua y procesamiento de productos pesqueros.',
                 'objetivos' => 'Formar en técnicas de piscicultura, manejo de calidad del agua y procesamiento de productos pesqueros.',
-                'fecha_inicio' => Carbon::now()->subMonth(1),
-                'fecha_fin' => Carbon::now()->addMonths(23),
                 'estado' => 'iniciando',
                 'progreso' => 15,
-                'admin_principal_id' => $admins->where('name', 'Luis Pérez')->first()->id,
+                'admin_principal_id' => $admin->id,
+                'instructor_encargado' => 'Dr. Luis Pérez',
+                'activo' => true,
+            ],
+            [
+                'nombre' => 'Unidad 5 - Apicultura',
+                'descripcion' => 'Unidad productiva de producción de miel y derivados',
+                'tipo' => 'Calidad',
+                'proyecto' => 'Proyecto de apicultura sostenible y producción de miel orgánica. Formación en manejo de colmenas, producción de miel y derivados apícolas.',
+                'objetivos' => 'Formar en técnicas de apicultura, manejo de colmenas y producción de miel orgánica.',
+                'estado' => 'iniciando',
+                'progreso' => 10,
+                'admin_principal_id' => $admin->id,
+                'instructor_encargado' => 'Ing. Patricia López',
+                'activo' => true,
             ],
         ];
 
         foreach ($unidades as $unidad) {
             UnidadProductiva::create($unidad);
         }
+
+        $this->command->info('Unidades productivas creadas exitosamente.');
     }
 }

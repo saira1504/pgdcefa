@@ -56,6 +56,13 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="{{ route('aprendiz.unidades-disponibles') }}" 
+                   class="nav-link {{ request()->routeIs('aprendiz.unidades-disponibles') ? 'active' : '' }}">
+                    <i class="fas fa-building"></i>
+                    <span>Unidades Disponibles</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="{{ route('aprendiz.phases.index') }}" 
                    class="nav-link {{ request()->routeIs('aprendiz.phases.index') ? 'active' : '' }}">
                     <i class="fas fa-chart-bar"></i>

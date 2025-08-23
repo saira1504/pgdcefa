@@ -23,6 +23,7 @@ class UnidadProductiva extends Model
         'progreso',
         'metadatos',
         'admin_principal_id',
+        'instructor_encargado',
         'activo'
     ];
 

@@ -41,14 +41,13 @@
                                 <label for="tipo" class="form-label">Áreas</label>
                                 <select class="form-select" id="tipo" name="tipo" required>
                                     <option value="">Seleccionar Área</option>
-                                    <option value="administrativa" {{ old('tipo', $unidad->tipo) == 'administrativa' ? 'selected' : '' }}>Administrativa</option>
-                                    <option value="investigacion" {{ old('tipo', $unidad->tipo) == 'investigacion' ? 'selected' : '' }}>Investigación</option>
-                                    <option value="comercializacion" {{ old('tipo', $unidad->tipo) == 'comercializacion' ? 'selected' : '' }}>Comercialización</option>
-                                    <option value="produccion" {{ old('tipo', $unidad->tipo) == 'produccion' ? 'selected' : '' }}>Producción</option>
-                                    <option value="pecuaria" {{ old('tipo', $unidad->tipo) == 'pecuaria' ? 'selected' : '' }}>Pecuaria</option>
-                                    <option value="agricola" {{ old('tipo', $unidad->tipo) == 'agricola' ? 'selected' : '' }}>Agrícola</option>
-                                    <option value="ambiental" {{ old('tipo', $unidad->tipo) == 'ambiental' ? 'selected' : '' }}>Ambiental</option>
-                                    <option value="ventas" {{ old('tipo', $unidad->tipo) == 'ventas' ? 'selected' : '' }}>Ventas</option>
+                                    @if(isset($areas))
+                                        @foreach($areas as $area)
+                                            <option value="{{ $area->nombre }}" {{ old('tipo', $unidad->tipo) == $area->nombre ? 'selected' : '' }}>
+                                                {{ $area->nombre }}
+                                            </option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
                         </div>
@@ -76,21 +75,15 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
-                                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" 
-                                       value="{{ old('fecha_inicio', $unidad->fecha_inicio ? $unidad->fecha_inicio->format('Y-m-d') : '') }}" required>
+                                <label for="instructor_encargado" class="form-label">Instructor Encargado</label>
+                                <input type="text" class="form-control" id="instructor_encargado" name="instructor_encargado" 
+                                       value="{{ old('instructor_encargado', $unidad->instructor_encargado) }}" 
+                                       placeholder="Nombre del instructor" required>
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="fecha_fin" class="form-label">Fecha de Finalización</label>
-                                <input type="date" class="form-control" id="fecha_fin" name="fecha_fin"
-                                       value="{{ old('fecha_fin', $unidad->fecha_fin ? $unidad->fecha_fin->format('Y-m-d') : '') }}">
-                            </div>
-                        </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="estado" class="form-label">Estado</label>

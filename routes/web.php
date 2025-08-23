@@ -75,6 +75,7 @@ Route::middleware(['auth', 'role:aprendiz'])->group(function () {
 
     // Rutas adicionales del aprendiz
     Route::get('/aprendiz/mi-unidad', [AprendizController::class, 'miUnidad'])->name('aprendiz.mi-unidad');
+    Route::get('/aprendiz/unidades-disponibles', [AprendizController::class, 'unidadesDisponibles'])->name('aprendiz.unidades-disponibles');
     Route::get('/aprendiz/documentos', [AprendizController::class, 'documentos'])->name('aprendiz.documentos');
     Route::post('/aprendiz/documentos/subir', [AprendizController::class, 'subirDocumento'])->name('aprendiz.documentos.subir');
     Route::put('/aprendiz/documentos/{id}', [AprendizController::class, 'actualizarDocumento'])->name('aprendiz.documentos.update');
