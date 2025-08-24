@@ -1,7 +1,7 @@
 @extends('layouts.aprendiz')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid p-4">
     <div class="row">
         <!-- Header -->
         <div class="col-12">
