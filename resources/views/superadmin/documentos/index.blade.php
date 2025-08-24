@@ -313,20 +313,137 @@ function marcarEnRevision(documentoId) {
 <style>
 @keyframes slideUp { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: translateY(0);} }
 .animate-slide-up { animation: slideUp 0.6s ease-out forwards; }
-.fixed-grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1rem; position: relative; }
-.fixed-card-slot { min-height: 320px; transition: opacity 0.3s ease, visibility 0.3s ease; }
-@media (max-width: 1200px) { .fixed-grid-container { grid-template-columns: repeat(3, 1fr);} }
-@media (max-width: 768px) { .fixed-grid-container { grid-template-columns: repeat(2, 1fr);} }
-@media (max-width: 576px) { .fixed-grid-container { grid-template-columns: 1fr;} }
+
+/* Grid inteligente para fases que se adapta al ancho de pantalla */
+.fixed-grid-container { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    gap: 1.5rem; 
+    margin-bottom: 1rem; 
+    position: relative; 
+    max-width: 100%;
+}
+
+/* Ajustes para pantallas muy anchas */
+@media (min-width: 1400px) {
+    .fixed-grid-container {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (min-width: 1800px) {
+    .fixed-grid-container {
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        max-width: 1800px;
+    }
+}
+
+.fixed-card-slot { 
+    min-height: 320px; 
+    transition: opacity 0.3s ease, visibility 0.3s ease; 
+}
+
+/* Mejorar la distribución del contenido principal */
+.container-fluid {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+@media (min-width: 1400px) {
+    .container-fluid {
+        max-width: 1600px;
+    }
+}
+
+@media (min-width: 1800px) {
+    .container-fluid {
+        max-width: 1800px;
+    }
+}
+
+/* Ajustes para el header y estadísticas */
+.d-flex.justify-content-between {
+    max-width: 100%;
+}
+
+/* Mejorar la distribución de estadísticas en pantallas anchas */
+.stat-card {
+    max-width: 100%;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Ajustes para filtros en pantallas anchas */
+.card-body {
+    max-width: 100%;
+}
+
+/* Ajustes para tablas que se adapten mejor al ancho */
+.table-responsive {
+    max-width: 100%;
+}
+
+.table {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Ajustes para botones y controles */
+.btn-group {
+    max-width: 100%;
+}
+
+.btn-group .btn { 
+    margin-right: 2px; 
+}
+
+.btn-group .btn:last-child { 
+    margin-right: 0; 
+}
+
+/* Ajustes para badges y elementos pequeños */
+.badge { 
+    font-size: 0.75em; 
+    padding: 0.375em 0.75em; 
+    border-radius: 8px; 
+    max-width: 100%;
+}
+
+/* Ajustes para avatares y elementos de usuario */
 .avatar-sm {
     width: 32px;
     height: 32px;
     font-size: 14px;
     font-weight: bold;
+    max-width: 100%;
 }
 
-.btn-group .btn { margin-right: 2px; }
-.btn-group .btn:last-child { margin-right: 0; }
-.badge { font-size: 0.75em; padding: 0.375em 0.75em; border-radius: 8px; }
+/* Responsive mejorado */
+@media (max-width: 1200px) { 
+    .fixed-grid-container { 
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    } 
+}
+
+@media (max-width: 768px) { 
+    .fixed-grid-container { 
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    } 
+}
+
+@media (max-width: 576px) { 
+    .fixed-grid-container { 
+        grid-template-columns: 1fr;
+    } 
+}
 </style>
 

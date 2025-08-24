@@ -1,6 +1,9 @@
+
 <link href="{{ asset('css/sidebar-styles.css') }}" rel="stylesheet">
+<link href="{{ asset('css/notifications.css') }}" rel="stylesheet">
 
 
+<!-- Sidebar Moderno -->
 <div class="sidebar-modern">
     <!-- Header del Usuario -->
     <div class="user-section">
@@ -78,13 +81,21 @@
             </li>
         </ul>
     </nav>
-
+<style>
+    
+    </style>
+   
     <!-- Footer del Sidebar -->
     <div class="sidebar-footer">
         <div class="footer-info">
             <small>SENA - Gestión Documental</small>
             <small>v2.0.1</small>
         </div>
+        
+        <!-- Botón Toggle del Sidebar -->
+        <button class="sidebar-toggle" onclick="toggleSidebar()" title="Colapsar/Expandir Sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
     </div>
 
     <!-- Form de Logout (oculto) -->
@@ -92,58 +103,6 @@
         @csrf
     </form>
 </div>
-
-<style>
-/* SOLUCIÓN RÁPIDA PARA SIDEBAR QUE TAPA CONTENIDO */
-/* Copia este CSS a tu archivo principal de estilos */
-
-/* Forzar espacio para el sidebar */
-body {
-  padding-left: 320px !important;
-  margin: 0 !important;
-  transition: padding-left 0.3s ease;
-}
-
-/* Resetear márgenes del contenido principal */
-.main-content,
-.content-wrapper,
-.container-fluid,
-.content-area {
-  margin-left: 0 !important;
-  padding-left: 20px !important;
-}
-
-/* Responsive para móviles */
-@media (max-width: 768px) {
-  body {
-    padding-left: 0 !important;
-  }
-
-  .main-content {
-    padding-left: 10px !important;
-  }
-}
-
-/* Si el sidebar tiene toggle, ajustar dinámicamente */
-body.sidebar-collapsed {
-  padding-left: 0 !important;
-}
-
-body.sidebar-expanded {
-  padding-left: 320px !important;
-}
-
-/* Asegurar que el sidebar esté fijo */
-.sidebar-container {
-  position: fixed !important;
-  left: 0 !important;
-  top: 0 !important;
-  width: 280px !important;
-  height: 100vh !important;
-  z-index: 1000 !important;
-}
-</style>
-
 
 <!-- JavaScript al final del body -->
 <script src="{{ asset('js/sidebar-functions.js') }}"></script>

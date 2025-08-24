@@ -495,13 +495,31 @@ $(document).ready(function() {
     animation: slideUp 0.6s ease-out forwards;
 }
 
-/* Grid fijo para fases */
+/* Grid inteligente para fases que se adapta al ancho de pantalla */
 .fixed-grid-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
     position: relative;
+    max-width: 100%;
+}
+
+/* Ajustes para pantallas muy anchas */
+@media (min-width: 1400px) {
+    .fixed-grid-container {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (min-width: 1800px) {
+    .fixed-grid-container {
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        max-width: 1800px;
+    }
 }
 
 .fixed-card-slot {
@@ -543,16 +561,45 @@ $(document).ready(function() {
     border-radius: 15px 15px 0 0;
 }
 
-/* Responsive */
+/* Mejorar la distribución del contenido principal */
+.container-fluid {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+@media (min-width: 1400px) {
+    .container-fluid {
+        max-width: 1600px;
+    }
+}
+
+@media (min-width: 1800px) {
+    .container-fluid {
+        max-width: 1800px;
+    }
+}
+
+/* Ajustes para el header y estadísticas */
+.d-flex.justify-content-between {
+    max-width: 100%;
+}
+
+.col-md-3 {
+    max-width: 100%;
+}
+
+/* Responsive mejorado */
 @media (max-width: 1200px) {
     .fixed-grid-container {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
 }
 
 @media (max-width: 768px) {
     .fixed-grid-container {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 }
 

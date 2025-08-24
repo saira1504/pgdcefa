@@ -453,13 +453,31 @@ $(document).ready(function() {
     animation: slideUp 0.6s ease-out forwards;
 }
 
-/* GRID FIJO - Siempre 4 columnas exactas */
+/* GRID INTELIGENTE - Se adapta al ancho de pantalla */
 .fixed-grid-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
     position: relative;
+    max-width: 100%;
+}
+
+/* Ajustes para pantallas muy anchas */
+@media (min-width: 1400px) {
+    .fixed-grid-container {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (min-width: 1800px) {
+    .fixed-grid-container {
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+        max-width: 1800px;
+    }
 }
 
 .fixed-card-slot {
@@ -480,16 +498,16 @@ $(document).ready(function() {
     z-index: 10;
 }
 
-/* Responsive - mantiene proporciones */
+/* Responsive mejorado - se adapta mejor */
 @media (max-width: 1200px) {
     .fixed-grid-container {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     }
 }
 
 @media (max-width: 768px) {
     .fixed-grid-container {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
     
     .stat-card .card-body {

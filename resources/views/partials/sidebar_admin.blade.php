@@ -1,6 +1,7 @@
 <link href="{{ asset('css/sidebar-styles.css') }}" rel="stylesheet">
 <link href="{{ asset('css/notifications.css') }}" rel="stylesheet">
 
+<!-- Sidebar Moderno -->
 <div class="sidebar-modern">
     <!-- Header del Usuario -->
     <div class="user-section">
@@ -100,6 +101,11 @@
             <small>SENA - Gestión Documental</small>
             <small>v2.0.1</small>
         </div>
+        
+        <!-- Botón Toggle del Sidebar -->
+        <button class="sidebar-toggle" onclick="toggleSidebar()" title="Colapsar/Expandir Sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
     </div>
 
     <!-- Form de Logout (oculto) -->
@@ -110,7 +116,6 @@
 
 <!-- JavaScript al final del body -->
 <script src="{{ asset('js/sidebar-functions.js') }}"></script>
-
 
 
 

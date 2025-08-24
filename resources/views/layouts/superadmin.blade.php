@@ -45,7 +45,7 @@
             overflow-y: auto !important;
         }
 
-        .sidebar {
+        .sidebar-modern {
             position: fixed;
             top: 0;
             left: 0;
@@ -60,11 +60,11 @@
             -ms-overflow-style: none;  /* IE y Edge */
         }
 
-        .sidebar::-webkit-scrollbar {
+        .sidebar-modern::-webkit-scrollbar {
             display: none; /* Chrome, Safari y Opera */
         }
 
-        .sidebar::before {
+        .sidebar-modern::before {
             content: '';
             position: absolute;
             top: 0;
@@ -83,6 +83,28 @@
             position: relative;
             z-index: 1;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Mejorar el scroll */
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(116, 198, 157, 0.3) transparent;
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: rgba(116, 198, 157, 0.3);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(116, 198, 157, 0.5);
         }
         
         .content-wrapper {
@@ -325,7 +347,7 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .sidebar {
+            .sidebar-modern {
                 width: 100%;
                 height: auto;
                 position: relative;

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Admin y Aprendiz - Mismo Comportamiento que Superadmin</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS del Sidebar -->
+    <link rel="stylesheet" href="css/sidebar-styles.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .test-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+        
+        .test-content.sidebar-collapsed {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+        
+        .test-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .role-selector {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1004;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Selector de Rol -->
+    <div class="role-selector">
+        <h5>Cambiar Rol:</h5>
+        <button onclick="changeRole('admin')" class="btn btn-primary btn-sm">Admin</button>
+        <button onclick="changeRole('aprendiz')" class="btn btn-success btn-sm">Aprendiz</button>
+        <button onclick="changeRole('superadmin')" class="btn btn-warning btn-sm">Superadmin</button>
+    </div>
+
+    <!-- Sidebar de Prueba -->
+    <div class="sidebar-modern" id="sidebar">
+        <!-- El contenido del sidebar se cargará dinámicamente -->
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="test-content" id="mainContent">
+        <div class="test-card">
+            <h1>🧪 Test Admin y Aprendiz</h1>
+            <p>Esta página simula el comportamiento de Admin y Aprendiz para verificar que funcionen igual que Superadmin.</p>
+            
+            <div class="alert alert-info">
+                <strong>Instrucciones:</strong>
+                <ul>
+                    <li>Usa los botones de arriba para cambiar entre roles</li>
+                    <li>Verifica que el botón toggle esté en el footer del sidebar</li>
+                    <li>Haz scroll en el sidebar para ver el botón si no es visible</li>
+                    <li>El comportamiento debe ser IDÉNTICO al de Superadmin</li>
+                </ul>
+            </div>
+            
+            <div class="alert alert-warning">
+                <strong>Estado actual:</strong>
+                <p>Rol: <span id="currentRole">Admin</span></p>
+                <p>Botón visible: <span id="buttonStatus">Verificando...</span></p>
+                <p>Scroll disponible: <span id="scrollStatus">Verificando...</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/sidebar-functions.js"></script>
+    
+    <script>
+        // Contenido de los sidebars
+        const sidebarContent = {
+            admin: `
+                <div class="user-section">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="user-info">
+                        <h4>Admin Test</h4>
+                        <span>Administrador</span>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active">
+                                <i class="fas fa-home"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Revisar Documentos</span>
+                                <span class="badge bg-warning text-dark">2</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-list-alt"></i>
+                                <span>Listado Maestro</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-layer-group"></i>
+                                <span>Áreas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-cog"></i>
+                                <span>Configuración</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Información</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Estadísticas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-users"></i>
+                                <span>Usuarios</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="sidebar-footer">
+                    <div class="footer-info">
+                        <small>SENA - Gestión Documental</small>
+                        <small>v2.0.1</small>
+                    </div>
+                    <button class="sidebar-toggle" onclick="toggleSidebar()" title="Colapsar/Expandir Sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            `,
+            aprendiz: `
+                <div class="user-section">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="user-info">
+                        <h4>Aprendiz Test</h4>
+                        <span>Aprendiz</span>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active">
+                                <i class="fas fa-home"></i>
+                                <span>Inicio</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-list"></i>
+                                <span>Mi Unidad Productiva</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-building"></i>
+                                <span>Unidades Disponibles</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Fases</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-flag"></i>
+                                <span>Documentos Requeridos</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-upload"></i>
+                                <span>Subir Documentos</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Mi Progreso</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-calendar"></i>
+                                <span>Calendario</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="sidebar-footer">
+                    <div class="footer-info">
+                        <small>SENA - Gestión Documental</small>
+                        <small>v2.0.1</small>
+                    </div>
+                    <button class="sidebar-toggle" onclick="toggleSidebar()" title="Colapsar/Expandir Sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            `,
+            superadmin: `
+                <div class="user-section">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-crown"></i>
+                    </div>
+                    <div class="user-info">
+                        <h4>Superadmin Test</h4>
+                        <span>Super Administrador</span>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active">
+                                <i class="fas fa-home"></i>
+                                <span>Inicio</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-list"></i>
+                                <span>Fases</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>Listado Maestro</span>
+                                <span class="badge bg-warning text-dark">1</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-layer-group"></i>
+                                <span>Áreas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-industry"></i>
+                                <span>Unidades Productivas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Documentos</span>
+                                <span class="badge bg-warning text-dark">2</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="sidebar-footer">
+                    <div class="footer-info">
+                        <small>SENA - Gestión Documental</small>
+                        <small>v2.0.1</small>
+                    </div>
+                    <button class="sidebar-toggle" onclick="toggleSidebar()" title="Colapsar/Expandir Sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            `
+        };
+
+        function changeRole(role) {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.innerHTML = sidebarContent[role];
+            
+            document.getElementById('currentRole').textContent = role.charAt(0).toUpperCase() + role.slice(1);
+            
+            // Verificar estado después del cambio
+            setTimeout(verifyStatus, 100);
+        }
+
+        function verifyStatus() {
+            const toggleBtn = document.querySelector('.sidebar-toggle');
+            const sidebar = document.querySelector('.sidebar-modern');
+            
+            // Verificar botón
+            if (toggleBtn) {
+                document.getElementById('buttonStatus').textContent = '✅ Visible';
+                toggleBtn.style.border = '2px solid red';
+            } else {
+                document.getElementById('buttonStatus').textContent = '❌ No encontrado';
+            }
+            
+            // Verificar scroll
+            if (sidebar && sidebar.scrollHeight > sidebar.clientHeight) {
+                document.getElementById('scrollStatus').textContent = '✅ Disponible (como Superadmin)';
+            } else {
+                document.getElementById('scrollStatus').textContent = '❌ No disponible';
+            }
+        }
+
+        // Inicializar con Admin
+        document.addEventListener('DOMContentLoaded', function() {
+            changeRole('admin');
+        });
+    </script>
+</body>
+</html>

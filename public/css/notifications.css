@@ -35,23 +35,23 @@
     100% { transform: scale(1); }
 }
 
-/* Estilos para la sección de usuario */
-.user-section {
+/* Estilos para la sección de usuario - Solo para notificaciones específicas */
+.user-section-notification {
     display: flex;
     align-items: center;
     padding: 15px;
     border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.user-avatar {
+.user-avatar-notification {
     margin-right: 12px;
 }
 
-.user-info {
+.user-info-notification {
     flex: 1;
 }
 
-.user-dropdown {
+.user-dropdown-notification {
     margin-left: 10px;
 }
 
@@ -134,15 +134,15 @@
         height: 16px;
     }
     
-    .user-section {
+    .user-section-notification {
         padding: 10px;
     }
     
-    .user-info h4 {
+    .user-info-notification h4 {
         font-size: 1rem;
     }
     
-    .user-info span {
+    .user-info-notification span {
         font-size: 0.8rem;
     }
 }

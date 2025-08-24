@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Colapsable - Demo</title>
+    <link rel="stylesheet" href="css/sidebar-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+        }
+        
+        .demo-content {
+            margin-left: 280px;
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+            max-width: calc(100vw - 280px);
+            overflow-x: hidden;
+        }
+        
+        .demo-content.sidebar-collapsed {
+            margin-left: 70px;
+            max-width: calc(100vw - 70px);
+        }
+        
+        .demo-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .demo-title {
+            color: #4a7c59;
+            margin-bottom: 1rem;
+        }
+        
+        .demo-text {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .demo-button {
+            background: #4a7c59;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-button:hover {
+            background: #1b4332;
+            transform: translateY(-2px);
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .demo-feature {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #4a7c59;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-feature h3 {
+            color: #4a7c59;
+            margin-bottom: 0.5rem;
+        }
+        
+        .demo-feature p {
+            color: #666;
+            margin: 0;
+        }
+        
+        /* Ajustes para pantallas muy anchas */
+        @media (min-width: 1400px) {
+            .demo-card,
+            .demo-grid {
+                max-width: 1400px;
+            }
+        }
+        
+        @media (min-width: 1800px) {
+            .demo-card,
+            .demo-grid {
+                max-width: 1600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Demo -->
+    <div class="sidebar-modern">
+        <!-- Header del Usuario -->
+        <div class="user-section">
+            <div class="user-avatar">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="user-info">
+                <h4>Usuario Demo</h4>
+                <span>Administrador</span>
+            </div>
+            
+            <!-- Dropdown del Usuario -->
+            <div class="user-dropdown">
+                <button class="dropdown-toggle" onclick="toggleUserDropdown()">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-menu" id="userDropdownMenu">
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Mi Perfil</span>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item text-danger">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación Principal -->
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <!-- Inicio -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-home"></i>
+                        <span>Inicio</span>
+                    </a>
+                </li>
+                
+                <!-- Documentos -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Documentos</span>
+                        <span class="badge bg-warning text-dark ms-auto">2</span>
+                    </a>
+                </li>
+                
+                <!-- Listado Maestro -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-list-alt"></i>
+                        <span>Listado Maestro</span>
+                        <span class="badge bg-warning text-dark ms-auto">1</span>
+                    </a>
+                </li>
+                
+                <!-- Áreas -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Áreas</span>
+                    </a>
+                </li>
+                
+                <!-- Unidades Productivas -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-building"></i>
+                        <span>Unidades Productivas</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Footer del Sidebar -->
+        <div class="sidebar-footer">
+            <div class="footer-info">
+                <small>SENA - Gestión Documental</small>
+                <small>v2.0.1</small>
+            </div>
+            
+            <!-- Botón Toggle del Sidebar -->
+            <button class="sidebar-toggle" onclick="toggleSidebar()" title="Colapsar/Expandir Sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="demo-content" id="mainContent">
+        <div class="demo-card">
+            <h1 class="demo-title">🚀 Sidebar Colapsable - Demo</h1>
+            <p class="demo-text">
+                Este es un ejemplo de cómo funciona el sidebar colapsable. Haz clic en el botón hamburguesa 
+                (tres rayas) en el footer del sidebar para colapsarlo y expandirlo.
+            </p>
+            <button class="demo-button" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i> Toggle Sidebar
+            </button>
+        </div>
+
+        <div class="demo-grid">
+            <div class="demo-feature">
+                <h3><i class="fas fa-compress-alt"></i> Colapsable</h3>
+                <p>El sidebar se puede contraer para mostrar solo los iconos, ahorrando espacio en pantalla.</p>
+            </div>
+            
+            <div class="demo-feature">
+                <h3><i class="fas fa-memory"></i> Persistente</h3>
+                <p>El estado del sidebar se guarda en localStorage y se restaura al recargar la página.</p>
+            </div>
+            
+            <div class="demo-feature">
+                <h3><i class="fas fa-tooltip"></i> Tooltips</h3>
+                <p>Cuando está colapsado, aparecen tooltips al hacer hover sobre los iconos.</p>
+            </div>
+            
+            <div class="demo-feature">
+                <h3><i class="fas fa-mobile-alt"></i> Responsive</h3>
+                <p>Se adapta automáticamente a diferentes tamaños de pantalla.</p>
+            </div>
+            
+            <div class="demo-feature">
+                <h3><i class="fas fa-palette"></i> Personalizable</h3>
+                <p>Fácil de personalizar con variables CSS y estilos modulares.</p>
+            </div>
+            
+            <div class="demo-feature">
+                <h3><i class="fas fa-rocket"></i> Rápido</h3>
+                <p>Transiciones suaves y animaciones optimizadas para una mejor experiencia de usuario.</p>
+            </div>
+        </div>
+
+        <div class="demo-card">
+            <h2 class="demo-title">📱 Características del Sidebar</h2>
+            <ul class="demo-text">
+                <li><strong>Toggle Button:</strong> Botón hamburguesa en el footer del sidebar</li>
+                <li><strong>Estado Colapsado:</strong> Solo muestra iconos (70px de ancho)</li>
+                <li><strong>Estado Expandido:</strong> Muestra iconos + texto (280px de ancho)</li>
+                <li><strong>Tooltips:</strong> Aparecen al hacer hover en estado colapsado</li>
+                <li><strong>Persistencia:</strong> Recuerda el estado entre sesiones</li>
+                <li><strong>Responsive:</strong> Se adapta a dispositivos móviles</li>
+                <li><strong>Transiciones:</strong> Animaciones suaves al cambiar estados</li>
+                <li><strong>Botón en Footer:</strong> No interfiere con la información del usuario</li>
+            </ul>
+        </div>
+
+        <div class="demo-card">
+            <h2 class="demo-title">🎯 Cómo Usar</h2>
+            <ol class="demo-text">
+                <li><strong>Busca el botón toggle:</strong> Está en el footer del sidebar (abajo)</li>
+                <li><strong>Haz clic:</strong> El sidebar se colapsará mostrando solo iconos</li>
+                <li><strong>Vuelve a hacer clic:</strong> Se expandirá mostrando iconos + texto</li>
+                <li><strong>Hover en iconos:</strong> Cuando esté colapsado, aparecen tooltips</li>
+                <li><strong>Estado persistente:</strong> Se recuerda al recargar la página</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/sidebar-functions.js"></script>
+    <script>
+        // Función adicional para el demo
+        function updateMainContent() {
+            const sidebar = document.querySelector('.sidebar-modern');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (sidebar.classList.contains('collapsed')) {
+                mainContent.classList.add('sidebar-collapsed');
+            } else {
+                mainContent.classList.remove('sidebar-collapsed');
+            }
+        }
+        
+        // Sobrescribir la función toggleSidebar para incluir el demo
+        const originalToggleSidebar = window.toggleSidebar;
+        window.toggleSidebar = function() {
+            originalToggleSidebar();
+            setTimeout(updateMainContent, 300); // Esperar a que termine la transición
+        };
+        
+        // Inicializar el demo
+        document.addEventListener('DOMContentLoaded', function() {
+            updateMainContent();
+        });
+    </script>
+</body>
+</html>
