@@ -1,7 +1,5 @@
-
 <link href="{{ asset('css/sidebar-styles.css') }}" rel="stylesheet">
 <link href="{{ asset('css/notifications.css') }}" rel="stylesheet">
-
 
 <!-- Sidebar Moderno -->
 <div class="sidebar-modern">
@@ -81,9 +79,6 @@
             </li>
         </ul>
     </nav>
-<style>
-    
-    </style>
    
     <!-- Footer del Sidebar -->
     <div class="sidebar-footer">
@@ -103,6 +98,3 @@
         @csrf
     </form>
 </div>
-
-<!-- JavaScript al final del body -->
-<script src="{{ asset('js/sidebar-functions.js') }}"></script>

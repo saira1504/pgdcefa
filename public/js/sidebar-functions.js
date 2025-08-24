@@ -16,7 +16,12 @@ function toggleSidebar() {
         // Cambiar el ícono del botón
         const toggleIcon = document.querySelector('.sidebar-toggle i');
         if (toggleIcon) {
-            toggleIcon.className = isCollapsed ? 'fas fa-bars' : 'fas fa-times';
+            // Para el layout del aprendiz, usar la rotación en lugar de cambiar el ícono
+            if (sidebar.id === 'sidebar') {
+                toggleIcon.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+            } else {
+                toggleIcon.className = isCollapsed ? 'fas fa-bars' : 'fas fa-times';
+            }
         }
     }
 }
@@ -41,14 +46,26 @@ function adjustMainContent(isCollapsed) {
             if (element && !element.closest('.sidebar-modern')) {
                 if (isCollapsed) {
                     element.classList.add('sidebar-collapsed');
-                    element.style.marginLeft = '70px';
-                    element.style.width = 'calc(100% - 70px)';
-                    element.style.maxWidth = 'calc(100vw - 70px)';
+                    // Para el layout del aprendiz, usar los estilos CSS personalizados
+                    if (element.id === 'mainContent' || element.classList.contains('main-content-wrapper')) {
+                        // No aplicar estilos inline, dejar que el CSS maneje la transición
+                        element.classList.add('sidebar-collapsed');
+                    } else {
+                        element.style.marginLeft = '70px';
+                        element.style.width = 'calc(100% - 70px)';
+                        element.style.maxWidth = 'calc(100vw - 70px)';
+                    }
                 } else {
                     element.classList.remove('sidebar-collapsed');
-                    element.style.marginLeft = '280px';
-                    element.style.width = 'calc(100% - 280px)';
-                    element.style.maxWidth = 'calc(100vw - 280px)';
+                    // Para el layout del aprendiz, usar los estilos CSS personalizados
+                    if (element.id === 'mainContent' || element.classList.contains('main-content-wrapper')) {
+                        // No aplicar estilos inline, dejar que el CSS maneje la transición
+                        element.classList.remove('sidebar-collapsed');
+                    } else {
+                        element.style.marginLeft = '280px';
+                        element.style.width = 'calc(100% - 280px)';
+                        element.style.maxWidth = 'calc(100vw - 280px)';
+                    }
                 }
             }
         });
@@ -83,10 +100,18 @@ function restoreSidebarState() {
             sidebar.classList.add('collapsed');
             adjustMainContent(true);
             if (toggleIcon) {
-                toggleIcon.className = 'fas fa-bars';
+                // Para el layout del aprendiz, usar la rotación
+                if (sidebar.id === 'sidebar') {
+                    toggleIcon.style.transform = 'rotate(180deg)';
+                } else {
+                    toggleIcon.className = 'fas fa-bars';
+                }
             }
         } else {
             adjustMainContent(false);
+            if (toggleIcon && sidebar.id === 'sidebar') {
+                toggleIcon.style.transform = 'rotate(0deg)';
+            }
         }
     }
 }
