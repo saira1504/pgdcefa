@@ -6,15 +6,6 @@
         <div class="col-md-3 col-lg-2 px-0">
             @include('partials.sidebar_aprendiz')
         </div>
-        
-        <div class="col-md-9 col-lg-10 p-4">
-            <!-- Breadcrumb -->
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('aprendiz.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Unidades Disponibles</li>
-                </ol>
-            </nav>
 
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -98,6 +89,17 @@
                             <div class="me-3 icon-container">
                                 <div class="icon-circle bg-info-light">
                                     <i class="fas fa-chart-line fa-2x text-info"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-0 small fw-semibold">Total Fases</h6>
+                                    <small class="text-muted">Definidas en el sistema</small>
+                                </div>
+                                <div class="text-end">
+                                    <h2 class="mb-0 fw-bold text-info">
+                                        {{ isset($totalFases) ? $totalFases : (\App\Models\Phase::count()) }}
+                                    </h2>
                                 </div>
                             </div>
                         </div>
@@ -267,7 +269,6 @@
                     </div>
                 </div>
                 @endforelse
-            </div>
         </div>
     </div>
 </div>

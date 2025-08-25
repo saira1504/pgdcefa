@@ -140,6 +140,8 @@
         /* Espaciado general del contenido */
         .content-wrapper {
             padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         /* Responsive para el contenido principal */
