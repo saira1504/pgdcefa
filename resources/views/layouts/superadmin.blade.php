@@ -137,6 +137,11 @@
             }
         }
 
+        /* Espaciado general del contenido */
+        .content-wrapper {
+            padding: 2rem;
+        }
+
         /* Responsive para el contenido principal */
         @media (max-width: 768px) {
             .content-wrapper {
