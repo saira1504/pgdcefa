@@ -24,14 +24,16 @@
 
     @stack('styles')
 </head>
-<body class="sidebar-expanded">
+<body>
     <div id="app">
         <!-- Sidebar -->
         @include('partials.sidebar_admin')
         
         <!-- Main Content -->
         <div class="main-content-wrapper">
-            @yield('content')
+            <div class="content-wrapper">
+                @yield('content')
+            </div>
         </div>
     </div>
 
@@ -46,49 +48,5 @@
     <script src="{{ asset('js/sidebar-functions.js') }}"></script>
 
     @stack('scripts')
-
-    <style>
-    /* Ajustes para el layout con sidebar colapsable */
-    .main-content-wrapper {
-        margin-left: var(--sidebar-width);
-        min-height: 100vh;
-        background-color: #f8f9fa;
-        padding: 0;
-        width: calc(100% - var(--sidebar-width));
-        transition: all 0.3s ease;
-        max-width: calc(100vw - var(--sidebar-width));
-        overflow-x: hidden;
-    }
-
-    /* Estado colapsado del sidebar */
-    .main-content-wrapper.sidebar-collapsed {
-        margin-left: var(--sidebar-collapsed-width);
-        width: calc(100% - var(--sidebar-collapsed-width));
-        max-width: calc(100vw - var(--sidebar-collapsed-width));
-    }
-
-    /* Responsive para pantallas pequeñas */
-    @media (max-width: 768px) {
-        .main-content-wrapper {
-            margin-left: 0;
-            width: 100%;
-            max-width: 100vw;
-        }
-    }
-
-    /* Ajustes para el body cuando se usa padding-left */
-    body {
-        transition: padding-left 0.3s ease;
-        overflow-x: hidden;
-    }
-
-    body.sidebar-expanded {
-        padding-left: var(--sidebar-width) !important;
-    }
-
-    body.sidebar-collapsed {
-        padding-left: var(--sidebar-collapsed-width) !important;
-    }
-    </style>
 </body>
 </html>
