@@ -197,15 +197,8 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="row g-3 mb-3">
-                    <div class="col-6">
-                        <div class="bg-light rounded p-3 text-center">
-                            <div class="fw-bold text-info">{{ $unidad->documentos_aprendiz_count ?? 0 }}</div>
-                            <small class="text-muted">Documentos</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
+                <div class="row g-3">
+                    <div class="col-15">
                         <div class="bg-light rounded p-3 text-center">
                             @php
                                 $estadoConfig = match($unidad->estado ?? 'iniciando') {

@@ -8,8 +8,8 @@
     --border-color: rgba(255, 255, 255, 0.1);
     --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
-    --sidebar-width: 280px; /* Variable para el ancho del sidebar */
-    --sidebar-collapsed-width: 70px; /* Ancho cuando está colapsado */
+    --sidebar-width: 280px;
+    --sidebar-collapsed-width: 70px;
 }
 
 /* Botón Toggle del Sidebar */
@@ -22,12 +22,12 @@
     height: 40px;
     border-radius: 8px;
     cursor: pointer;
-    display: flex !important; /* Forzar que sea visible */
+    display: flex !important;
     align-items: center;
     justify-content: center;
     transition: var(--transition);
     margin: 0.5rem auto;
-    z-index: 1002; /* Asegurar que esté por encima */
+    z-index: 1002;
 }
 
 .sidebar-toggle:hover {
@@ -41,18 +41,7 @@
     transition: var(--transition);
 }
 
-/* Ajustes para el estado colapsado */
-.sidebar-modern.collapsed .sidebar-toggle {
-    width: 35px;
-    height: 35px;
-    margin: 0.25rem auto;
-}
-
-.sidebar-modern.collapsed .sidebar-toggle i {
-    font-size: 1rem;
-}
-
-/* Sidebar Principal - Versión CON scroll interno (como Superadmin) */
+/* Sidebar Principal */
 .sidebar-modern {
     position: fixed;
     top: 0;
@@ -64,21 +53,20 @@
     flex-direction: column;
     z-index: 1000;
     box-shadow: var(--shadow);
-    overflow-y: auto !important; /* Permitir scroll vertical como Superadmin */
-    overflow-x: hidden; /* Sin scroll horizontal */
-    transition: width var(--transition), transform var(--transition);
-    scrollbar-width: none; /* Firefox - ocultar scrollbar */
-    -ms-overflow-style: none; /* IE y Edge - ocultar scrollbar */
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: width var(--transition);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-/* Ocultar scrollbar en Chrome, Safari y Opera */
 .sidebar-modern::-webkit-scrollbar {
     display: none;
 }
 
 /* Estado colapsado del sidebar */
 .sidebar-modern.collapsed {
-    width: var(--sidebar-collapsed-width);
+    width: var(--sidebar-collapsed-width) !important;
 }
 
 /* Sección del Usuario */
@@ -87,28 +75,8 @@
     border-bottom: 1px solid var(--border-color);
     position: relative;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    flex-shrink: 0; /* Evita que se comprima */
+    flex-shrink: 0;
     transition: var(--transition);
-}
-
-/* Ajustes para el estado colapsado */
-.sidebar-modern.collapsed .user-section {
-    padding: 1rem 0.5rem;
-}
-
-.sidebar-modern.collapsed .user-avatar {
-    width: 40px;
-    height: 40px;
-    margin: 0 auto 0.5rem;
-    font-size: 1rem;
-}
-
-.sidebar-modern.collapsed .user-info {
-    display: none;
-}
-
-.sidebar-modern.collapsed .user-dropdown {
-    display: none;
 }
 
 .user-avatar {
@@ -234,27 +202,21 @@
     margin: 0.5rem 0;
 }
 
-/* Navegación - Sin scroll interno */
+/* Navegación */
 .sidebar-nav {
     flex: 1;
     padding: 0 0 1.5rem 0;
-    overflow: visible; /* Sin scroll interno */
+    overflow: visible;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     transition: var(--transition);
 }
 
-/* Ajustes para el estado colapsado */
-.sidebar-modern.collapsed .sidebar-nav {
-    padding: 0 0 1rem 0;
-}
-
 .nav-list {
     list-style: none;
     margin: 0;
     padding: 0;
-    /* Asegurar que todos los elementos sean visibles */
     min-height: fit-content;
 }
 
@@ -277,36 +239,11 @@
     min-height: 3.5rem;
 }
 
-/* Ajustes para el estado colapsado */
-.sidebar-modern.collapsed .nav-link {
-    padding: 1rem 0.5rem;
-    margin: 0 0.25rem;
-    justify-content: center;
-    min-height: 3rem;
-}
-
-.sidebar-modern.collapsed .nav-link span {
-    display: none;
-}
-
-.sidebar-modern.collapsed .nav-link .badge {
-    display: none;
-}
-
-.sidebar-modern.collapsed .nav-link i {
-    font-size: 1.3rem;
-    margin: 0;
-}
-
 .nav-link:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
     transform: translateX(5px);
     border-color: rgba(255, 255, 255, 0.2);
-}
-
-.sidebar-modern.collapsed .nav-link:hover {
-    transform: scale(1.1);
 }
 
 .nav-link.active {
@@ -346,7 +283,7 @@
     flex: 1;
 }
 
-/* Estilos para badges de notificaciones en el sidebar */
+/* Estilos para badges de notificaciones */
 .nav-link .badge {
     margin-left: auto;
     font-size: 0.7rem;
@@ -370,80 +307,18 @@
     100% { transform: scale(1); }
 }
 
-/* Dropdown Arrows */
-.dropdown-arrow {
-    margin-left: auto;
-    font-size: 0.8rem;
-    transition: var(--transition);
-}
-
-.dropdown-arrow.rotated {
-    transform: rotate(90deg);
-}
-
-/* Submenús */
-.dropdown-submenu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.dropdown-submenu.show {
-    max-height: 300px;
-}
-
-.submenu-link {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.5rem 0.75rem 3rem;
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: var(--transition);
-    font-size: 0.9rem;
-}
-
-.submenu-link:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
-}
-
-.submenu-link.active {
-    background: var(--sidebar-active);
-    color: var(--text-primary);
-}
-
-.submenu-link i {
-    width: 16px;
-    text-align: center;
-    font-size: 0.9rem;
-}
-
 /* Footer del Sidebar */
 .sidebar-footer {
     padding: 1.5rem 1.5rem;
     border-top: 1px solid var(--border-color);
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.05));
-    flex-shrink: 0; /* Evita que se comprima */
-    margin-top: auto; /* Empuja hacia abajo */
+    flex-shrink: 0;
+    margin-top: auto;
     transition: var(--transition);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-}
-
-/* Ajustes para el estado colapsado */
-.sidebar-modern.collapsed .sidebar-footer {
-    padding: 1rem 0.5rem;
-}
-
-.sidebar-modern.collapsed .footer-info {
-    display: none;
 }
 
 .footer-info {
@@ -456,6 +331,88 @@
     font-size: 0.75rem;
     line-height: 1.6;
     margin-bottom: 0.25rem;
+}
+
+/* ESTADOS COLAPSADOS - TODOS JUNTOS Y SIN CONFLICTOS */
+.sidebar-modern.collapsed .user-section {
+    padding: 1rem 0.5rem;
+}
+
+.sidebar-modern.collapsed .user-avatar {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 0.5rem;
+    font-size: 1rem;
+}
+
+.sidebar-modern.collapsed .user-info {
+    display: none;
+}
+
+.sidebar-modern.collapsed .user-dropdown {
+    display: none;
+}
+
+.sidebar-modern.collapsed .sidebar-nav {
+    padding: 0 0 1rem 0;
+}
+
+.sidebar-modern.collapsed .nav-link {
+    padding: 1rem 0.5rem;
+    margin: 0 0.25rem;
+    justify-content: center;
+    min-height: 3rem;
+}
+
+.sidebar-modern.collapsed .nav-link span {
+    display: none;
+}
+
+.sidebar-modern.collapsed .nav-link .badge {
+    display: none;
+}
+
+.sidebar-modern.collapsed .nav-link i {
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.sidebar-modern.collapsed .nav-link:hover {
+    transform: scale(1.1);
+}
+
+.sidebar-modern.collapsed .sidebar-footer {
+    padding: 1rem 0.5rem;
+}
+
+.sidebar-modern.collapsed .footer-info {
+    display: none;
+}
+
+.sidebar-modern.collapsed .sidebar-toggle {
+    width: 35px;
+    height: 35px;
+    margin: 0.25rem auto;
+}
+
+.sidebar-modern.collapsed .sidebar-toggle i {
+    font-size: 1rem;
+}
+
+/* Ajustes para el contenido principal */
+.main-content-wrapper {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    transition: all 0.3s ease;
+    min-height: 100vh;
+    max-width: calc(100vw - var(--sidebar-width));
+    overflow-x: hidden;
+}
+
+.main-content-wrapper.sidebar-collapsed {
+    margin-left: var(--sidebar-collapsed-width);
+    width: calc(100% - var(--sidebar-collapsed-width));
+    max-width: calc(100vw - var(--sidebar-collapsed-width));
 }
 
 /* Responsive */
@@ -468,290 +425,6 @@
     .sidebar-modern.mobile-open {
         transform: translateX(0);
     }
-}
-
-/* Estilos para cuando el contenido es muy largo */
-@media (min-height: 800px) {
-    .sidebar-nav {
-        justify-content: flex-start; /* Alinea desde arriba */
-    }
-}
-
-/* Estilos para pantallas muy altas */
-@media (min-height: 1000px) {
-    .sidebar-nav {
-        justify-content: flex-start; /* Alinea desde arriba */
-        padding-top: 0;
-    }
-}
-
-/* Estilos adicionales para asegurar consistencia en todos los layouts */
-.sidebar {
-    width: var(--sidebar-width) !important;
-    min-width: var(--sidebar-width) !important;
-    max-width: var(--sidebar-width) !important;
-    transition: width var(--transition);
-}
-
-.sidebar.collapsed {
-    width: var(--sidebar-collapsed-width) !important;
-    min-width: var(--sidebar-collapsed-width) !important;
-    max-width: var(--sidebar-collapsed-width) !important;
-}
-
-/* Ajustes para layouts que usan main-content */
-.main-content {
-    margin-left: var(--sidebar-width) !important;
-    width: calc(100% - var(--sidebar-width)) !important;
-    transition: all 0.3s ease;
-    min-height: 100vh;
-    max-width: calc(100vw - var(--sidebar-width)) !important;
-    overflow-x: hidden;
-}
-
-.main-content.sidebar-collapsed {
-    margin-left: var(--sidebar-collapsed-width) !important;
-    width: calc(100% - var(--sidebar-collapsed-width)) !important;
-    max-width: calc(100vw - var(--sidebar-collapsed-width)) !important;
-}
-
-/* Ajustes para layouts que usan main-content-wrapper */
-.main-content-wrapper {
-    margin-left: var(--sidebar-width) !important;
-    width: calc(100% - var(--sidebar-width)) !important;
-    transition: all 0.3s ease;
-    min-height: 100vh;
-    max-width: calc(100vw - var(--sidebar-width)) !important;
-    overflow-x: hidden;
-}
-
-.main-content-wrapper.sidebar-collapsed {
-    margin-left: var(--sidebar-collapsed-width) !important;
-    width: calc(100% - var(--sidebar-collapsed-width)) !important;
-    max-width: calc(100vw - var(--sidebar-collapsed-width)) !important;
-}
-
-/* Ajustes para layouts que usan container-fluid */
-.container-fluid {
-    transition: all 0.3s ease;
-    max-width: 1400px !important;
-    margin: 0 auto !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-}
-
-/* Ajustes para layouts que usan content-area */
-.content-area {
-    margin-left: var(--sidebar-width) !important;
-    width: calc(100% - var(--sidebar-width)) !important;
-    transition: all 0.3s ease;
-    min-height: 100vh;
-    max-width: calc(100vw - var(--sidebar-width)) !important;
-    overflow-x: hidden;
-}
-
-.content-area.sidebar-collapsed {
-    margin-left: var(--sidebar-collapsed-width) !important;
-    width: calc(100% - var(--sidebar-collapsed-width)) !important;
-    max-width: calc(100vw - var(--sidebar-collapsed-width)) !important;
-}
-
-/* Ajustes para layouts que usan cualquier contenedor principal */
-[class*="content"],
-[class*="main"],
-[class*="container"] {
-    transition: all 0.3s ease;
-}
-
-/* Contenedores principales con ancho máximo */
-.main-content > .container,
-.main-content-wrapper > .container,
-.content-area > .container {
-    max-width: 1400px !important;
-    margin: 0 auto !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-}
-
-/* Ajustes para pantallas muy anchas */
-@media (min-width: 1400px) {
-    .main-content > .container,
-    .main-content-wrapper > .container,
-    .content-area > .container {
-        max-width: 1600px !important;
-    }
-}
-
-@media (min-width: 1800px) {
-    .main-content > .container,
-    .main-content-wrapper > .container,
-    .content-area > .container {
-        max-width: 1800px !important;
-    }
-}
-
-/* Estilos específicos para el layout de Aprendiz */
-#sidebar.sidebar-modern {
-    width: var(--sidebar-width) !important;
-    height: 100vh !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    z-index: 1000 !important;
-    transition: width var(--transition) !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-}
-
-#sidebar.sidebar-modern.collapsed {
-    width: var(--sidebar-collapsed-width) !important;
-}
-
-#sidebar.sidebar-modern::-webkit-scrollbar {
-    display: none !important;
-}
-
-#mainContent.main-content {
-    margin-left: var(--sidebar-width) !important;
-    width: calc(100% - var(--sidebar-width)) !important;
-    min-height: 100vh !important;
-    background-color: #f8f9fa !important;
-    transition: all 0.3s ease !important;
-    max-width: calc(100vw - var(--sidebar-width)) !important;
-    overflow-x: hidden !important;
-    padding: 0 !important;
-}
-
-#mainContent.main-content.sidebar-collapsed {
-    margin-left: var(--sidebar-collapsed-width) !important;
-    width: calc(100% - var(--sidebar-collapsed-width)) !important;
-    max-width: calc(100vw - var(--sidebar-collapsed-width)) !important;
-}
-
-/* Asegurar que el botón toggle sea visible en Aprendiz */
-#sidebar .sidebar-toggle {
-    display: flex !important;
-    position: relative !important;
-    background: var(--accent-color) !important;
-    border: none !important;
-    color: white !important;
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 50% !important;
-    cursor: pointer !important;
-    align-items: center !important;
-    justify-content: center !important;
-    transition: var(--transition) !important;
-    margin: 0.5rem auto !important;
-    z-index: 1001 !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-#sidebar .sidebar-toggle:hover {
-    background: var(--accent-hover) !important;
-    transform: scale(1.05) !important;
-}
-
-#sidebar .sidebar-toggle i {
-    font-size: 1.2rem !important;
-    transition: var(--transition) !important;
-}
-
-#sidebar.sidebar-modern.collapsed .sidebar-toggle i {
-    transform: rotate(180deg) !important;
-}
-
-/* Asegurar que el footer sea visible */
-#sidebar .sidebar-footer {
-    padding: 1.5rem 1.5rem !important;
-    border-top: 1px solid var(--border-color) !important;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.05)) !important;
-    flex-shrink: 0 !important;
-    margin-top: auto !important;
-    transition: var(--transition) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* Asegurar que el contenido principal de Aprendiz tenga el padding correcto */
-#mainContent.main-content main {
-    padding: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-/* Ajustes específicos para el layout de Aprendiz en pantallas anchas */
-@media (min-width: 1400px) {
-    #mainContent.main-content main {
-        max-width: 1600px;
-    }
-}
-
-@media (min-width: 1800px) {
-    #mainContent.main-content main {
-        max-width: 1800px;
-    }
-}
-
-/* Asegurar que no haya conflictos con el navbar eliminado */
-.navbar {
-    display: none !important;
-}
-
-/* Ajustes para el body cuando se usa padding-left */
-body {
-    transition: padding-left 0.3s ease;
-    overflow-x: hidden;
-}
-
-body.sidebar-expanded {
-    padding-left: var(--sidebar-width) !important;
-}
-
-body.sidebar-collapsed {
-    padding-left: var(--sidebar-collapsed-width) !important;
-}
-
-/* Ajustes para el footer del sidebar */
-.sidebar-footer {
-    padding: 1.5rem 1.5rem;
-    border-top: 1px solid var(--border-color);
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.05));
-    flex-shrink: 0; /* Evita que se comprima */
-    margin-top: auto; /* Empuja hacia abajo */
-    transition: var(--transition);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-/* Ajustes para el estado colapsado */
-.sidebar-modern.collapsed .sidebar-footer {
-    padding: 1rem 0.5rem;
-}
-
-.sidebar-modern.collapsed .footer-info {
-    display: none;
-}
-
-.footer-info {
-    text-align: center;
-}
-
-.footer-info small {
-    display: block;
-    color: var(--text-secondary);
-    font-size: 0.75rem;
-    line-height: 1.6;
-    margin-bottom: 0.25rem;
 }
 
 /* Tooltip para elementos colapsados */
@@ -782,300 +455,4 @@ body.sidebar-collapsed {
 .sidebar-modern.collapsed .nav-link:hover::after {
     opacity: 1;
     visibility: visible;
-}
-
-/* Responsive para todos los layouts */
-@media (max-width: 768px) {
-    .sidebar,
-    .sidebar-modern,
-    #sidebar.sidebar-modern {
-        width: 100% !important;
-        min-width: 100% !important;
-        max-width: 100% !important;
-    }
-    
-    .main-content,
-    .main-content-wrapper,
-    #mainContent.main-content {
-        margin-left: 0 !important;
-        width: 100% !important;
-    }
-    
-    /* Solo ocultar toggle en móvil si es necesario */
-    .sidebar-toggle {
-        display: flex !important; /* Forzar que sea visible */
-    }
-}
-
-/* Estilos específicos para mejorar la visualización horizontal */
-/* Grid de tarjetas más inteligente */
-.fixed-grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    position: relative;
-    max-width: 100%;
-}
-
-/* Ajustes para pantallas muy anchas */
-@media (min-width: 1400px) {
-    .fixed-grid-container {
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        max-width: 1400px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
-
-@media (min-width: 1800px) {
-    .fixed-grid-container {
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        max-width: 1800px;
-    }
-}
-
-/* Contenedores principales con mejor distribución */
-.container-fluid,
-.main-content > .container,
-.main-content-wrapper > .container,
-.content-area > .container {
-    max-width: 1400px !important;
-    margin: 0 auto !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-}
-
-/* Ajustes para pantallas muy anchas */
-@media (min-width: 1400px) {
-    .container-fluid,
-    .main-content > .container,
-    .main-content-wrapper > .container,
-    .content-area > .container {
-        max-width: 1600px !important;
-    }
-}
-
-@media (min-width: 1800px) {
-    .container-fluid,
-    .main-content > .container,
-    .main-content-wrapper > .container,
-    .content-area > .container {
-        max-width: 1800px !important;
-    }
-}
-
-/* Mejorar la distribución de elementos en pantallas anchas */
-.row {
-    max-width: 100%;
-}
-
-.col-md-3,
-.col-md-6,
-.col-md-12 {
-    max-width: 100%;
-}
-
-/* Ajustes específicos para tarjetas de estadísticas */
-.card {
-    max-width: 100%;
-}
-
-/* Ajustes para formularios y modales */
-.modal-dialog {
-    max-width: 90vw;
-}
-
-@media (min-width: 576px) {
-    .modal-dialog {
-        max-width: 540px;
-    }
-}
-
-@media (min-width: 768px) {
-    .modal-dialog {
-        max-width: 720px;
-    }
-}
-
-@media (min-width: 992px) {
-    .modal-dialog {
-        max-width: 960px;
-    }
-}
-
-@media (min-width: 1200px) {
-    .modal-dialog {
-        max-width: 1140px;
-    }
-}
-
-@media (min-width: 1400px) {
-    .modal-dialog {
-        max-width: 1320px;
-    }
-}
-
-/* Estilos globales para mejorar la visualización horizontal en todas las vistas */
-/* Contenedores principales con mejor distribución */
-.container-fluid {
-    max-width: 1400px !important;
-    margin: 0 auto !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-}
-
-/* Ajustes para pantallas muy anchas */
-@media (min-width: 1400px) {
-    .container-fluid {
-        max-width: 1600px !important;
-    }
-}
-
-@media (min-width: 1800px) {
-    .container-fluid {
-        max-width: 1800px !important;
-    }
-}
-
-/* Mejorar la distribución de elementos en pantallas anchas */
-.row {
-    max-width: 100%;
-}
-
-.col-md-3,
-.col-md-6,
-.col-md-12 {
-    max-width: 100%;
-}
-
-/* Ajustes específicos para tarjetas de estadísticas */
-.card {
-    max-width: 100%;
-}
-
-/* Ajustes para formularios y modales */
-.modal-dialog {
-    max-width: 90vw;
-}
-
-@media (min-width: 576px) {
-    .modal-dialog {
-        max-width: 540px;
-    }
-}
-
-@media (min-width: 768px) {
-    .modal-dialog {
-        max-width: 720px;
-    }
-}
-
-@media (min-width: 992px) {
-    .modal-dialog {
-        max-width: 960px;
-    }
-}
-
-@media (min-width: 1200px) {
-    .modal-dialog {
-        max-width: 1140px;
-    }
-}
-
-@media (min-width: 1400px) {
-    .modal-dialog {
-        max-width: 1320px;
-    }
-}
-
-/* Estilos específicos para tablas que se adapten mejor al ancho */
-.table-responsive {
-    max-width: 100%;
-}
-
-.table {
-    width: 100%;
-    max-width: 100%;
-}
-
-/* Ajustes para filtros y formularios en pantallas anchas */
-.form-row,
-.row {
-    max-width: 100%;
-}
-
-/* Mejorar la distribución de estadísticas en pantallas anchas */
-.stat-card {
-    max-width: 100%;
-}
-
-/* Ajustes para contenedores de filtros */
-.card-body {
-    max-width: 100%;
-}
-
-/* Ajustes para botones y controles */
-.btn-group {
-    max-width: 100%;
-}
-
-/* Ajustes para badges y elementos pequeños */
-.badge {
-    max-width: 100%;
-}
-
-/* Ajustes para avatares y elementos de usuario */
-.avatar-sm,
-.avatar {
-    max-width: 100%;
-}
-
-/* Ajustes para iconos y elementos decorativos */
-.icon-container,
-.icon-circle {
-    max-width: 100%;
-}
-
-/* Estilos específicos para forzar que el botón toggle sea visible */
-.sidebar-toggle {
-    position: relative !important;
-    background: rgba(255, 255, 255, 0.1) !important;
-    border: 1px solid var(--border-color) !important;
-    color: var(--text-primary) !important;
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 8px !important;
-    cursor: pointer !important;
-    display: flex !important; /* Forzar que sea visible */
-    align-items: center !important;
-    justify-content: center !important;
-    transition: var(--transition) !important;
-    margin: 0.5rem auto !important;
-    z-index: 1002 !important; /* Asegurar que esté por encima */
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-.sidebar-toggle:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    transform: scale(1.05) !important;
-}
-
-.sidebar-toggle i {
-    font-size: 1.2rem !important;
-    transition: var(--transition) !important;
-    color: var(--text-primary) !important;
-}
-
-/* Ajustes para el estado colapsado */
-.sidebar-modern.collapsed .sidebar-toggle {
-    width: 35px !important;
-    height: 35px !important;
-    margin: 0.25rem auto !important;
-}
-
-.sidebar-modern.collapsed .sidebar-toggle i {
-    font-size: 1rem !important;
 }

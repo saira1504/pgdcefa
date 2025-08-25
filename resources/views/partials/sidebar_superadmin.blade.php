@@ -127,6 +127,3 @@
         @csrf
     </form>
 </div>
-
-<!-- JavaScript al final del body -->
-<script src="{{ asset('js/sidebar-functions.js') }}"></script>

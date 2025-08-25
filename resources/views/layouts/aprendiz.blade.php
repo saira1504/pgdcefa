@@ -15,7 +15,7 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    
     <!-- Custom CSS -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/sidebar-styles.css') }}" rel="stylesheet">
@@ -25,18 +25,18 @@
 </head>
 <body class="sidebar-expanded">
     <div id="app">
-        <!-- Sidebar -->
-        @include('partials.sidebar_aprendiz')
-        
-        <!-- Main Content -->
+            <!-- Sidebar -->
+                @include('partials.sidebar_aprendiz')
+            
+            <!-- Main Content -->
         <div class="main-content-wrapper">
-            @yield('content')
-        </div>
-    </div>
-
+                    @yield('content')
+                </div>
+            </div>
+    
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
