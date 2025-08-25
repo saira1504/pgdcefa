@@ -50,13 +50,6 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('aprendiz.mi-unidad') }}" 
-                   class="nav-link {{ request()->routeIs('aprendiz.mi-unidad') ? 'active' : '' }}">
-                    <i class="fas fa-list"></i>
-                    <span>Mi Unidad Productiva</span>
-                </a>
-            </li>
-            <li class="nav-item">
                 <a href="{{ route('aprendiz.unidades-disponibles') }}" 
                    class="nav-link {{ request()->routeIs('aprendiz.unidades-disponibles') ? 'active' : '' }}">
                     <i class="fas fa-building"></i>

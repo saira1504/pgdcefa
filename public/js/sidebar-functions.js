@@ -28,49 +28,20 @@ function toggleSidebar() {
 
 // Función para ajustar automáticamente el contenido principal
 function adjustMainContent(isCollapsed) {
-    // Buscar diferentes tipos de contenedores principales
-    const selectors = [
-        '.main-content',
-        '.main-content-wrapper', 
-        '#mainContent',
-        '.content-area',
-        '.container-fluid',
-        '.content',
-        'main',
-        '.test-content'
-    ];
-    
-    selectors.forEach(selector => {
-        const elements = document.querySelectorAll(selector);
-        elements.forEach(element => {
-            if (element && !element.closest('.sidebar-modern')) {
-                if (isCollapsed) {
-                    element.classList.add('sidebar-collapsed');
-                    // Para el layout del aprendiz, usar los estilos CSS personalizados
-                    if (element.id === 'mainContent' || element.classList.contains('main-content-wrapper')) {
-                        // No aplicar estilos inline, dejar que el CSS maneje la transición
-                        element.classList.add('sidebar-collapsed');
-                    } else {
-                        element.style.marginLeft = '70px';
-                        element.style.width = 'calc(100% - 70px)';
-                        element.style.maxWidth = 'calc(100vw - 70px)';
-                    }
-                } else {
-                    element.classList.remove('sidebar-collapsed');
-                    // Para el layout del aprendiz, usar los estilos CSS personalizados
-                    if (element.id === 'mainContent' || element.classList.contains('main-content-wrapper')) {
-                        // No aplicar estilos inline, dejar que el CSS maneje la transición
-                        element.classList.remove('sidebar-collapsed');
-                    } else {
-                        element.style.marginLeft = '280px';
-                        element.style.width = 'calc(100% - 280px)';
-                        element.style.maxWidth = 'calc(100vw - 280px)';
-                    }
-                }
+    // Limitar el ajuste al contenedor principal del layout y al body.
+    // Evitamos tocar contenedores internos como .container-fluid para no romper anchos.
+    const wrappers = document.querySelectorAll('.main-content-wrapper, #mainContent, main');
+
+    wrappers.forEach(element => {
+        if (element && !element.closest('.sidebar-modern')) {
+            if (isCollapsed) {
+                element.classList.add('sidebar-collapsed');
+            } else {
+                element.classList.remove('sidebar-collapsed');
             }
-        });
+        }
     });
-    
+
     // Ajustar el body si es necesario
     const body = document.body;
     if (body) {
@@ -85,7 +56,6 @@ function adjustMainContent(isCollapsed) {
     
     // Debug: mostrar en consola qué contenedores se ajustaron
     console.log('Sidebar ajustado:', isCollapsed ? 'Colapsado' : 'Expandido');
-    console.log('Contenedores encontrados:', selectors.map(s => document.querySelectorAll(s).length));
 }
 
 // Restaurar estado del sidebar al cargar la página

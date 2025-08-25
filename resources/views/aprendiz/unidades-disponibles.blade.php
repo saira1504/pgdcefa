@@ -1,7 +1,7 @@
 @extends('layouts.aprendiz')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid p-4">
     <div class="row">
         <div class="col-md-3 col-lg-2 px-0">
             @include('partials.sidebar_aprendiz')
@@ -98,15 +98,6 @@
                             <div class="me-3 icon-container">
                                 <div class="icon-circle bg-info-light">
                                     <i class="fas fa-chart-line fa-2x text-info"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="text-muted mb-0 small fw-semibold">Progreso Promedio</h6>
-                                    <small class="text-muted">Del sistema</small>
-                                </div>
-                                <div class="text-end">
-                                    <h2 class="mb-0 fw-bold text-info">{{ $progresoPromedio ?? 0 }}%</h2>
                                 </div>
                             </div>
                         </div>
@@ -215,13 +206,7 @@
                             </div>
 
                             <div class="row g-3 mb-3">
-                                <div class="col-6">
-                                    <div class="bg-light rounded p-3 text-center">
-                                        <div class="fw-bold text-success">{{ $unidad->progreso ?? 0 }}%</div>
-                                        <small class="text-muted">Progreso</small>
-                                    </div>
-                                </div>
-                                <div class="col-6">
+                                <div class="col-12">
                                     <div class="bg-light rounded p-3 text-center">
                                         @php
                                             $estadoConfig = match($unidad->estado ?? 'iniciando') {
