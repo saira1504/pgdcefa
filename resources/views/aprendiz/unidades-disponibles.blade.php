@@ -239,10 +239,7 @@
                         <div class="card-footer bg-transparent p-3">
                             <div class="row g-2">
                                 <div class="col-6">
-                                    <button class="btn btn-outline-primary btn-sm w-100" title="Ver detalles" 
-                                            onclick="verDetallesUnidad({{ $unidad->id }})">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
+                                   
                                 </div>
                                 <div class="col-6">
                                     @if($unidadAsignada && $unidadAsignada->id == $unidad->id)
@@ -250,10 +247,6 @@
                                             <i class="fas fa-check"></i>
                                         </button>
                                     @else
-                                        <button class="btn btn-outline-success btn-sm w-100" title="Solicitar asignación" 
-                                                onclick="solicitarAsignacion({{ $unidad->id }})">
-                                            <i class="fas fa-hand-paper"></i>
-                                        </button>
                                     @endif
                                 </div>
                             </div>
@@ -281,7 +274,7 @@
                 <h5 class="modal-title">
                     <i class="fas fa-info-circle me-2"></i>Detalles de la Unidad
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+               
             </div>
             <div class="modal-body" id="detallesUnidadContent">
                 <!-- Contenido dinámico -->
