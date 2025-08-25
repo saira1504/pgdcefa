@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\ListadoMaestro;
 use App\Models\User;
+use App\Models\Area;
 use App\Notifications\DocumentoSubidoNotification;
 use App\Notifications\DocumentoProcesadoNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
-use App\Models\Area;
 
 class MaestroController extends Controller
 {
@@ -154,6 +154,19 @@ class MaestroController extends Controller
         }
 
         return redirect()->back()->with('success', 'Documento rechazado correctamente. Se ha notificado al administrador.');
+    }
+
+    // Obtener documento para editar
+    public function show($id)
+    {
+        $documento = ListadoMaestro::with('area')->findOrFail($id);
+        
+        // Verificar permisos: solo el admin que creó el documento o superadmin puede verlo
+        if (Auth::user()->role === 'admin' && $documento->creado_por !== Auth::id()) {
+            abort(403, 'Solo puedes ver documentos que hayas creado');
+        }
+        
+        return response()->json($documento);
     }
 
     // Actualizar documento

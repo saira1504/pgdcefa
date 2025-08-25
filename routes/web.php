@@ -42,6 +42,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // =================== LISTADO MAESTRO ===================
     Route::get('/admin/listado_maestro', [MaestroController::class, 'adminIndex'])->name('admin.listado_maestro');
+    Route::get('/admin/listado_maestro/{id}', [MaestroController::class, 'show'])->name('admin.listado_maestro.show');
     Route::post('/admin/listado_maestro', [MaestroController::class, 'store'])->name('admin.listado_maestro.store');
     Route::put('/admin/listado_maestro/{id}', [MaestroController::class, 'update'])->name('admin.listado_maestro.update');
     Route::delete('/admin/listado_maestro/{id}', [MaestroController::class, 'destroy'])->name('admin.listado_maestro.destroy');
@@ -140,6 +141,7 @@ Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->name('supe
 
     // =================== LISTADO MAESTRO SUPERADMIN ===================
     Route::get('/listado_maestro', [MaestroController::class, 'superadminIndex'])->name('listado_maestro.index');
+    Route::get('/listado_maestro/{id}', [MaestroController::class, 'show'])->name('listado_maestro.show');
     Route::put('/listado_maestro/{id}', [MaestroController::class, 'update'])->name('listado_maestro.update');
     Route::delete('/listado_maestro/{id}', [MaestroController::class, 'destroy'])->name('listado_maestro.destroy');
     Route::post('/listado_maestro/{id}/aprobar', [MaestroController::class, 'aprobar'])->name('listado_maestro.aprobar');

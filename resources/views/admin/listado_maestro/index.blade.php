@@ -477,12 +477,35 @@ $(document).ready(function() {
 
     // Función para editar documento
     window.editarDocumento = function(id) {
-        // Aquí deberías hacer una llamada AJAX para obtener los datos del documento
-        // Por ahora, solo actualizamos la acción del formulario
+        // Actualizar la acción del formulario
         $('#formEditar').attr('action', '{{ route("admin.listado_maestro.update", "") }}/' + id);
         
-        // También podrías precargar los datos del documento aquí
-        // usando una llamada AJAX al controlador
+        // Hacer llamada AJAX para obtener los datos del documento
+        $.ajax({
+            url: '{{ route("admin.listado_maestro.show", "") }}/' + id,
+            method: 'GET',
+            success: function(data) {
+                // Llenar los campos del formulario con los datos del documento
+                $('#edit_tipo_proceso').val(data.tipo_proceso);
+                $('#edit_nombre_proceso').val(data.nombre_proceso);
+                $('#edit_subproceso_sig_subsistema').val(data.subproceso_sig_subsistema);
+                $('#edit_area_id').val(data.area_id);
+                $('#edit_numero_doc').val(data.numero_doc);
+                $('#edit_responsable').val(data.responsable);
+                $('#edit_tipo_documento').val(data.tipo_documento);
+                $('#edit_nombre_documento').val(data.nombre_documento);
+                $('#edit_codigo').val(data.codigo);
+                $('#edit_version').val(data.version);
+                $('#edit_fecha_creacion').val(data.fecha_creacion);
+                
+                // Mostrar el modal
+                $('#modalEditar').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al obtener datos del documento:', error);
+                alert('Error al cargar los datos del documento. Por favor, inténtalo de nuevo.');
+            }
+        });
     }
 });
 </script>

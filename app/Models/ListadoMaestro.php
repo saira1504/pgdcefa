@@ -48,4 +48,11 @@ class ListadoMaestro extends Model
     {
         return $this->belongsTo(Area::class, 'area_id');
     }
+
+    // Configurar el formato de fecha para fecha_creacion
+    protected $casts = [
+        'fecha_creacion' => 'date:Y-m-d',
+        'revision_fecha' => 'datetime',
+        'aprobacion_fecha' => 'datetime',
+    ];
 }

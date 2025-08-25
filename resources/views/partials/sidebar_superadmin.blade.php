@@ -16,16 +16,15 @@
         <!-- Dropdown del Usuario -->
         <div class="user-dropdown">
             <button class="dropdown-toggle" onclick="toggleUserDropdown()">
-                <i class="fas fa-chevron-down"></i>
             </button>
             <div class="dropdown-menu" id="userDropdownMenu">
                 <a href="#" class="dropdown-item">
                     <i class="fas fa-user-cog"></i>
                     <span>Mi Perfil</span>
                 </a>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Configuración</span>
+             <a href="{{ asset('docs/herramienta.pdf') }}" target="_blank" class="dropdown-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Ayuda</span>
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="{{ route('logout') }}" 

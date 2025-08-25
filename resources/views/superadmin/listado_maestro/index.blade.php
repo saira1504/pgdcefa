@@ -201,31 +201,37 @@
                             @endif
                         </td>
                         <td>
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-primary btn-sm" onclick="editarDocumento({{ $doc->id }})" data-bs-toggle="modal" data-bs-target="#modalEditar">
-                                    <i class="fas fa-edit me-1"></i>Editar
-                                </button>
-                                <form action="{{ route('superadmin.listado_maestro.destroy', $doc->id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este documento?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-sm" type="submit">
-                                        <i class="fas fa-trash me-1"></i>Eliminar
+                            <div class="actions-container">
+                                <div class="btn-group-vertical w-100" role="group">
+                                    <button class="btn btn-primary btn-sm action-btn" onclick="editarDocumento({{ $doc->id }})" data-bs-toggle="modal" data-bs-target="#modalEditar">
+                                        <i class="fas fa-edit me-1"></i>Editar
                                     </button>
-                                </form>
-                                @if($doc->estado === 'pendiente')
-                                    <form action="{{ route('superadmin.listado_maestro.aprobar', $doc->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('superadmin.listado_maestro.destroy', $doc->id) }}" method="POST" class="d-inline w-100" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este documento?')">
                                         @csrf
-                                        <button class="btn btn-success btn-sm" onclick="return confirm('¿Estás seguro de que quieres aprobar este documento?')">
-                                            <i class="fas fa-check me-1"></i>Aprobar
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm action-btn w-100" type="submit">
+                                            <i class="fas fa-trash me-1"></i>Eliminar
                                         </button>
                                     </form>
-                                    <form action="{{ route('superadmin.listado_maestro.rechazar', $doc->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que quieres rechazar este documento?')">
-                                            <i class="fas fa-times me-1"></i>Rechazar
-                                        </button>
-                                    </form>
-                                @endif
+                                    @if($doc->estado === 'pendiente')
+                                        <form action="{{ route('superadmin.listado_maestro.aprobar', $doc->id) }}" method="POST" class="d-inline w-100">
+                                            @csrf
+                                            <button class="btn btn-success btn-sm action-btn w-100" onclick="return confirm('¿Estás seguro de que quieres aprobar este documento?')">
+                                                <i class="fas fa-check me-1"></i>Aprobar
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('superadmin.listado_maestro.rechazar', $doc->id) }}" method="POST" class="d-inline w-100">
+                                            @csrf
+                                            <button class="btn btn-danger btn-sm action-btn w-100" onclick="return confirm('¿Estás seguro de que quieres rechazar este documento?')">
+                                                <i class="fas fa-times me-1"></i>Rechazar
+                                            </button>
+                                        </form>
+                                    @else
+                                        <!-- Botones placeholder para mantener consistencia visual -->
+                                        <div class="action-btn-placeholder"></div>
+                                        <div class="action-btn-placeholder"></div>
+                                    @endif
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -449,6 +455,60 @@ small {
     font-size: 0.875rem;
     line-height: 1.2;
 }
+
+/* Contenedor de acciones uniforme */
+.actions-container {
+    width: 100%;
+    min-width: 120px;
+}
+
+/* Botones de acción uniformes */
+.action-btn {
+    width: 100% !important;
+    margin-bottom: 2px;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.action-btn:last-child {
+    margin-bottom: 0;
+}
+
+/* Placeholder para mantener consistencia visual */
+.action-btn-placeholder {
+    height: 32px;
+    margin-bottom: 2px;
+}
+
+/* Asegurar que la columna de acciones tenga ancho fijo */
+.table th:last-child,
+.table td:last-child {
+    width: 130px;
+    min-width: 130px;
+    max-width: 130px;
+}
+
+/* Responsive para botones en pantallas pequeñas */
+@media (max-width: 768px) {
+    .actions-container {
+        min-width: 100px;
+    }
+    
+    .table th:last-child,
+    .table td:last-child {
+        width: 110px;
+        min-width: 110px;
+        max-width: 110px;
+    }
+    
+    .action-btn {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
 </style>
 @endpush
 
@@ -492,12 +552,35 @@ $(document).ready(function() {
 
     // Función para editar documento
     window.editarDocumento = function(id) {
-        // Aquí deberías hacer una llamada AJAX para obtener los datos del documento
-        // Por ahora, solo actualizamos la acción del formulario
+        // Actualizar la acción del formulario
         $('#formEditar').attr('action', '{{ route("superadmin.listado_maestro.update", "") }}/' + id);
         
-        // También podrías precargar los datos del documento aquí
-        // usando una llamada AJAX al controlador
+        // Hacer llamada AJAX para obtener los datos del documento
+        $.ajax({
+            url: '{{ route("superadmin.listado_maestro.show", "") }}/' + id,
+            method: 'GET',
+            success: function(data) {
+                // Llenar los campos del formulario con los datos del documento
+                $('#edit_tipo_proceso').val(data.tipo_proceso);
+                $('#edit_nombre_proceso').val(data.nombre_proceso);
+                $('#edit_subproceso_sig_subsistema').val(data.subproceso_sig_subsistema);
+                $('#edit_area_id').val(data.area_id);
+                $('#edit_numero_doc').val(data.numero_doc);
+                $('#edit_responsable').val(data.responsable);
+                $('#edit_tipo_documento').val(data.tipo_documento);
+                $('#edit_nombre_documento').val(data.nombre_documento);
+                $('#edit_codigo').val(data.codigo);
+                $('#edit_version').val(data.version);
+                $('#edit_fecha_creacion').val(data.fecha_creacion);
+                
+                // Mostrar el modal
+                $('#modalEditar').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al obtener datos del documento:', error);
+                alert('Error al cargar los datos del documento. Por favor, inténtalo de nuevo.');
+            }
+        });
     }
 });
 </script>

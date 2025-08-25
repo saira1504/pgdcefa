@@ -1,14 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="text-center">👑 Dashboard Super Admin</h2>
-                </div>
-                <div class="card-body">
+
+<div class="container d-flex justify-content-center">
+    <div class="card w-300" style="max-height: -100px;  ">
+        <div class="card-header text-center">
+            <h2>👑 Dashboard Super Admin</h2>
+        </div>
+        <div class="card-body">
                     <!-- Notificaciones de documentos pendientes -->
                     @php
                         $documentosPendientes = \App\Models\ListadoMaestro::where('estado', 'pendiente')->count();

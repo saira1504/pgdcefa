@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Editar Documento</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Test de Funcionalidad AJAX</h1>
+    
+    <button onclick="testEditarDocumento(1)">Probar Editar Documento ID 1</button>
+    
+    <div id="resultado"></div>
+    
+    <script>
+        function testEditarDocumento(id) {
+            $.ajax({
+                url: '/superadmin/listado_maestro/' + id,
+                method: 'GET',
+                success: function(data) {
+                    $('#resultado').html('<pre>' + JSON.stringify(data, null, 2) + '</pre>');
+                },
+                error: function(xhr, status, error) {
+                    $('#resultado').html('<p style="color: red;">Error: ' + error + '</p>');
+                    console.error('Error:', xhr.responseText);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -118,15 +118,6 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label small">Unidad Productiva</label>
-                        <select class="form-select" name="unidad_id" onchange="this.form.submit()">
-                            <option value="">Todas las unidades</option>
-                            @foreach($unidadesAdmin as $nombre => $id)
-                                <option value="{{ $id }}" {{ request('unidad_id') == $id ? 'selected' : '' }}>{{ $nombre }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
                         <label class="form-label small">Área</label>
                         <select class="form-select" name="area_id" onchange="this.form.submit()">
                             <option value="">Todas las áreas</option>
@@ -148,35 +139,18 @@
                             <option value="estado" {{ request('estado') == 'estado' ? 'selected' : '' }}>Estado</option>
                         </select>
                     </div>
-                    <div class="col-md-1 d-grid">
-                        <button type="button" class="btn btn-outline-secondary" onclick="limpiarFiltros()"><i class="fas fa-eraser"></i></button>
-                    </div>
-                </div>
-                <div class="row g-3 align-items-end mt-2">
-                    <div class="col-md-4">
-                        <label class="form-label small">Aprendiz</label>
-                        <select class="form-select" name="aprendiz_id" onchange="this.form.submit()">
-                            <option value="">Todos los aprendices</option>
-                            @foreach($aprendicesAdmin as $id => $nombre)
-                                <option value="{{ $id }}" {{ request('aprendiz_id') == $id ? 'selected' : '' }}>{{ $nombre }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label small">Dirección</label>
                         <select class="form-select" name="direccion" onchange="this.form.submit()">
                             <option value="desc" {{ request('direccion') == 'desc' ? 'selected' : '' }}>Descendente</option>
                             <option value="asc" {{ request('direccion') == 'asc' ? 'selected' : '' }}>Ascendente</option>
                         </select>
+                          </div>
+                    <div class="col-md-1 d-grid">
+                        <button type="button" class="btn btn-outline-secondary" onclick="limpiarFiltros()"><i class="fas fa-eraser"></i></button>
                     </div>
-                    <div class="col-md-4 d-grid">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search me-1"></i>Filtrar
-                        </button>
                     </div>
-                </div>
-            </form>
-        </div>
+              </div>
     </div>
 
     <!-- Lista de Documentos -->
