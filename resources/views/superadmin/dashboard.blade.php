@@ -2,8 +2,8 @@
 
 @section('content')
 
-<div class="container d-flex justify-content-center">
-    <div class="card w-300" style="max-height: -100px;  ">
+<div class="main-content-wrapper">
+    <div class="content-wrapper"></div>
         <div class="card-header text-center">
             <h2>👑 Dashboard Super Admin</h2>
         </div>
@@ -127,6 +127,13 @@
 </div>
 
 <style>
+.sidebar{
+    width: 23px;
+}
+
+.content {
+    margin-left: 260px;
+}
 .card {
     transition: transform 0.2s;
 }

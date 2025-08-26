@@ -22,7 +22,7 @@
                     <i class="fas fa-user-cog"></i>
                     <span>Mi Perfil</span>
                 </a>
-             <a href="{{ asset('docs/herramienta.pdf') }}" target="_blank" class="dropdown-item">
+             <a href="{{ asset('docs/manual.pdf') }}" target="_blank" class="dropdown-item">
                 <i class="fas fa-question-circle"></i>
                 <span>Ayuda</span>
                 </a>

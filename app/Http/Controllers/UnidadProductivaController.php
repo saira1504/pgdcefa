@@ -41,7 +41,7 @@ class UnidadProductivaController extends Controller
         $gestores = User::where('role', 'admin')->get();
         $areas = Area::where('activo', true)->get();
         
-        // Definir categorías de documentos
+        
         $categoriasDocumento = [
             'Documento',
             'Informe',
@@ -53,10 +53,8 @@ class UnidadProductivaController extends Controller
             'Otro',
         ];
 
-        // 📊 ESTADÍSTICAS CORREGIDAS
+    
         $totalUnidades = $unidadesProductivas->count();
-        
-        // 🎯 TOTAL DE APRENDICES GENERAL - TODOS LOS APRENDICES DEL SISTEMA
         $totalAprendices = User::where('role', 'aprendiz')->count();
         
         // 📄 TOTAL DE DOCUMENTOS - Solo documentos subidos por aprendices

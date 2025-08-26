@@ -144,12 +144,31 @@
             margin: 0 auto;
         }
 
-        /* Responsive para el contenido principal */
-        @media (max-width: 768px) {
-            .content-wrapper {
-                padding: 1.5rem;
-            }
-        }
+       /* Alinear contenido principal a la derecha del sidebar fijo */
+.main-content-wrapper {
+    margin-left: 320px; /* desplazado más a la derecha */
+    transition: margin-left .3s ease;
+}
+
+@media (max-width: 1200px) {
+    .main-content-wrapper { margin-left: 280px; }
+}
+
+@media (max-width: 992px) {
+    .main-content-wrapper { margin-left: 110px; }
+}
+
+@media (max-width: 576px) {
+    .main-content-wrapper { margin-left: 0; }
+}
+
+/* Responsive para el contenido principal */
+@media (max-width: 768px) {
+    .content-wrapper {
+        padding: 1.5rem;
+    }
+}
+
     </style>
     
     @stack('styles')
