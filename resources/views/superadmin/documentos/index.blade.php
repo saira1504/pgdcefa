@@ -116,17 +116,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3 mb-3">
-                        <label class="form-label">Área</label>
-                        <select class="form-select" name="area_id" onchange="this.form.submit()">
-                            <option value="">Todas las áreas</option>
-                            @foreach($areas as $area)
-                                <option value="{{ $area->nombre }}" {{ request('area_id') == $area->nombre ? 'selected' : '' }}>
-                                    {{ $area->nombre }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    
                     <div class="col-md-3 mb-3">
                         <label class="form-label">Ordenar por</label>
                         <select class="form-select" name="orden" onchange="this.form.submit()">

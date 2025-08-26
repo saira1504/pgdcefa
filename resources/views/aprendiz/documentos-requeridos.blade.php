@@ -230,7 +230,18 @@
                                             Fase {{ $fase ? $fase->numero : $doc['fase_id'] }}
                                         </span>
                                     </td>
-                                    <td class="fw-semibold">{{ $unidadAsignada->nombre ?? 'N/A' }}</td>
+                                    <td class="fw-semibold">
+                                        @php
+                                            $unidadNombre = 'N/A';
+                                            if (!empty($doc['unidad_id'])) {
+                                                $u = $todasLasUnidades->firstWhere('id', $doc['unidad_id']);
+                                                $unidadNombre = $u ? $u->nombre : 'N/A';
+                                            } elseif(isset($unidadAsignada) && $unidadAsignada) {
+                                                $unidadNombre = $unidadAsignada->nombre ?? 'N/A';
+                                            }
+                                        @endphp
+                                        {{ $unidadNombre }}
+                                    </td>
                                     <td>{{ $doc['descripcion'] }}</td>
                                     <td>
                                         <i class="fas fa-file-alt text-primary me-1"></i>
@@ -364,6 +375,19 @@
                                                 </span>
                                             </div>
                                         </div>
+                                        @if(!empty($doc->unidad_id))
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted fw-semibold">Unidad:</small>
+                                                @php
+                                                    $unidadSeleccionada = $todasLasUnidades->firstWhere('id', $doc->unidad_id);
+                                                @endphp
+                                                <span class="badge bg-info text-dark">
+                                                    <i class="fas fa-building me-1"></i>{{ $unidadSeleccionada->nombre ?? 'Sin unidad' }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        @endif
                                         
                                         @if(isset($doc->fecha_limite))
                                         <div class="mb-3">
@@ -772,18 +796,18 @@ document.addEventListener('DOMContentLoaded', function() {
         let mensaje = '';
         
         if (count === total) {
-            mensaje = Mostrando todos los ${total} documentos;
+            mensaje = `Mostrando todos los ${total} documentos`;
         } else if (count === 0) {
             mensaje = 'No se encontraron documentos con los filtros aplicados';
         } else {
-            mensaje = Mostrando ${count} de ${total} documentos;
+            mensaje = `Mostrando ${count} de ${total} documentos`;
         }
         
         const resultadosCount = document.getElementById('resultadosCount');
         const totalRequeridos = document.getElementById('totalRequeridos');
         
         if (resultadosCount) resultadosCount.textContent = mensaje;
-        if (totalRequeridos) totalRequeridos.textContent = count;
+        if (totalRequeridos) totalRequeridos.textContent = count || total;
     }
     
     function actualizarEstadisticas() {

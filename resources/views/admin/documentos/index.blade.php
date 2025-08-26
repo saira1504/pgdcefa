@@ -118,18 +118,32 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label small">Área</label>
-                        <select class="form-select" name="area_id" onchange="this.form.submit()">
-                            <option value="">Todas las áreas</option>
-                            @if(isset($areas))
-                                @foreach($areas as $area)
-                                    <option value="{{ $area->nombre }}" {{ request('area_id') == $area->nombre ? 'selected' : '' }}>
-                                        {{ $area->nombre }}
+                        <label class="form-label small">Unidad</label>
+                        <select class="form-select" name="unidad_id" onchange="this.form.submit()">
+                            <option value="">Todas las unidades</option>
+                            @if(isset($unidadesAdmin))
+                                @foreach($unidadesAdmin as $unidad)
+                                    <option value="{{ $unidad->id }}" {{ request('unidad_id') == $unidad->id ? 'selected' : '' }}>
+                                        {{ $unidad->nombre }}
                                     </option>
                                 @endforeach
                             @endif
                         </select>
                     </div>
+                    <div class="col-md-3">
+                        <label class="form-label small">Aprendiz</label>
+                        <select class="form-select" name="aprendiz_id" onchange="this.form.submit()">
+                            <option value="">Todos los aprendices</option>
+                            @if(isset($aprendicesAdmin))
+                                @foreach($aprendicesAdmin as $aprendiz)
+                                    <option value="{{ $aprendiz->id }}" {{ request('aprendiz_id') == $aprendiz->id ? 'selected' : '' }}>
+                                        {{ $aprendiz->name }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    
                     <div class="col-md-2">
                         <label class="form-label small">Ordenar por</label>
                         <select class="form-select" name="orden" onchange="this.form.submit()">
