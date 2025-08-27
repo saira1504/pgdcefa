@@ -375,6 +375,48 @@
                                                 </span>
                                             </div>
                                         </div>
+                                        
+                                        <!-- Comentarios del Revisor -->
+                                        @if($doc->estado == 'aprobado' && $doc->comentarios_aprobacion)
+                                            <div class="mb-3">
+                                                <div class="alert alert-success py-2 mb-0">
+                                                    <i class="fas fa-check-circle me-1"></i>
+                                                    <strong>Comentarios de Aprobación:</strong><br>
+                                                    {{ $doc->comentarios_aprobacion }}
+                                                </div>
+                                            </div>
+                                        @elseif($doc->estado == 'rechazado' && $doc->comentarios_rechazo)
+                                            <div class="mb-3">
+                                                <div class="alert alert-danger py-2 mb-0">
+                                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                                    <strong>Motivo del Rechazo:</strong><br>
+                                                    {{ $doc->comentarios_rechazo }}
+                                                </div>
+                                            </div>
+                                        @elseif($doc->estado == 'en_revision')
+                                            <div class="mb-3">
+                                                <div class="alert alert-warning py-2 mb-0">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    <strong>En revisión</strong><br>
+                                                    Tu documento está siendo revisado por el administrador.
+                                                </div>
+                                            </div>
+                                        @endif
+                                        
+                                        <!-- Información del Revisor -->
+                                        @if($doc->revisor)
+                                            <div class="mb-3">
+                                                <small class="text-muted fw-semibold">Revisado por:</small>
+                                                <div class="text-info">
+                                                    <i class="fas fa-user-check me-1"></i>
+                                                    {{ $doc->revisor->name }}
+                                                    @if($doc->fecha_revision)
+                                                        <br><small class="text-muted">{{ $doc->fecha_revision->format('d/m/Y H:i') }}</small>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
+                                        
                                         @if(!empty($doc->unidad_id))
                                         <div class="mb-3">
                                             <div class="d-flex justify-content-between align-items-center">
@@ -417,11 +459,11 @@
                                         <div class="d-grid gap-2">
                                             @if($doc->archivo_original)
                                                 <div class="btn-group" role="group">
-                                                    <a href="{{ Storage::url($doc->archivo_path) }}" 
-                                                       class="btn btn-outline-success btn-sm" target="_blank">
+                                                    <a href="{{ route('aprendiz.documentos.descargar', $doc->id) }}" 
+                                                       class="btn btn-outline-success btn-sm">
                                                         <i class="fas fa-download me-1"></i>Descargar
                                                     </a>
-                                                    @if(in_array($doc->estado ?? 'pendiente', ['pendiente', 'en_revision', 'subido']))
+                                                    @if(($doc->estado ?? 'pendiente') == 'rechazado')
                                                         <button class="btn btn-outline-warning btn-sm" 
                                                                 onclick="editarDocumentoRequerido('{{ $doc->id }}', '{{ $doc->titulo ?? $doc->nombre }}', '{{ $doc->descripcion ?? '' }}', '{{ $doc->archivo_original ?? '' }}')" 
                                                                 data-bs-toggle="modal" data-bs-target="#modalEditarDocumentoRequerido">
@@ -686,7 +728,7 @@
 
                     <div class="alert alert-info border-0" style="background: rgba(23, 162, 184, 0.1);">
                         <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Nota:</strong> Solo puedes editar documentos que estén pendientes, en revisión o subidos. 
+                        <strong>Nota:</strong> Solo puedes editar documentos que hayan sido rechazados. 
                         Si cambias el archivo, el documento volverá al estado "pendiente" para nueva revisión.
                     </div>
                 </div>

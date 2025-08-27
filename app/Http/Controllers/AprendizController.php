@@ -184,7 +184,9 @@ class AprendizController extends Controller
         $todasLasUnidades = \App\Models\UnidadProductiva::where('activo', true)->get();
         
         // Obtener documentos subidos reales del aprendiz
-        $documentosRequeridos = \App\Models\DocumentoAprendiz::where('aprendiz_id', $aprendiz->id)->get();
+        $documentosRequeridos = \App\Models\DocumentoAprendiz::with(['tipoDocumento', 'revisor'])
+            ->where('aprendiz_id', $aprendiz->id)
+            ->get();
         
         $fases = $this->getFasesDisponibles();
         $faseActual = $this->getFaseActual();
@@ -277,10 +279,36 @@ class AprendizController extends Controller
     {
         $aprendiz = Auth::user();
         
-        // Aquí verificarías que el documento pertenece al aprendiz
-        // Por ahora simulamos la descarga
+        // Buscar el documento del aprendiz
+        $documento = \App\Models\DocumentoAprendiz::where('id', $documentoId)
+            ->where('aprendiz_id', $aprendiz->id)
+            ->firstOrFail();
+
+        // Verificar que el archivo existe
+        if (!Storage::disk('public')->exists($documento->archivo_path)) {
+            abort(404, 'El archivo no existe.');
+        }
+
+        // Descargar el archivo
+        return Storage::disk('public')->download($documento->archivo_path, $documento->archivo_original);
+    }
+
+    public function descargarDocumentoRequerido($documentoId)
+    {
+        $aprendiz = Auth::user();
         
-        return response()->download(storage_path('app/public/documentos/aprendiz/' . $aprendiz->id . '/documento.pdf'));
+        // Buscar el documento requerido del aprendiz
+        $documento = \App\Models\DocumentoAprendiz::where('id', $documentoId)
+            ->where('aprendiz_id', $aprendiz->id)
+            ->firstOrFail();
+
+        // Verificar que el archivo existe
+        if (!Storage::disk('public')->exists($documento->archivo_path)) {
+            abort(404, 'El archivo no existe.');
+        }
+
+        // Descargar el archivo
+        return Storage::disk('public')->download($documento->archivo_path, $documento->archivo_original);
     }
 
     public function progreso()
@@ -385,19 +413,12 @@ class AprendizController extends Controller
 
     private function getMisDocumentos($aprendizId, $unidadId)
     {
-        // Simular documentos ya subidos
-        return collect([
-            (object) [
-                'id' => 1,
-                'tipo_documento_id' => 4,
-                'nombre_archivo' => 'analisis_mercado.pdf',
-                'ruta_archivo' => 'documentos/aprendices/1/analisis_mercado.pdf',
-                'estado' => 'aprobado',
-                'descripcion' => 'Análisis completo del mercado avícola',
-                'fecha_subida' => now()->subDays(5),
-                'tipoDocumento' => (object) ['nombre' => 'Análisis de Mercado']
-            ]
-        ]);
+        // Obtener documentos reales del aprendiz desde la base de datos
+        return \App\Models\DocumentoAprendiz::with(['tipoDocumento', 'revisor'])
+            ->where('aprendiz_id', $aprendizId)
+            ->where('unidad_id', $unidadId)
+            ->orderBy('fecha_subida', 'desc')
+            ->get();
     }
 
     private function getProgresoDetallado($aprendizId, $unidadId)
@@ -545,8 +566,8 @@ class AprendizController extends Controller
             ->firstOrFail();
 
         // Verificar que el documento esté en un estado editable
-        if (!in_array($documento->estado, ['en_revision', 'pendiente'])) {
-            return redirect()->back()->with('error', 'Solo puedes editar documentos que estén en revisión o pendientes.');
+        if ($documento->estado !== 'rechazado') {
+            return redirect()->back()->with('error', 'Solo puedes editar documentos que hayan sido rechazados.');
         }
 
         $data = [];
@@ -598,8 +619,8 @@ class AprendizController extends Controller
             ->firstOrFail();
 
         // Verificar que el documento esté en un estado editable
-        if (!in_array($documento->estado, ['pendiente', 'en_revision', 'subido'])) {
-            return redirect()->back()->with('error', 'Solo puedes editar documentos que estén pendientes, en revisión o subidos.');
+        if ($documento->estado !== 'rechazado') {
+            return redirect()->back()->with('error', 'Solo puedes editar documentos que hayan sido rechazados.');
         }
 
         $data = [];

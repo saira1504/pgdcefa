@@ -24,6 +24,7 @@ class DocumentoAprendiz extends Model
         'tamaño_archivo',
         'estado', // pendiente, en_revision, aprobado, rechazado
         'comentarios_rechazo',
+        'comentarios_aprobacion',
         'fecha_subida',
         'fecha_revision',
         'revisado_por'
@@ -157,7 +158,8 @@ class DocumentoAprendiz extends Model
             'estado' => $estado,
             'fecha_revision' => now(),
             'revisado_por' => $revisorId,
-            'comentarios_rechazo' => $estado === 'rechazado' ? $comentarios : null
+            'comentarios_rechazo' => $estado === 'rechazado' ? $comentarios : null,
+            'comentarios_aprobacion' => $estado === 'aprobado' ? $comentarios : null
         ]);
     }
 } 

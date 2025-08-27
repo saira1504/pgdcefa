@@ -92,6 +92,7 @@
                                         <th>Documento</th>
                                         <th>Archivo</th>
                                         <th>Estado</th>
+                                        <th>Comentarios del Revisor</th>
                                         <th>Fecha Subida</th>
                                         <th>Acciones</th>
                                     </tr>
@@ -108,42 +109,66 @@
                                     <td>
                                         <i class="fas fa-file-pdf text-danger me-1"></i>
                                         {{ $doc->nombre_archivo }}
+                                        @if($doc->revisor)
+                                            <br><small class="text-muted">Revisado por: {{ $doc->revisor->name }}</small>
+                                        @endif
                                     </td>
                                         <td>
                                             @if($doc->estado == 'aprobado')
                                                 <span class="badge bg-success">
                                                     <i class="fas fa-check me-1"></i>Aprobado
+                                                    @if($doc->comentarios_aprobacion)
+                                                        <i class="fas fa-comment-dots ms-1"></i>
+                                                    @endif
                                                 </span>
                                             @elseif($doc->estado == 'rechazado')
                                                 <span class="badge bg-danger">
                                                     <i class="fas fa-times me-1"></i>Rechazado
+                                                    @if($doc->comentarios_rechazo)
+                                                        <i class="fas fa-comment-dots ms-1"></i>
+                                                    @endif
                                                 </span>
-                                                @if($doc->comentarios_rechazo)
-                                                    <br><small class="text-danger">{{ $doc->comentarios_rechazo }}</small>
-                                                @endif
                                             @else
                                                 <span class="badge bg-warning">
                                                     <i class="fas fa-clock me-1"></i>En revisión
                                                 </span>
                                             @endif
                                         </td>
+                                        <td>
+                                            @if($doc->estado == 'aprobado' && $doc->comentarios_aprobacion)
+                                                <div class="alert alert-success py-2 mb-0">
+                                                    <i class="fas fa-check-circle me-1"></i>
+                                                    <strong>Comentarios de Aprobación:</strong><br>
+                                                    {{ $doc->comentarios_aprobacion }}
+                                                </div>
+                                            @elseif($doc->estado == 'rechazado' && $doc->comentarios_rechazo)
+                                                <div class="alert alert-danger py-2 mb-0">
+                                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                                    <strong>Motivo del Rechazo:</strong><br>
+                                                    {{ $doc->comentarios_rechazo }}
+                                                </div>
+                                            @elseif($doc->estado == 'en_revision')
+                                                <div class="alert alert-warning py-2 mb-0">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    <strong>En revisión</strong><br>
+                                                    Tu documento está siendo revisado por el administrador.
+                                                </div>
+                                            @else
+                                                <span class="text-muted">Sin comentarios</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $doc->fecha_subida->format('d/m/Y H:i') }}</td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <a href="{{ Storage::url($doc->ruta_archivo) }}" target="_blank" class="btn btn-outline-primary">
+                                                <a href="{{ Storage::url($doc->archivo_path) }}" target="_blank" class="btn btn-outline-primary">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="{{ Storage::url($doc->ruta_archivo) }}" download class="btn btn-outline-success">
+                                                <a href="{{ route('aprendiz.documentos.descargar', $doc->id) }}" class="btn btn-outline-success">
                                                     <i class="fas fa-download"></i>
                                                 </a>
-                                                @if($doc->estado == 'en_revision' || $doc->estado == 'pendiente')
+                                                @if($doc->estado == 'rechazado')
                                                     <button class="btn btn-outline-warning" onclick="editarDocumento({{ $doc->id }}, '{{ $doc->tipoDocumento->nombre ?? 'N/A' }}', '{{ $doc->descripcion ?? '' }}')" data-bs-toggle="modal" data-bs-target="#editarDocumentoModal">
                                                         <i class="fas fa-edit"></i>
-                                                    </button>
-                                                @endif
-                                                @if($doc->estado == 'rechazado')
-                                                    <button class="btn btn-outline-warning" onclick="resubirDocumento({{ $doc->id }})">
-                                                        <i class="fas fa-redo"></i>
                                                     </button>
                                                 @endif
                                             </div>
@@ -265,8 +290,8 @@
 
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Nota:</strong> Solo puedes editar documentos que estén en revisión o pendientes. 
-                        Una vez aprobados o rechazados, no se pueden modificar.
+                        <strong>Nota:</strong> Solo puedes editar documentos que hayan sido rechazados. 
+                        Los documentos aprobados o en revisión no se pueden modificar.
                     </div>
                 </div>
                 <div class="modal-footer">
